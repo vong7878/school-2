@@ -1,0 +1,1886 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>💰 ຈັດການການເງິນ &amp; ຄ່າຮຽນ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        html, body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Noto Sans Lao', sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+            width: 100%;
+            min-height: 100vh;
+            min-height: 100dvh;
+            max-width: 100%;
+            overflow-x: hidden;
+            -webkit-text-size-adjust: 100%;
+        }
+        body {
+            padding: 12px;
+        }
+        .container {
+            max-width: 1180px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+            min-width: 0;
+        }
+        .topbar {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 14px;
+            padding: 12px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            min-width: 0;
+            width: 100%;
+        }
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            min-width: 0;
+            flex: 1 1 auto;
+        }
+        .back-btn {
+            background: #334155;
+            color: #f8fafc;
+            text-decoration: none;
+            padding: 7px 11px;
+            border-radius: 8px;
+            font-size: 12.5px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+            max-width: 100%;
+        }
+        .back-btn:hover { background: #475569; }
+        .page-title {
+            margin: 0;
+            font-size: clamp(14.5px, 4.2vw, 18px);
+            font-weight: 700;
+            color: #f8fafc;
+            line-height: 1.3;
+            min-width: 0;
+            overflow-wrap: anywhere;
+        }
+        .user-meta {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            flex-wrap: wrap;
+            min-width: 0;
+            max-width: 100%;
+        }
+        #currentUserName {
+            max-width: 180px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .badge {
+            padding: 4px 9px;
+            border-radius: 999px;
+            font-weight: 600;
+            font-size: 11.5px;
+            white-space: nowrap;
+        }
+        .badge-role { background: #2563eb; color: #fff; }
+        .badge-grade { background: #0f766e; color: #ccfbf1; }
+        .badge-sheet { background: #1e3a8a; color: #93c5fd; border: 1px solid #3b82f6; }
+
+        .quota-banner {
+            background: rgba(245, 158, 11, 0.14);
+            border: 1px solid rgba(245, 158, 11, 0.45);
+            color: #fde68a;
+            border-radius: 10px;
+            padding: 9px 12px;
+            font-size: 12px;
+            line-height: 1.4;
+            display: none;
+            overflow-wrap: anywhere;
+        }
+        .quota-banner.show {
+            display: block;
+        }
+
+        .card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 14px;
+            padding: 14px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+            min-width: 0;
+            width: 100%;
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding-bottom: 10px;
+            margin-bottom: 12px;
+            border-bottom: 1px solid #334155;
+            min-width: 0;
+        }
+        .card-header h2 {
+            margin: 0;
+            font-size: clamp(14px, 3.9vw, 16px);
+            font-weight: 700;
+            color: #f8fafc;
+            line-height: 1.35;
+            overflow-wrap: anywhere;
+        }
+        .header-controls {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+            min-width: 0;
+        }
+
+        .paid-banner {
+            background: rgba(22, 163, 74, 0.16);
+            border: 1px solid #22c55e;
+            color: #bbf7d0;
+            border-radius: 12px;
+            padding: 12px 14px;
+            font-size: 13px;
+            font-weight: 600;
+            display: none;
+            overflow-wrap: anywhere;
+        }
+
+        .admin-contact-box {
+            background: #0f172a;
+            border: 1px dashed #60a5fa;
+            border-radius: 12px;
+            padding: 11px 12px;
+            margin-top: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+            font-size: 12.5px;
+            overflow-wrap: anywhere;
+        }
+        .phone-highlight {
+            color: #93c5fd;
+            font-weight: 700;
+            font-size: 13.5px;
+        }
+
+        .qr-fee-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 460px);
+            justify-content: center;
+            gap: 14px;
+            align-items: start;
+            width: 100%;
+        }
+        .qr-box {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 14px;
+            text-align: center;
+            min-width: 0;
+            width: 100%;
+        }
+        .qr-box img {
+            width: min(185px, 100%);
+            height: auto;
+            aspect-ratio: 1 / 1;
+            object-fit: contain;
+            border-radius: 10px;
+            background: #fff;
+            padding: 8px;
+            margin-bottom: 10px;
+        }
+        .qr-admin-controls {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #334155;
+            text-align: left;
+            display: none;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .inline-input-row {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            min-width: 0;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-bottom: 12px;
+            width: 100%;
+        }
+        label {
+            display: block;
+            font-size: 12px;
+            color: #94a3b8;
+            margin-bottom: 5px;
+        }
+        input, select {
+            width: 100%;
+            min-width: 0;
+            max-width: 100%;
+            background: #0f172a;
+            color: #f8fafc;
+            border: 1px solid #475569;
+            border-radius: 8px;
+            padding: 8px 10px;
+            font-family: inherit;
+            font-size: 13px;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #38bdf8;
+        }
+        button, a.btn-link {
+            font-family: inherit;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 13px;
+            font-size: 12.5px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            max-width: 100%;
+        }
+        button:hover, a.btn-link:hover { opacity: 0.92; }
+        button:disabled { opacity: 0.6; cursor: not-allowed; }
+        .btn-primary {
+            background: #2563eb;
+            color: #fff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .btn-sync { background: #0284c7; color: #fff; white-space: nowrap; }
+        .btn-add { background: #16a34a; color: #fff; padding: 7px 12px; font-size: 12px; white-space: nowrap; }
+        .btn-approve { background: #16a34a; color: #fff; padding: 5px 10px; font-size: 11.5px; white-space: nowrap; }
+        .btn-copy { background: #334155; color: #f8fafc; padding: 6px 11px; font-size: 12px; white-space: nowrap; }
+
+        .btn-add-hide,
+        .btn-edit,
+        .btn-del,
+        .admin-crud-col {
+            display: none !important;
+        }
+
+        .table-wrap {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 680px;
+        }
+        th, td {
+            border: 1px solid #334155;
+            padding: 9px 11px;
+            text-align: left;
+            font-size: 13px;
+            line-height: 1.35;
+        }
+        th {
+            background: #0f172a;
+            color: #93c5fd;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+        td {
+            background: #162032;
+            color: #e2e8f0;
+            overflow-wrap: anywhere;
+        }
+        tr:hover td { background: #24334d; }
+
+        tr.row-summary-total td {
+            background: #172554;
+            color: #bfdbfe;
+            font-weight: 700;
+        }
+        tr.row-summary-avg td {
+            background: #134e4a;
+            color: #ccfbf1;
+            font-weight: 700;
+        }
+        tr.row-summary-status td {
+            background: #1e293b;
+            color: #f8fafc;
+            font-weight: 700;
+        }
+
+        .score-pill {
+            display: inline-block;
+            background: rgba(56, 189, 248, 0.16);
+            color: #7dd3fc;
+            border: 1px solid rgba(56, 189, 248, 0.35);
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-size: 11.5px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .extra-fee-tag {
+            display: block;
+            font-size: 11px;
+            color: #fde68a;
+            margin-top: 2px;
+        }
+
+        .center { text-align: center; }
+        .right { text-align: right; }
+        .actions { display: flex; gap: 6px; flex-wrap: wrap; }
+        .slip-thumb {
+            width: 54px;
+            height: 54px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 1px solid #475569;
+            cursor: pointer;
+        }
+        .status-pending {
+            background: rgba(234, 179, 8, 0.2);
+            color: #fde047;
+            border: 1px solid #eab308;
+            padding: 3px 9px;
+            border-radius: 999px;
+            font-size: 11.5px;
+            font-weight: 600;
+            display: inline-block;
+            white-space: nowrap;
+        }
+        .status-approved {
+            background: rgba(34, 197, 94, 0.2);
+            color: #86efac;
+            border: 1px solid #22c55e;
+            padding: 3px 9px;
+            border-radius: 999px;
+            font-size: 11.5px;
+            font-weight: 600;
+            display: inline-block;
+            white-space: nowrap;
+        }
+        .status-rejected {
+            background: rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+            border: 1px solid #ef4444;
+            padding: 3px 9px;
+            border-radius: 999px;
+            font-size: 11.5px;
+            font-weight: 600;
+            display: inline-block;
+            white-space: nowrap;
+        }
+        .admin-only-hide { display: none !important; }
+        .note-text {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-top: 8px;
+            line-height: 1.4;
+            overflow-wrap: anywhere;
+        }
+
+        /* Mobile Card List */
+        .mobile-cards {
+            display: none;
+            flex-direction: column;
+            gap: 9px;
+            width: 100%;
+            min-width: 0;
+        }
+        .fin-card {
+            background: #162032;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 10px 11px;
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            width: 100%;
+            min-width: 0;
+        }
+        .fin-card.summary-total {
+            background: #172554;
+            border-color: #3b82f6;
+        }
+        .fin-card.summary-avg {
+            background: #134e4a;
+            border-color: #14b8a6;
+        }
+        .fin-card-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 8px;
+            padding-bottom: 7px;
+            border-bottom: 1px solid #26354d;
+            min-width: 0;
+        }
+        .fin-card-head > div:first-child {
+            min-width: 0;
+            flex: 1 1 auto;
+        }
+        .fin-card-name {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #f8fafc;
+            overflow-wrap: anywhere;
+            line-height: 1.35;
+        }
+        .fin-card-sub {
+            font-size: 11.5px;
+            color: #94a3b8;
+            margin-top: 2px;
+            overflow-wrap: anywhere;
+        }
+        .fin-card-rows {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            font-size: 12px;
+            min-width: 0;
+        }
+        .fin-card-row {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 8px;
+            min-width: 0;
+        }
+        .fin-card-label {
+            color: #94a3b8;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        .fin-card-val {
+            text-align: right;
+            color: #e2e8f0;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+            min-width: 0;
+            flex: 1 1 auto;
+        }
+        .fin-card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 6px;
+            padding-top: 6px;
+            border-top: 1px solid #26354d;
+            flex-wrap: wrap;
+        }
+
+        .toast-msg {
+            position: fixed;
+            bottom: 14px;
+            left: 50%;
+            transform: translate(-50%, 12px);
+            background: #1e293b;
+            border: 1px solid #38bdf8;
+            color: #f8fafc;
+            padding: 9px 13px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.45);
+            z-index: 1200;
+            opacity: 0;
+            transition: 0.2s;
+            pointer-events: none;
+            max-width: calc(100% - 20px);
+            text-align: center;
+            overflow-wrap: anywhere;
+        }
+        .toast-msg.show {
+            opacity: 1;
+            transform: translate(-50%, 0);
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 8px; }
+            .topbar {
+                flex-direction: column;
+                align-items: stretch;
+                padding: 10px;
+                gap: 8px;
+            }
+            .topbar-left, .user-meta {
+                width: 100%;
+            }
+            .user-meta {
+                justify-content: space-between;
+            }
+            #currentUserName {
+                max-width: 150px;
+            }
+            .card {
+                padding: 10px;
+                border-radius: 12px;
+            }
+            .header-controls, #teacherStudentPickerWrap, #teacherStudentSelect {
+                width: 100%;
+            }
+            #termSelect {
+                width: 100% !important;
+            }
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            #btnSubmitSlip, .btn-sync {
+                width: 100%;
+            }
+            .table-wrap { display: none; }
+            .mobile-cards { display: flex; }
+        }
+
+        @media (max-width: 380px) {
+            body { padding: 6px; }
+            .back-btn {
+                padding: 6px 8px;
+                font-size: 11px;
+            }
+            #currentUserName { max-width: 110px; }
+            .fin-card { padding: 9px; }
+            .fin-card-head { flex-direction: column; align-items: stretch; gap: 5px; }
+            .inline-input-row { flex-direction: column; align-items: stretch; }
+        }
+
+        body[data-role="admin"] #upload-slip-subroom {
+            display: none !important;
+        }
+        a[href*="update.html"][href*="tab=tuition"],
+        a[href*="update"][href*="tuition"],
+        a[href*="tab=tuition"],
+        button[onclick*="addTuition"],
+        button[onclick*="openAddTuition"],
+        .btn-add-tuition,
+        #btnAddTuition,
+        #addTuitionBtn,
+        button[id*="tuition" i][id*="add" i],
+        button[class*="tuition" i][class*="add" i],
+        button[onclick*="tuition" i],
+        button[onclick*="Tuition" i] {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="topbar">
+        <div class="topbar-left">
+            <a href="index.html" class="back-btn">⬅ ກັບໄປໜ້າຫຼັກ</a>
+            <h1 class="page-title">💰 ຈັດການການເງິນ ແລະ ຄ່າຮຽນ</h1>
+        </div>
+        <div class="user-meta">
+            <span id="sheetSyncBadge" class="badge badge-sheet">📊 Google Sheet</span>
+            <span id="currentUserName">ຜູ້ໃຊ້ງານ</span>
+            <span id="currentUserRole" class="badge badge-role">ROLE</span>
+            <span id="currentUserGrade" class="badge badge-grade">ມ.5</span>
+        </div>
+    </div>
+
+    <div class="quota-banner" id="quotaBanner">
+        ⚠️ ການເຊື່ອມຕໍ່ Google Sheet ຊົ່ວຄາວມີບັນຫາ — ລະບົບກຳລັງໃຊ້ຂໍ້ມູນທີ່ເກັບໃນເຄື່ອງ (`localStorage`) ແລະ ຫຼຸດການເອີ້ນຖານຂໍ້ມູນອັດຕະໂນມັດ.
+    </div>
+
+    <div class="paid-banner" id="paidTermBanner"></div>
+
+    <!-- ຕາຕະລາງສະແດງຄ່າຮຽນຕາມໜ່ວຍກິດ + ຄະແນນ -->
+    <section class="card" id="subject-credit-section">
+        <div class="card-header">
+            <h2 id="subjectCreditTitle">📚 ຕາຕະລາງຄ່າຮຽນຕາມໜ່ວຍກິດ &amp; ຄະແນນ</h2>
+            <div class="header-controls">
+                <select id="termSelect" style="width: auto;" onchange="refreshFinanceView()">
+                    <option value="ເທີມ 1 / 2026-2027">ເທີມ 1 / 2026-2027</option>
+                    <option value="ເທີມ 2 / 2026-2027">ເທີມ 2 / 2026-2027</option>
+                </select>
+                <button type="button" class="btn-sync" id="syncBtn" onclick="loadFinanceFromSheet(true)">🔄 ໂຫຼດຂໍ້ມູນ</button>
+            </div>
+        </div>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 65px;">ແຖວ</th>
+                        <th>ຊື່ວິຊາ / ລາຍການ</th>
+                        <th style="width: 120px;" class="center">ຄະແນນ</th>
+                        <th style="width: 135px;" class="right">ໜ່ວຍກິດ</th>
+                        <th style="width: 175px;" class="right">ລາຄາ/ໜ່ວຍກິດ (ກີບ)</th>
+                        <th style="width: 195px;" class="right">ຄ່າຮຽນລວມ (ກີບ)</th>
+                    </tr>
+                </thead>
+                <tbody id="subjectTableBody"></tbody>
+            </table>
+        </div>
+        <div class="mobile-cards" id="subjectTableCards"></div>
+        <div class="note-text" id="subjectSyncNote">
+            🔄 ກຳລັງໂຫຼດຂໍ້ມູນການເງິນ ແລະ ຄ່າຮຽນ...
+        </div>
+    </section>
+
+    <section class="card" id="qr-and-fee-section">
+        <div class="card-header">
+            <h2>🏦 QR Code ຊຳລະຄ່າຮຽນ</h2>
+        </div>
+
+        <div class="qr-fee-grid">
+            <div class="qr-box">
+                <img
+                    id="schoolQrImage"
+                    src="https://quickchart.io/qr?text=SCHOOL-TUITION-PAYMENT&size=200"
+                    alt="QR Code ຊຳລະຄ່າຮຽນ"
+                    onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22180%22 height=%22180%22><rect width=%22180%22 height=%22180%22 fill=%22%23f1f5f9%22/><text x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%230f172a%22 font-size=%2214%22>QR Code</text></svg>';"
+                />
+                <div><strong>ສະແກນ QR Code ເພື່ອໂອນຄ່າຮຽນ</strong></div>
+                <div class="note-text" id="qrCaptionText">ບັນຊີໂຮງຮຽນ • ແນບສະຫຼິບດ້ານລຸ່ມຫຼັງໂອນສຳເລັດ</div>
+
+                <div class="qr-admin-controls" id="qr-admin-box">
+                    <label for="qrFileInput">🔄 1. ອັບໂຫຼດຮູບ QR Code ໃໝ່</label>
+                    <input type="file" id="qrFileInput" accept="image/*" onchange="changeQrFromFile(event)" />
+
+                    <label for="qrUrlInput">🔗 2. ຫຼື ວາງລິ້ງຮູບ QR Code</label>
+                    <div class="inline-input-row">
+                        <input type="text" id="qrUrlInput" placeholder="https://..." />
+                        <button type="button" class="btn-primary" onclick="changeQrFromUrl()">ບັນທຶກ</button>
+                    </div>
+
+                    <label for="qrTextInput">✏️ 3. ຫຼື ສ້າງ QR ຈາກເລກບັນຊີ / ຂໍ້ຄວາມ</label>
+                    <div class="inline-input-row">
+                        <input type="text" id="qrTextInput" placeholder="ເຊັ່ນ BCEL 010-12-00-xxxxx" />
+                        <button type="button" class="btn-add" onclick="generateQrFromText()">ສ້າງ QR</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="card" id="upload-slip-subroom">
+        <div class="card-header">
+            <h2>📤 ຫ້ອງຍ່ອຍ: ອັບໂຫຼດສະຫຼິບການໂອນ</h2>
+        </div>
+
+        <form id="slipUploadForm" onsubmit="submitSlipUpload(event)">
+            <div class="form-grid">
+                <div>
+                    <label for="slipTerm">ເທີມທີ່ຊຳລະ</label>
+                    <select id="slipTerm">
+                        <option value="ເທີມ 1 / 2026-2027">ເທີມ 1 / 2026-2027</option>
+                        <option value="ເທີມ 2 / 2026-2027">ເທີມ 2 / 2026-2027</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="slipAmount">ຈຳນວນເງິນທີ່ໂອນ (ກີບ)</label>
+                    <input type="number" id="slipAmount" value="1500000" min="1000" required />
+                </div>
+                <div>
+                    <label for="slipFile">ເລືອກຮູບສະຫຼິບການໂອນ</label>
+                    <input type="file" id="slipFile" accept="image/*" required />
+                </div>
+            </div>
+
+            <div id="slipSubmitBtnWrap" style="margin-top: 10px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                <button type="submit" id="btnSubmitSlip" class="btn-primary">
+                    📤 ສົ່ງສະຫຼິບໃຫ້ Admin ອະນຸມັດ
+                </button>
+            </div>
+        </form>
+
+        <div class="admin-contact-box" id="adminDelayContactBox">
+            <div>
+                ⏳ <strong>ຖ້າ Admin ອະນຸມັດຊ້າ:</strong> ສາມາດຕິດຕໍ່ສອບຖາມ Admin ໄດ້ໂດຍກົງທີ່ເບີໂທ:
+                <span class="phone-highlight" id="adminPhoneText">020-5555-8899</span>
+            </div>
+            <button type="button" class="btn-copy" onclick="copyAdminPhone()">📋 ຄັດລອກເບີໂທ</button>
+        </div>
+    </section>
+
+    <section class="card" id="pending-slips-section">
+        <div class="card-header">
+            <h2>🕵️‍♂️ ລາຍການສະຫຼິບການໂອນທີ່ລາຍງານເຂົ້າມາ</h2>
+        </div>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 60px;">ລ/ດ</th>
+                        <th>ສະຫຼິບ</th>
+                        <th>ຊື່ນັກຮຽນ</th>
+                        <th>ຫ້ອງ</th>
+                        <th>ເທີມ</th>
+                        <th>ຈຳນວນເງິນ</th>
+                        <th>ສະຖານະ</th>
+                        <th class="admin-action" style="width: 130px;">ອະນຸມັດ</th>
+                    </tr>
+                </thead>
+                <tbody id="pendingSlipsBody"></tbody>
+            </table>
+        </div>
+        <div class="mobile-cards" id="pendingSlipsCards"></div>
+    </section>
+
+    <section class="card" id="paid-history-section">
+        <div class="card-header">
+            <h2 id="paidHistoryTitle">✅ ຫ້ອງຄ່າຮຽນທີ່ໄດ້ຊຳລະຜ່ານມາ</h2>
+            <div id="teacherStudentPickerWrap" style="display: none;">
+                <select id="teacherStudentSelect" onchange="renderPaidHistory()">
+                    <option value="">-- ເລືອກນັກຮຽນເພື່ອເບິ່ງປະຫວັດການຊຳລະ --</option>
+                </select>
+            </div>
+        </div>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 60px;">ລ/ດ</th>
+                        <th>ຊື່ນັກຮຽນ</th>
+                        <th>ຫ້ອງ</th>
+                        <th>ເທີມ</th>
+                        <th>ຈຳນວນເງິນ</th>
+                        <th>ວັນທີອະນຸມັດ</th>
+                        <th>ສະຖານະ</th>
+                    </tr>
+                </thead>
+                <tbody id="paidHistoryBody"></tbody>
+            </table>
+        </div>
+        <div class="mobile-cards" id="paidHistoryCards"></div>
+        <div class="note-text" id="paidHistoryScopeNote"></div>
+    </section>
+</div>
+
+<div class="toast-msg" id="toastMsg"></div>
+
+<script>
+    const APPS_SCRIPT_URL = window.APPS_SCRIPT_URL || "https://script.google.com/macros/s/AKfycbwp7pM_Lx8qdeuGC_nA_zvxTCltlOvJKNN-tjkRX_wi8JMt6EVyheyRNFambP69dOc9Yg/exec";
+
+    const SHEET_TUITION = "tuition";
+    const SHEET_LEGACY_FEE = "fee_items";
+    const SHEET_SCORES = "student_scores";
+    const SHEET_PAYMENTS = "payment_records";
+    const SHEET_FINANCE_SETTINGS = "finance_settings";
+
+    const LAST_FETCH_TS_KEY = "school_finance_last_fetch_ts";
+    const QUOTA_BLOCK_UNTIL_KEY = "school_sheet_quota_blocked_until";
+    const FETCH_COOLDOWN_MS = 60000;
+    const QUOTA_COOLDOWN_MS = 1800000;
+
+    function showToast(message) {
+        const el = document.getElementById("toastMsg");
+        if (!el) return;
+        el.textContent = message;
+        el.classList.add("show");
+        clearTimeout(showToast._timer);
+        showToast._timer = setTimeout(() => {
+            el.classList.remove("show");
+        }, 3200);
+    }
+
+    function isQuotaError(err) {
+        const msg = String(err?.message || err || "").toLowerCase();
+        return (
+            msg.includes("quota") ||
+            msg.includes("resource exhausted") ||
+            msg.includes("daily usage") ||
+            msg.includes("service invoked too many times") ||
+            msg.includes("rate limit")
+        );
+    }
+
+    function setQuotaNotice(active, customMsg = "") {
+        const banner = document.getElementById("quotaBanner");
+        if (!banner) return;
+        if (customMsg) {
+            banner.textContent = customMsg;
+        }
+        if (active) {
+            banner.classList.add("show");
+        } else {
+            banner.classList.remove("show");
+        }
+    }
+
+    function withTimeout(promise, ms = 12000) {
+        return Promise.race([
+            promise,
+            new Promise((_, reject) =>
+                setTimeout(() => reject(new Error("ໝົດເວລາການເຊື່ອມຕໍ່ Google Sheet")), ms)
+            )
+        ]);
+    }
+
+    async function fetchSheetRows(sheetName) {
+        if (!APPS_SCRIPT_URL) {
+            throw new Error("ຍັງບໍ່ໄດ້ຕັ້ງຄ່າ APPS_SCRIPT_URL");
+        }
+        const url = new URL(APPS_SCRIPT_URL);
+        url.searchParams.set("sheet", sheetName);
+        url.searchParams.set("_t", String(Date.now()));
+
+        const res = await withTimeout(fetch(url.toString(), { method: "GET", cache: "no-store" }), 12000);
+        if (!res.ok) {
+            throw new Error(`HTTP ${res.status}`);
+        }
+        const data = await res.json();
+        if (!data || data.ok === false) {
+            throw new Error(data?.error || `ບໍ່ສາມາດອ່ານແທັບ ${sheetName} ໄດ້`);
+        }
+        return Array.isArray(data.rows) ? data.rows : [];
+    }
+
+    async function postSheetAction(payload) {
+        if (!APPS_SCRIPT_URL) {
+            throw new Error("ຍັງບໍ່ໄດ້ຕັ້ງຄ່າ APPS_SCRIPT_URL");
+        }
+        const res = await withTimeout(
+            fetch(APPS_SCRIPT_URL, {
+                method: "POST",
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                body: JSON.stringify(payload)
+            }),
+            12000
+        );
+        if (!res.ok) {
+            throw new Error(`HTTP ${res.status}`);
+        }
+        const data = await res.json();
+        if (!data || data.ok === false) {
+            throw new Error(data?.error || "ບໍ່ສາມາດບັນທຶກຂໍ້ມູນລົງ Google Sheet ໄດ້");
+        }
+        return data;
+    }
+
+    function parseJsonSafe(val, fallback) {
+        if (!val) return fallback;
+        if (typeof val === "object") return val;
+        try {
+            return JSON.parse(String(val));
+        } catch (_) {
+            return fallback;
+        }
+    }
+
+    const financeSyncState = {
+        userName: "",
+        userGrade: "",
+        role: "student",
+        selectedTerm: "ເທີມ 1 / 2026-2027",
+        studentScoreDoc: null,
+        subjectScoresMap: {},
+        annualAvgScore: null,
+        feeItems: [],
+        paymentRecords: [],
+        totalCredits: 0,
+        totalTuition: 0,
+        avgCreditFee: 0,
+        paymentStatus: { label: "", cssClass: "status-pending" }
+    };
+    window.financeSyncState = financeSyncState;
+
+    function getNormalizedRole() {
+        const raw = (
+            localStorage.getItem("userRole") ||
+            localStorage.getItem("role") ||
+            localStorage.getItem("user_role") ||
+            "student"
+        ).trim().toLowerCase();
+        if (["admin", "administrator", "ແອັດມິນ", "แอดมิน"].includes(raw)) return "admin";
+        if (["teacher", "ຄູ", "ຄູອາຈານ", "ครู"].includes(raw)) return "teacher";
+        return "student";
+    }
+
+    const ADMIN_PHONE = localStorage.getItem("adminContactPhone") || "020-5555-8899";
+    document.getElementById("adminPhoneText").textContent = ADMIN_PHONE;
+
+    const role = getNormalizedRole();
+    const userGrade = localStorage.getItem("userGrade") || "ມ.5";
+    const userName = localStorage.getItem("userName") || "ຜູ້ໃຊ້ງານ";
+    const isAdmin = role === "admin";
+    const isTeacher = role === "teacher";
+    const isStudent = role === "student";
+
+    financeSyncState.userName = userName;
+    financeSyncState.userGrade = userGrade;
+    financeSyncState.role = role;
+
+    document.body.setAttribute("data-role", role);
+    document.getElementById("currentUserName").textContent = userName;
+    document.getElementById("currentUserRole").textContent = role.toUpperCase();
+    document.getElementById("currentUserGrade").textContent = userGrade;
+    document.getElementById("sheetSyncBadge").textContent = "📊 Google Sheet";
+
+    let feeItems = JSON.parse(localStorage.getItem("school_finance_fee_items") || "[]");
+    let paymentRecords = JSON.parse(localStorage.getItem("school_finance_payment_records") || "[]");
+
+    function saveFinanceLocal() {
+        try {
+            localStorage.setItem("school_finance_fee_items", JSON.stringify(feeItems));
+            localStorage.setItem("school_finance_payment_records", JSON.stringify(paymentRecords));
+        } catch (e) {}
+    }
+
+    function parseMoneyNumber(val) {
+        const cleaned = String(val ?? "0").replace(/[^0-9.-]/g, "");
+        const n = Number(cleaned);
+        return Number.isFinite(n) ? n : 0;
+    }
+
+    function normalizeName(v) {
+        return String(v ?? "").trim().toLowerCase();
+    }
+
+    function extractSubjectScoreMap(rawDoc) {
+        const map = {};
+        if (!rawDoc || typeof rawDoc !== "object") return map;
+
+        const cwMap = parseJsonSafe(rawDoc.courseworkBySubject, {});
+        if (cwMap && typeof cwMap === "object") {
+            Object.entries(cwMap).forEach(([subjName, cw]) => {
+                if (!cw || typeof cw !== "object") return;
+                const total =
+                    (Number(cw.attendance) || 0) +
+                    (Number(cw.participation) || 0) +
+                    (Number(cw.homework) || 0) +
+                    (Number(cw.midterm) || 0) +
+                    (Number(cw.final) || 0);
+                map[String(subjName).trim().toLowerCase()] = Number(total.toFixed(1));
+            });
+        }
+
+        const scoresObj = parseJsonSafe(rawDoc.scores, {});
+        if (scoresObj && typeof scoresObj === "object") {
+            Object.entries(scoresObj).forEach(([subjName, sc]) => {
+                if (typeof sc === "number" || typeof sc === "string") {
+                    const num = Number(sc);
+                    if (Number.isFinite(num)) map[String(subjName).trim().toLowerCase()] = Number(num.toFixed(1));
+                }
+            });
+        }
+
+        return map;
+    }
+
+    function findScoreForSheetRow(row) {
+        if (!financeSyncState.studentScoreDoc) return null;
+
+        if (typeof row.score === "number" && Number.isFinite(row.score)) {
+            return Number(row.score.toFixed(1));
+        }
+
+        const label = String(row.item || row.subject || row.studentName || "").trim().toLowerCase();
+        if (label) {
+            if (financeSyncState.subjectScoresMap[label] !== undefined) {
+                return financeSyncState.subjectScoresMap[label];
+            }
+            const foundKey = Object.keys(financeSyncState.subjectScoresMap).find(
+                (k) => label.includes(k) || k.includes(label)
+            );
+            if (foundKey !== undefined) {
+                return financeSyncState.subjectScoresMap[foundKey];
+            }
+        }
+
+        if (typeof financeSyncState.annualAvgScore === "number" && Number.isFinite(financeSyncState.annualAvgScore)) {
+            return Number(financeSyncState.annualAvgScore.toFixed(1));
+        }
+        return null;
+    }
+
+    function getPaymentStatusInfo() {
+        const selectedTerm = document.getElementById("termSelect")?.value || "ເທີມ 1 / 2026-2027";
+        const matched = paymentRecords.filter(
+            (r) => normalizeName(r.studentName) === normalizeName(userName) && r.term === selectedTerm
+        );
+        if (matched.some((r) => r.status === "approved")) {
+            return { label: `ຊຳລະແລ້ວ (${selectedTerm})`, cssClass: "status-approved" };
+        }
+        if (matched.some((r) => r.status === "pending")) {
+            return { label: `ລໍຖ້າອະນຸມັດ (${selectedTerm})`, cssClass: "status-pending" };
+        }
+        if (matched.some((r) => r.status === "rejected")) {
+            return { label: `ປະຕິເສດ (${selectedTerm})`, cssClass: "status-rejected" };
+        }
+        return { label: `ຍັງບໍ່ທັນຊຳລະ (${selectedTerm})`, cssClass: "status-pending" };
+    }
+
+    function getScopedSheetRowsForTable(selectedTerm) {
+        const me = normalizeName(userName);
+
+        const filteredFees = feeItems.filter((f) => {
+            const sameTerm = !f.term || !selectedTerm || String(f.term).trim() === String(selectedTerm).trim();
+            if (!sameTerm) return false;
+
+            if (isStudent) {
+                const owner = normalizeName(f.studentName || f.name || "");
+                const label = String(f.item || f.studentName || f.name || "").toLowerCase();
+                const isMineByOwner = Boolean(owner && me && owner === me);
+                const isMineByLabel = Boolean(me && label.includes(me));
+                const hasOtherOwner = Boolean((owner && me && owner !== me) || /\(.*\)/.test(label));
+                if (!isMineByOwner && !isMineByLabel && hasOtherOwner) return false;
+            }
+            return true;
+        });
+
+        if (!filteredFees.length && Object.keys(financeSyncState.subjectScoresMap).length) {
+            return Object.entries(financeSyncState.subjectScoresMap).map(([subjName, sc], idx) => ({
+                id: `SCORE-SUBJ-${idx + 1}`,
+                item: subjName,
+                credits: 0,
+                pricePerCredit: 0,
+                amount: 0,
+                score: sc
+            }));
+        }
+
+        return filteredFees;
+    }
+
+    function renderSubjectTable() {
+        const tbody = document.getElementById("subjectTableBody");
+        const cards = document.getElementById("subjectTableCards");
+        if (!tbody) return;
+
+        const selectedTerm = document.getElementById("termSelect")?.value || "ເທີມ 1 / 2026-2027";
+        financeSyncState.selectedTerm = selectedTerm;
+
+        const rows = getScopedSheetRowsForTable(selectedTerm);
+
+        if (!rows.length) {
+            const payStatus = getPaymentStatusInfo();
+            financeSyncState.totalCredits = 0;
+            financeSyncState.totalTuition = 0;
+            financeSyncState.avgCreditFee = 0;
+            financeSyncState.paymentStatus = payStatus;
+
+            tbody.innerHTML = `
+                <tr><td colspan="6" class="center">ບໍ່ພົບຂໍ້ມູນສຳລັບເທີມນີ້ (${esc(selectedTerm)})</td></tr>
+                <tr data-row="10" class="row-summary-status">
+                    <td class="center">10</td>
+                    <td>ສະຖານະການຈ່າຍ</td>
+                    <td colspan="4"><span class="${payStatus.cssClass}">${esc(payStatus.label)}</span></td>
+                </tr>
+            `;
+
+            if (cards) {
+                cards.innerHTML = `
+                    <div class="fin-card" style="text-align:center;color:#94a3b8;">ບໍ່ພົບຂໍ້ມູນສຳລັບເທີມນີ້ (${esc(selectedTerm)})</div>
+                    <div class="fin-card">
+                        <div class="fin-card-row">
+                            <span class="fin-card-label">ສະຖານະການຈ່າຍ:</span>
+                            <span class="fin-card-val"><span class="${payStatus.cssClass}">${esc(payStatus.label)}</span></span>
+                        </div>
+                    </div>
+                `;
+            }
+
+            const noteEl = document.getElementById("subjectSyncNote");
+            if (noteEl) {
+                noteEl.textContent = `ℹ️ ສະແດງຂໍ້ມູນ (${userName} • ${userGrade} • ${selectedTerm}) — ກົດ "ໂຫຼດຂໍ້ມູນ" ເພື່ອອັບເດດຈາກ Google Sheet.`;
+            }
+            return;
+        }
+
+        let totalCredits = 0;
+        let totalTuition = 0;
+
+        const rowHtmlList = rows.map((r, idx) => {
+            const rowNum = idx + 1;
+            const credits = Number(r.credits) || 0;
+            const rawAmount = parseMoneyNumber(r.amount);
+            const pricePerCredit = Number(r.pricePerCredit) || (credits > 0 && rawAmount > 0 ? Math.round(rawAmount / credits) : 0);
+            const subTotal = rawAmount > 0 ? rawAmount : (credits * pricePerCredit);
+            const scoreVal = findScoreForSheetRow(r);
+
+            totalCredits += credits;
+            totalTuition += subTotal;
+
+            const scoreBadge = scoreVal !== null
+                ? `<span class="score-pill">${esc(scoreVal)} ຄະແນນ</span>`
+                : `<span style="color:#94a3b8;">-</span>`;
+
+            const gradeTag = r.grade ? `<span class="extra-fee-tag">ຫ້ອງ: ${esc(r.grade)}</span>` : "";
+
+            return `
+                <tr data-row="${rowNum}" data-doc-id="${esc(r.id)}">
+                    <td class="center"><strong>${rowNum}</strong></td>
+                    <td>${esc(r.item || r.name || r.studentName || "-")}${gradeTag}</td>
+                    <td class="center">${scoreBadge}</td>
+                    <td class="right">${credits.toLocaleString()}</td>
+                    <td class="right">${pricePerCredit.toLocaleString()} ກີບ</td>
+                    <td class="right"><strong>${subTotal.toLocaleString()} ກີບ</strong></td>
+                </tr>
+            `;
+        });
+
+        const avgCreditFee = totalCredits > 0 ? Math.round(totalTuition / totalCredits) : 0;
+        const payStatus = getPaymentStatusInfo();
+
+        financeSyncState.totalCredits = totalCredits;
+        financeSyncState.totalTuition = totalTuition;
+        financeSyncState.avgCreditFee = avgCreditFee;
+        financeSyncState.paymentStatus = payStatus;
+
+        const rowTotalHtml = `
+            <tr class="row-summary-total">
+                <td class="center">∑</td>
+                <td>ລວມທັງໝົດ (${rows.length} ລາຍການ)</td>
+                <td class="center">${financeSyncState.annualAvgScore !== null ? `${esc(financeSyncState.annualAvgScore)} (ສະເລ່ຍ)` : "-"}</td>
+                <td class="right">${totalCredits.toLocaleString()} ໜ່ວຍກິດ</td>
+                <td class="center">-</td>
+                <td class="right">${totalTuition.toLocaleString()} ກີບ</td>
+            </tr>
+        `;
+
+        const rowAvgHtml = `
+            <tr class="row-summary-avg">
+                <td class="center">⌀</td>
+                <td>ສະເລ່ຍຄ່າໜ່ວຍກິດຮຽນ</td>
+                <td class="center">-</td>
+                <td class="center">-</td>
+                <td class="right">${avgCreditFee.toLocaleString()} ກີບ / ໜ່ວຍກິດ</td>
+                <td class="right">${avgCreditFee.toLocaleString()} ກີບ</td>
+            </tr>
+        `;
+
+        const rowStatusHtml = `
+            <tr class="row-summary-status">
+                <td class="center">✓</td>
+                <td>ສະຖານະການຈ່າຍ</td>
+                <td colspan="4">
+                    <span class="${payStatus.cssClass}">${esc(payStatus.label)}</span>
+                </td>
+            </tr>
+        `;
+
+        tbody.innerHTML = rowHtmlList.join("") + rowTotalHtml + rowAvgHtml + rowStatusHtml;
+
+        if (cards) {
+            const cardItems = rows.map((r, idx) => {
+                const credits = Number(r.credits) || 0;
+                const rawAmount = parseMoneyNumber(r.amount);
+                const pricePerCredit = Number(r.pricePerCredit) || (credits > 0 && rawAmount > 0 ? Math.round(rawAmount / credits) : 0);
+                const subTotal = rawAmount > 0 ? rawAmount : (credits * pricePerCredit);
+                const scoreVal = findScoreForSheetRow(r);
+                const scoreText = scoreVal !== null ? `${esc(scoreVal)} ຄະແນນ` : "-";
+
+                return `
+                    <div class="fin-card">
+                        <div class="fin-card-head">
+                            <div>
+                                <div class="fin-card-name">#${idx + 1} • ${esc(r.item || r.name || r.studentName || "-")}</div>
+                                <div class="fin-card-sub">${r.grade ? `ຫ້ອງ ${esc(r.grade)}` : esc(selectedTerm)}</div>
+                            </div>
+                            <span class="score-pill">${scoreText}</span>
+                        </div>
+                        <div class="fin-card-rows">
+                            <div class="fin-card-row"><span class="fin-card-label">ໜ່ວຍກິດ:</span><span class="fin-card-val">${credits.toLocaleString()}</span></div>
+                            <div class="fin-card-row"><span class="fin-card-label">ລາຄາ/ໜ່ວຍກິດ:</span><span class="fin-card-val">${pricePerCredit.toLocaleString()} ກີບ</span></div>
+                            <div class="fin-card-row"><span class="fin-card-label">ຄ່າຮຽນລວມ:</span><span class="fin-card-val"><strong>${subTotal.toLocaleString()} ກີບ</strong></span></div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            cardItems.push(`
+                <div class="fin-card summary-total">
+                    <div class="fin-card-head">
+                        <div class="fin-card-name">∑ ລວມທັງໝົດ (${rows.length} ລາຍການ)</div>
+                        <span class="score-pill">${totalTuition.toLocaleString()} ກີບ</span>
+                    </div>
+                    <div class="fin-card-rows">
+                        <div class="fin-card-row"><span class="fin-card-label">ໜ່ວຍກິດລວມ:</span><span class="fin-card-val">${totalCredits.toLocaleString()} ໜ່ວຍກິດ</span></div>
+                        <div class="fin-card-row"><span class="fin-card-label">ສະເລ່ຍ/ໜ່ວຍກິດ:</span><span class="fin-card-val">${avgCreditFee.toLocaleString()} ກີບ</span></div>
+                        <div class="fin-card-row"><span class="fin-card-label">ສະຖານະການຈ່າຍ:</span><span class="fin-card-val"><span class="${payStatus.cssClass}">${esc(payStatus.label)}</span></span></div>
+                    </div>
+                </div>
+            `);
+
+            cards.innerHTML = cardItems.join("");
+        }
+
+        const noteEl = document.getElementById("subjectSyncNote");
+        if (noteEl) {
+            const scoreLabel = financeSyncState.annualAvgScore !== null
+                ? `ຄະແນນສະເລ່ຍ: ${financeSyncState.annualAvgScore}`
+                : "ບໍ່ມີຄະແນນສະເລ່ຍ";
+            noteEl.textContent = `✅ (${userName} • ${userGrade} • ${selectedTerm}) — ${scoreLabel} | ລວມ: ${totalTuition.toLocaleString()} ກີບ.`;
+        }
+    }
+
+    const DEFAULT_QR = "https://quickchart.io/qr?text=SCHOOL-TUITION-PAYMENT&size=200";
+    let schoolQrUrl = localStorage.getItem("school_finance_qr_url") || DEFAULT_QR;
+
+    function compressImageFileToDataUrl(file, maxSize = 400) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                const img = new Image();
+                img.onload = () => {
+                    const scale = Math.min(1, maxSize / Math.max(img.width || 1, img.height || 1));
+                    const canvas = document.createElement("canvas");
+                    canvas.width = Math.max(1, Math.round((img.width || 200) * scale));
+                    canvas.height = Math.max(1, Math.round((img.height || 200) * scale));
+                    const ctx = canvas.getContext("2d");
+                    ctx.fillStyle = "#ffffff";
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    resolve(canvas.toDataURL("image/jpeg", 0.82));
+                };
+                img.onerror = reject;
+                img.src = ev.target.result;
+            };
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+        });
+    }
+
+    async function saveQrCodeUrl(newUrl, captionText = "") {
+        if (!isAdmin) return showToast("ສະເພາະ Admin ເທົ່ານັ້ນທີ່ປ່ຽນ QR Code ໄດ້!");
+        schoolQrUrl = newUrl;
+        const img = document.getElementById("schoolQrImage");
+        if (img) img.src = schoolQrUrl;
+
+        const cap = document.getElementById("qrCaptionText");
+        if (cap && captionText) cap.textContent = captionText;
+
+        try {
+            localStorage.setItem("school_finance_qr_url", schoolQrUrl);
+            if (captionText) localStorage.setItem("school_finance_qr_caption", captionText);
+        } catch (e) {}
+
+        const blockedUntil = Number(localStorage.getItem(QUOTA_BLOCK_UNTIL_KEY) || "0");
+        if (Date.now() < blockedUntil) {
+            setQuotaNotice(true);
+            showToast("✅ ບັນທຶກ QR Code ໃນເຄື່ອງແລ້ວ (ການເຊື່ອມຕໍ່ Google Sheet ຖືກຈຳກັດຊົ່ວຄາວ)");
+            return;
+        }
+
+        try {
+            await postSheetAction({
+                action: "update",
+                sheet: SHEET_FINANCE_SETTINGS,
+                id: "qr_code",
+                data: {
+                    id: "qr_code",
+                    url: schoolQrUrl,
+                    caption: captionText || (cap ? cap.textContent : "")
+                }
+            });
+            setQuotaNotice(false);
+            showToast("✅ ປ່ຽນ QR Code ລົງ Google Sheet ສຳເລັດແລ້ວ!");
+        } catch (err) {
+            if (isQuotaError(err)) {
+                localStorage.setItem(QUOTA_BLOCK_UNTIL_KEY, String(Date.now() + QUOTA_COOLDOWN_MS));
+                setQuotaNotice(true);
+            } else {
+                setQuotaNotice(true, `⚠️ ການເຊື່ອມຕໍ່ Google Sheet ຊົ່ວຄາວມີບັນຫາ (${err?.message || err}) — ບັນທຶກໃນເຄື່ອງ (localStorage) ແລ້ວ.`);
+            }
+            showToast("✅ ບັນທຶກ QR Code ໃນເຄື່ອງແລ້ວ");
+        }
+    }
+
+    window.changeQrFromFile = async function (e) {
+        if (!isAdmin) return showToast("ສະເພາະ Admin ເທົ່ານັ້ນທີ່ປ່ຽນ QR Code ໄດ້!");
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+        try {
+            const compressedUrl = await compressImageFileToDataUrl(file, 400);
+            await saveQrCodeUrl(compressedUrl, "ບັນຊີໂຮງຮຽນ (ອັບໂຫຼດຮູບໃໝ່)");
+        } catch (err) {
+            showToast("❌ ບໍ່ສາມາດໂຫຼດຮູບນີ້ໄດ້, ລອງເລືອກຮູບໃໝ່.");
+        }
+        e.target.value = "";
+    };
+
+    window.changeQrFromUrl = async function () {
+        if (!isAdmin) return showToast("ສະເພາະ Admin ເທົ່ານັ້ນທີ່ປ່ຽນ QR Code ໄດ້!");
+        const val = (document.getElementById("qrUrlInput").value || "").trim();
+        if (!val) return showToast("ກະລຸນາປ້ອນລິ້ງຮູບ QR Code ກ່ອນ!");
+        await saveQrCodeUrl(val, "ບັນຊີໂຮງຮຽນ");
+        document.getElementById("qrUrlInput").value = "";
+    };
+
+    window.generateQrFromText = async function () {
+        if (!isAdmin) return showToast("ສະເພາະ Admin ເທົ່ານັ້ນທີ່ປ່ຽນ QR Code ໄດ້!");
+        const txt = (document.getElementById("qrTextInput").value || "").trim();
+        if (!txt) return showToast("ກະລຸນາປ້ອນເລກບັນຊີ ຫຼື ຂໍ້ຄວາມກ່ອນ!");
+        const qrUrl = "https://quickchart.io/qr?text=" + encodeURIComponent(txt) + "&size=220";
+        await saveQrCodeUrl(qrUrl, "ຂໍ້ມູນ QR: " + txt);
+        document.getElementById("qrTextInput").value = "";
+    };
+
+    function mapTuitionRow(d, idx, sheetName) {
+        const data = d || {};
+        const docId = String(data.id || data.sheetId || `FEE-${idx + 1}`).trim();
+        const label = String(data.item || data.studentName || data.name || "ຄ່າຮຽນ").trim();
+        const gradeVal = String(data.grade || data.room || userGrade).trim();
+        const creditsVal = Number(data.credits ?? data.credit ?? 0) || 0;
+        const amountVal = parseMoneyNumber(data.amount ?? data.fee ?? 0);
+        const priceVal = Number(data.pricePerCredit ?? data.unitPrice ?? 0) || (creditsVal > 0 && amountVal > 0 ? Math.round(amountVal / creditsVal) : 0);
+
+        return {
+            id: docId,
+            sheetId: docId,
+            _sheet: sheetName,
+            item: label,
+            studentName: String(data.studentName || data.name || "").trim() || label,
+            name: label,
+            grade: gradeVal,
+            room: gradeVal,
+            credits: creditsVal,
+            pricePerCredit: priceVal,
+            term: String(data.term || document.getElementById("termSelect").value || "ເທີມ 1 / 2026-2027").trim(),
+            amount: amountVal,
+            status: String(data.status || "ຄ້າງຈ່າຍ").trim()
+        };
+    }
+
+    window.copyAdminPhone = function () {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(ADMIN_PHONE).catch(() => {});
+        }
+        showToast(`📞 ເບີໂທ Admin: ${ADMIN_PHONE}`);
+    };
+
+    window.submitSlipUpload = async function (e) {
+        e.preventDefault();
+        if (!isStudent && !isAdmin) {
+            return showToast("ສະເພາະນັກຮຽນສາມາດອັບໂຫຼດສະຫຼິບຊຳລະຄ່າຮຽນໄດ້!");
+        }
+
+        const termVal = document.getElementById("slipTerm").value;
+        const amountVal = Number(document.getElementById("slipAmount").value) || 0;
+        const fileInput = document.getElementById("slipFile");
+        const file = fileInput.files && fileInput.files[0];
+        if (!file) return showToast("ກະລຸນາເລືອກຮູບສະຫຼິບການໂອນກ່ອນ!");
+
+        const slipDataUrl = await compressImageFileToDataUrl(file, 450);
+        const recId = "PAY-" + Date.now();
+        const newRecord = {
+            id: recId,
+            sheetId: recId,
+            studentName: userName,
+            grade: userGrade,
+            term: termVal,
+            amount: amountVal,
+            slipUrl: slipDataUrl,
+            status: "pending",
+            submittedAt: new Date().toLocaleDateString("lo-LA"),
+            approvedAt: ""
+        };
+
+        paymentRecords.unshift(newRecord);
+        financeSyncState.paymentRecords = paymentRecords;
+        saveFinanceLocal();
+        fileInput.value = "";
+        refreshFinanceView();
+
+        const blockedUntil = Number(localStorage.getItem(QUOTA_BLOCK_UNTIL_KEY) || "0");
+        if (Date.now() < blockedUntil) {
+            setQuotaNotice(true);
+            showToast("✅ ສົ່ງສະຫຼິບໃນເຄື່ອງແລ້ວ (ການເຊື່ອມຕໍ່ Google Sheet ຖືກຈຳກັດຊົ່ວຄາວ)");
+            return;
+        }
+
+        try {
+            await postSheetAction({
+                action: "create",
+                sheet: SHEET_PAYMENTS,
+                id: recId,
+                data: newRecord
+            });
+            setQuotaNotice(false);
+            showToast("✅ ສົ່ງສະຫຼິບການໂອນລົງ Google Sheet ສຳເລັດ! ລໍຖ້າ Admin ອະນຸມັດ.");
+        } catch (err) {
+            if (isQuotaError(err)) {
+                localStorage.setItem(QUOTA_BLOCK_UNTIL_KEY, String(Date.now() + QUOTA_COOLDOWN_MS));
+                setQuotaNotice(true);
+            } else {
+                setQuotaNotice(true, `⚠️ ການເຊື່ອມຕໍ່ Google Sheet ຊົ່ວຄາວມີບັນຫາ (${err?.message || err}) — ບັນທຶກໃນເຄື່ອງ (localStorage) ແລ້ວ.`);
+            }
+            showToast("✅ ບັນທຶກສະຫຼິບໃນເຄື່ອງແລ້ວ");
+        }
+    };
+
+    window.approveSlip = async function (recId) {
+        if (!isAdmin) return showToast("ສະເພາະ Admin ເທົ່ານັ້ນທີ່ອະນຸມັດໄດ້!");
+        const target = paymentRecords.find((r) => r.id === recId);
+        if (!target) return;
+
+        target.status = "approved";
+        target.approvedAt = new Date().toLocaleDateString("lo-LA");
+
+        financeSyncState.paymentRecords = paymentRecords;
+        saveFinanceLocal();
+        refreshFinanceView();
+
+        const blockedUntil = Number(localStorage.getItem(QUOTA_BLOCK_UNTIL_KEY) || "0");
+        if (Date.now() < blockedUntil) {
+            setQuotaNotice(true);
+            showToast(`✅ ອະນຸມັດ "${target.studentName}" ໃນເຄື່ອງແລ້ວ`);
+            return;
+        }
+
+        const docId = target.sheetId || target.id;
+        try {
+            await postSheetAction({
+                action: "update",
+                sheet: SHEET_PAYMENTS,
+                id: docId,
+                data: {
+                    id: docId,
+                    status: "approved",
+                    approvedAt: target.approvedAt
+                }
+            });
+            setQuotaNotice(false);
+            showToast(`✅ ອະນຸມັດຄ່າຮຽນຂອງ "${target.studentName}" (${target.term}) ໃນ Google Sheet ສຳເລັດ!`);
+        } catch (err) {
+            if (isQuotaError(err)) {
+                localStorage.setItem(QUOTA_BLOCK_UNTIL_KEY, String(Date.now() + QUOTA_COOLDOWN_MS));
+                setQuotaNotice(true);
+            } else {
+                setQuotaNotice(true, `⚠️ ການເຊື່ອມຕໍ່ Google Sheet ຊົ່ວຄາວມີບັນຫາ (${err?.message || err}) — ບັນທຶກໃນເຄື່ອງ (localStorage) ແລ້ວ.`);
+            }
+            showToast(`✅ ອະນຸມັດໃນເຄື່ອງແລ້ວ`);
+        }
+    };
+
+    function applyAdminVisibility() {
+        const qrAdminBox = document.getElementById("qr-admin-box");
+        if (qrAdminBox) {
+            qrAdminBox.style.setProperty("display", isAdmin ? "flex" : "none", "important");
+        }
+
+        document.querySelectorAll(".admin-action").forEach((el) => {
+            if (isAdmin) {
+                el.classList.remove("admin-only-hide");
+                if (el.id !== "qr-admin-box") {
+                    el.style.removeProperty("display");
+                }
+            } else {
+                el.classList.add("admin-only-hide");
+                el.style.setProperty("display", "none", "important");
+            }
+        });
+    }
+
+    function isTermApprovedForStudent(studentName, term) {
+        return paymentRecords.some(
+            (r) => normalizeName(r.studentName) === normalizeName(studentName) && r.term === term && r.status === "approved"
+        );
+    }
+
+    function renderPendingSlips() {
+        const tbody = document.getElementById("pendingSlipsBody");
+        const cards = document.getElementById("pendingSlipsCards");
+        const visibleRows = isAdmin
+            ? paymentRecords
+            : paymentRecords.filter((r) => normalizeName(r.studentName) === normalizeName(userName));
+
+        const cols = isAdmin ? 8 : 7;
+        if (!visibleRows.length) {
+            tbody.innerHTML = `<tr><td colspan="${cols}" class="center">ຍັງບໍ່ມີລາຍການສະຫຼິບການໂອນ</td></tr>`;
+            if (cards) cards.innerHTML = `<div class="fin-card" style="text-align:center;color:#94a3b8;">ຍັງບໍ່ມີລາຍການສະຫຼິບການໂອນ</div>`;
+            applyAdminVisibility();
+            return;
+        }
+
+        tbody.innerHTML = visibleRows.map((r, idx) => {
+            let statusHtml = `<span class="status-pending">ລໍຖ້າອະນຸມັດ</span>`;
+            if (r.status === "approved") statusHtml = `<span class="status-approved">ອະນຸມັດແລ້ວ</span>`;
+            if (r.status === "rejected") statusHtml = `<span class="status-rejected">ປະຕິເສດ</span>`;
+
+            return `
+                <tr>
+                    <td>${idx + 1}</td>
+                    <td>
+                        ${r.slipUrl ? `<img src="${r.slipUrl}" alt="ສະຫຼິບ" class="slip-thumb" onclick="window.open('${r.slipUrl}', '_blank')" />` : "-"}
+                    </td>
+                    <td>${esc(r.studentName)}</td>
+                    <td>${esc(r.grade)}</td>
+                    <td>${esc(r.term)}</td>
+                    <td>${Number(r.amount || 0).toLocaleString()} ກີບ</td>
+                    <td>${statusHtml}</td>
+                    ${isAdmin ? `
+                        <td>
+                            <div class="actions">
+                                <button type="button" class="btn-approve" onclick="approveSlip('${esc(r.id)}')">ອະນຸມັດ</button>
+                            </div>
+                        </td>
+                    ` : ""}
+                </tr>
+            `;
+        }).join("");
+
+        if (cards) {
+            cards.innerHTML = visibleRows.map((r, idx) => {
+                let statusHtml = `<span class="status-pending">ລໍຖ້າອະນຸມັດ</span>`;
+                if (r.status === "approved") statusHtml = `<span class="status-approved">ອະນຸມັດແລ້ວ</span>`;
+                if (r.status === "rejected") statusHtml = `<span class="status-rejected">ປະຕິເສດ</span>`;
+
+                return `
+                    <div class="fin-card">
+                        <div class="fin-card-head">
+                            <div>
+                                <div class="fin-card-name">#${idx + 1} • ${esc(r.studentName)}</div>
+                                <div class="fin-card-sub">ຫ້ອງ ${esc(r.grade)} • ${esc(r.term)}</div>
+                            </div>
+                            ${statusHtml}
+                        </div>
+                        <div class="fin-card-rows">
+                            <div class="fin-card-row"><span class="fin-card-label">ຈຳນວນເງິນ:</span><span class="fin-card-val"><strong>${Number(r.amount || 0).toLocaleString()} ກີບ</strong></span></div>
+                            ${r.slipUrl ? `<div class="fin-card-row"><span class="fin-card-label">ສະຫຼິບ:</span><span class="fin-card-val"><img src="${r.slipUrl}" alt="ສະຫຼິບ" class="slip-thumb" onclick="window.open('${r.slipUrl}', '_blank')" /></span></div>` : ""}
+                        </div>
+                        ${isAdmin ? `
+                            <div class="fin-card-footer">
+                                <button type="button" class="btn-approve" onclick="approveSlip('${esc(r.id)}')">ອະນຸມັດ</button>
+                            </div>
+                        ` : ""}
+                    </div>
+                `;
+            }).join("");
+        }
+
+        applyAdminVisibility();
+    }
+
+    function populateTeacherStudentDropdown() {
+        if (!isTeacher) return;
+        const wrap = document.getElementById("teacherStudentPickerWrap");
+        const select = document.getElementById("teacherStudentSelect");
+        wrap.style.display = "block";
+
+        const approvedNames = Array.from(
+            new Set(
+                paymentRecords
+                    .filter((r) => r.status === "approved")
+                    .map((r) => r.studentName)
+            )
+        );
+
+        const currentVal = select.value;
+        select.innerHTML = `<option value="">-- ເລືອກນັກຮຽນເພື່ອເບິ່ງປະຫວັດການຊຳລະ --</option>` +
+            approvedNames.map((n) => `<option value="${esc(n)}">${esc(n)}</option>`).join("");
+        if (approvedNames.includes(currentVal)) {
+            select.value = currentVal;
+        }
+    }
+
+    window.renderPaidHistory = function () {
+        const tbody = document.getElementById("paidHistoryBody");
+        const cards = document.getElementById("paidHistoryCards");
+        const noteEl = document.getElementById("paidHistoryScopeNote");
+        const titleEl = document.getElementById("paidHistoryTitle");
+
+        populateTeacherStudentDropdown();
+
+        let approvedList = [];
+        if (isStudent) {
+            titleEl.textContent = `✅ ຫ້ອງຄ່າຮຽນທີ່ໄດ້ຊຳລະຜ່ານມາ (${userName})`;
+            approvedList = paymentRecords.filter(
+                (r) => r.status === "approved" && normalizeName(r.studentName) === normalizeName(userName)
+            );
+            noteEl.textContent = "* ສະແດງສະເພາະປະຫວັດຄ່າຮຽນທີ່ໄດ້ຮັບການອະນຸມັດແລ້ວຂອງຕົນເອງ.";
+        } else if (isTeacher) {
+            const pickedStudent = document.getElementById("teacherStudentSelect").value;
+            titleEl.textContent = pickedStudent
+                ? `✅ ຫ້ອງຄ່າຮຽນທີ່ໄດ້ຊຳລະຜ່ານມາ (${pickedStudent})`
+                : "✅ ຫ້ອງຄ່າຮຽນທີ່ໄດ້ຊຳລະຜ່ານມາ";
+            approvedList = pickedStudent
+                ? paymentRecords.filter((r) => r.status === "approved" && r.studentName === pickedStudent)
+                : [];
+            noteEl.textContent = "* ສຳລັບຄູອາຈານ: ເລືອກນັກຮຽນເພື່ອເບິ່ງສະເພາະຂໍ້ມູນການຊຳລະທີ່ອະນຸມັດແລ້ວ.";
+        } else {
+            titleEl.textContent = "✅ ຫ້ອງຄ່າຮຽນທີ່ໄດ້ຊຳລະຜ່ານມາ (ທັງໝົດທີ່ອະນຸມັດແລ້ວ)";
+            approvedList = paymentRecords.filter((r) => r.status === "approved");
+            noteEl.textContent = "* ລາຍການຄ່າຮຽນທີ່ Admin ອະນຸມັດແລ້ວ.";
+        }
+
+        if (!approvedList.length) {
+            tbody.innerHTML = `<tr><td colspan="7" class="center">ຍັງບໍ່ມີລາຍການຄ່າຮຽນທີ່ໄດ້ຊຳລະ ແລະ ອະນຸມັດແລ້ວ</td></tr>`;
+            if (cards) cards.innerHTML = `<div class="fin-card" style="text-align:center;color:#94a3b8;">ຍັງບໍ່ມີລາຍການຄ່າຮຽນທີ່ໄດ້ຊຳລະ ແລະ ອະນຸມັດແລ້ວ</div>`;
+            return;
+        }
+
+        tbody.innerHTML = approvedList.map((r, idx) => `
+            <tr>
+                <td>${idx + 1}</td>
+                <td>${esc(r.studentName)}</td>
+                <td>${esc(r.grade)}</td>
+                <td>${esc(r.term)}</td>
+                <td><strong>${Number(r.amount || 0).toLocaleString()} ກີບ</strong></td>
+                <td>${esc(r.approvedAt || r.submittedAt || "-")}</td>
+                <td><span class="status-approved">ຊຳລະສຳເລັດແລ້ວ</span></td>
+            </tr>
+        `).join("");
+
+        if (cards) {
+            cards.innerHTML = approvedList.map((r, idx) => `
+                <div class="fin-card">
+                    <div class="fin-card-head">
+                        <div>
+                            <div class="fin-card-name">#${idx + 1} • ${esc(r.studentName)}</div>
+                            <div class="fin-card-sub">ຫ້ອງ ${esc(r.grade)} • ${esc(r.term)}</div>
+                        </div>
+                        <span class="status-approved">ຊຳລະສຳເລັດແລ້ວ</span>
+                    </div>
+                    <div class="fin-card-rows">
+                        <div class="fin-card-row"><span class="fin-card-label">ຈຳນວນເງິນ:</span><span class="fin-card-val"><strong>${Number(r.amount || 0).toLocaleString()} ກີບ</strong></span></div>
+                        <div class="fin-card-row"><span class="fin-card-label">ວັນທີອະນຸມັດ:</span><span class="fin-card-val">${esc(r.approvedAt || r.submittedAt || "-")}</span></div>
+                    </div>
+                </div>
+            `).join("");
+        }
+    };
+
+    window.refreshFinanceView = function () {
+        const selectedTerm = document.getElementById("termSelect").value;
+        const qrFeeSection = document.getElementById("qr-and-fee-section");
+        const uploadSubroom = document.getElementById("upload-slip-subroom");
+        const paidBanner = document.getElementById("paidTermBanner");
+        const btnSubmitSlip = document.getElementById("btnSubmitSlip");
+
+        renderSubjectTable();
+        renderPendingSlips();
+        renderPaidHistory();
+
+        if (isStudent) {
+            document.getElementById("slipTerm").value = selectedTerm;
+            const alreadyPaidTerm = isTermApprovedForStudent(userName, selectedTerm);
+
+            if (alreadyPaidTerm) {
+                if (qrFeeSection) qrFeeSection.style.setProperty("display", "none", "important");
+                if (uploadSubroom) uploadSubroom.style.setProperty("display", "none", "important");
+                if (paidBanner) {
+                    paidBanner.style.setProperty("display", "block", "important");
+                    paidBanner.textContent = `✅ ໄດ້ຈ່າຍຄ່າຮຽນສຳລັບເທີມນີ້ (${selectedTerm}) ໄປແລ້ວ — ລະບົບໄດ້ປິດໜ້າ QR Code ສຳລັບເທີມນີ້ແລ້ວ.`;
+                }
+            } else {
+                if (qrFeeSection) qrFeeSection.style.setProperty("display", "block", "important");
+                if (uploadSubroom) uploadSubroom.style.setProperty("display", "block", "important");
+                if (paidBanner) paidBanner.style.setProperty("display", "none", "important");
+                if (btnSubmitSlip) {
+                    btnSubmitSlip.style.setProperty("display", "inline-flex", "important");
+                    btnSubmitSlip.style.setProperty("visibility", "visible", "important");
+                    btnSubmitSlip.style.setProperty("opacity", "1", "important");
+                }
+            }
+        } else if (isAdmin) {
+            if (paidBanner) paidBanner.style.setProperty("display", "none", "important");
+            if (uploadSubroom) uploadSubroom.style.setProperty("display", "none", "important");
+            if (qrFeeSection) qrFeeSection.style.setProperty("display", "block", "important");
+        } else {
+            if (paidBanner) paidBanner.style.setProperty("display", "none", "important");
+            if (uploadSubroom) uploadSubroom.style.setProperty("display", "none", "important");
+        }
+
+        applyAdminVisibility();
+    };
+
+    async function syncScoresFromSheet() {
+        try {
+            const scoreRows = await fetchSheetRows(SHEET_SCORES);
+            financeSyncState.studentScoreDoc = null;
+            financeSyncState.subjectScoresMap = {};
+            financeSyncState.annualAvgScore = null;
+
+            if (!scoreRows.length) return;
+
+            const me = normalizeName(userName);
+            const matchedDoc = isStudent
+                ? scoreRows.find((d) => {
+                    const n = normalizeName(d.name || d.studentName || "");
+                    return Boolean(me && n && n === me);
+                })
+                : (scoreRows.find((d) => normalizeName(d.name || d.studentName || "") === me) || scoreRows[0]);
+
+            if (matchedDoc) {
+                financeSyncState.studentScoreDoc = matchedDoc;
+                financeSyncState.subjectScoresMap = extractSubjectScoreMap(matchedDoc);
+                financeSyncState.annualAvgScore = matchedDoc.annualAvg !== undefined && matchedDoc.annualAvg !== ""
+                    ? Number(matchedDoc.annualAvg)
+                    : null;
+            }
+        } catch (err) {
+            if (isQuotaError(err)) throw err;
+        }
+    }
+
+    async function syncTuitionFromSheet() {
+        const mergedFees = [];
+        for (const sheetName of [SHEET_TUITION, SHEET_LEGACY_FEE]) {
+            try {
+                const rows = await fetchSheetRows(sheetName);
+                rows.forEach((d, idx) => {
+                    mergedFees.push(mapTuitionRow(d, idx, sheetName));
+                });
+            } catch (err) {
+                if (isQuotaError(err)) throw err;
+            }
+        }
+        if (mergedFees.length) {
+            feeItems = mergedFees;
+            financeSyncState.feeItems = feeItems;
+        }
+    }
+
+    async function syncPaymentsFromSheet() {
+        try {
+            const payRows = await fetchSheetRows(SHEET_PAYMENTS);
+            if (payRows.length > 0) {
+                paymentRecords = payRows.map((d, idx) => {
+                    const docId = String(d.id || d.sheetId || `PAY-${idx + 1}`).trim();
+                    return {
+                        ...d,
+                        id: docId,
+                        sheetId: docId,
+                        studentName: String(d.studentName || d.name || "").trim(),
+                        grade: String(d.grade || d.room || userGrade).trim(),
+                        term: String(d.term || "ເທີມ 1 / 2026-2027").trim(),
+                        amount: parseMoneyNumber(d.amount),
+                        status: String(d.status || "pending").trim().toLowerCase()
+                    };
+                });
+                financeSyncState.paymentRecords = paymentRecords;
+            }
+        } catch (err) {
+            if (isQuotaError(err)) throw err;
+        }
+    }
+
+    window.loadFinanceFromSheet = async function (showAlert = false) {
+        const now = Date.now();
+        const blockedUntil = Number(localStorage.getItem(QUOTA_BLOCK_UNTIL_KEY) || "0");
+        const lastFetchTs = Number(localStorage.getItem(LAST_FETCH_TS_KEY) || "0");
+
+        if (now < blockedUntil) {
+            setQuotaNotice(true);
+            refreshFinanceView();
+            if (showAlert) showToast("ການເຊື່ອມຕໍ່ Google Sheet ຖືກຈຳກັດຊົ່ວຄາວ ກຳລັງໃຊ້ຂໍ້ມູນໃນເຄື່ອງ");
+            return;
+        }
+
+        if (!showAlert && now - lastFetchTs < FETCH_COOLDOWN_MS) {
+            refreshFinanceView();
+            return;
+        }
+
+        const syncBtn = document.getElementById("syncBtn");
+        if (syncBtn) syncBtn.disabled = true;
+
+        try {
+            try {
+                const settingsRows = await fetchSheetRows(SHEET_FINANCE_SETTINGS);
+                const qrRow = settingsRows.find((r) => String(r.id || "").trim() === "qr_code") || settingsRows[0];
+                if (qrRow && qrRow.url) {
+                    schoolQrUrl = String(qrRow.url).trim();
+                    const img = document.getElementById("schoolQrImage");
+                    if (img) img.src = schoolQrUrl;
+                    const cap = document.getElementById("qrCaptionText");
+                    if (cap && qrRow.caption) {
+                        cap.textContent = String(qrRow.caption).trim();
+                    }
+                    try {
+                        localStorage.setItem("school_finance_qr_url", schoolQrUrl);
+                        if (qrRow.caption) localStorage.setItem("school_finance_qr_caption", String(qrRow.caption).trim());
+                    } catch (e) {}
+                }
+            } catch (err) {
+                if (isQuotaError(err)) throw err;
+            }
+
+            await Promise.all([
+                syncTuitionFromSheet(),
+                syncPaymentsFromSheet(),
+                syncScoresFromSheet()
+            ]);
+
+            saveFinanceLocal();
+            localStorage.setItem(LAST_FETCH_TS_KEY, String(Date.now()));
+            localStorage.removeItem(QUOTA_BLOCK_UNTIL_KEY);
+            setQuotaNotice(false);
+            refreshFinanceView();
+            if (showAlert) showToast("✅ ໂຫຼດຂໍ້ມູນການເງິນຈາກ Google Sheet ສຳເລັດແລ້ວ");
+        } catch (err) {
+            if (isQuotaError(err)) {
+                localStorage.setItem(QUOTA_BLOCK_UNTIL_KEY, String(Date.now() + QUOTA_COOLDOWN_MS));
+                setQuotaNotice(true);
+                if (showAlert) showToast("⚠️ ໂຄຕ້າ Google Sheet ຊົ່ວຄາວເຕັມ ໃຊ້ຂໍ້ມູນໃນເຄື່ອງ");
+            } else {
+                setQuotaNotice(true, `⚠️ ການເຊື່ອມຕໍ່ Google Sheet ຊົ່ວຄາວມີບັນຫາ (${err?.message || err}) — ລະບົບກຳລັງໃຊ້ຂໍ້ມູນທີ່ເກັບໃນເຄື່ອງ (localStorage) ແລະ ຫຼຸດການເອີ້ນຖານຂໍ້ມູນອັດຕະໂນມັດ.`);
+                if (showAlert) showToast("⚠️ ເຊື່ອມຕໍ່ຊ້າ ໃຊ້ຂໍ້ມູນທີ່ບັນທຶກໃນເຄື່ອງ");
+            }
+            refreshFinanceView();
+        } finally {
+            if (syncBtn) syncBtn.disabled = false;
+        }
+    };
+
+    function esc(str) {
+        return String(str || "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;");
+    }
+
+    window.addEventListener("storage", (e) => {
+        if (e.key === "schoolSystemDataUpdated" || e.key === "school_finance_payment_records" || e.key === "school_finance_fee_items") {
+            feeItems = JSON.parse(localStorage.getItem("school_finance_fee_items") || "[]");
+            paymentRecords = JSON.parse(localStorage.getItem("school_finance_payment_records") || "[]");
+            financeSyncState.feeItems = feeItems;
+            financeSyncState.paymentRecords = paymentRecords;
+            refreshFinanceView();
+        }
+    });
+
+    const cachedQr = localStorage.getItem("school_finance_qr_url");
+    const cachedCap = localStorage.getItem("school_finance_qr_caption");
+    if (cachedQr) {
+        schoolQrUrl = cachedQr;
+        const img = document.getElementById("schoolQrImage");
+        if (img) img.src = schoolQrUrl;
+    }
+    if (cachedCap) {
+        const cap = document.getElementById("qrCaptionText");
+        if (cap) cap.textContent = cachedCap;
+    }
+
+    applyAdminVisibility();
+    renderSubjectTable();
+    refreshFinanceView();
+    loadFinanceFromSheet(false);
+</script>
+</body>
+</html>
