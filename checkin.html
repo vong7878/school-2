@@ -1,0 +1,1695 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>📋 5. ຈັດການການມາຮຽນ (ຕາມຈຳນວນຄາບ)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        html, body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Noto Sans Lao', sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+            width: 100%;
+            min-height: 100vh;
+            min-height: 100dvh;
+            max-width: 100%;
+            overflow-x: hidden;
+            -webkit-text-size-adjust: 100%;
+        }
+        body {
+            padding: 12px;
+        }
+        .container {
+            max-width: 1180px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+            min-width: 0;
+        }
+        .topbar {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 14px;
+            padding: 12px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            min-width: 0;
+            width: 100%;
+        }
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            min-width: 0;
+            flex: 1 1 auto;
+        }
+        .back-btn, a.btn-link {
+            background: #334155;
+            color: #f8fafc;
+            text-decoration: none;
+            padding: 7px 11px;
+            border-radius: 8px;
+            font-size: 12.5px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+            max-width: 100%;
+        }
+        .back-btn:hover, a.btn-link:hover { background: #475569; }
+        .btn-upd { background: #2563eb; color: #fff; padding: 7px 11px; font-size: 12.5px; }
+        .btn-upd:hover { background: #1d4ed8; }
+        .page-title {
+            margin: 0;
+            font-size: clamp(14.5px, 4.2vw, 18px);
+            font-weight: 700;
+            color: #f8fafc;
+            line-height: 1.3;
+            min-width: 0;
+            overflow-wrap: anywhere;
+        }
+        .user-meta {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            flex-wrap: wrap;
+            min-width: 0;
+            max-width: 100%;
+        }
+        #currentUserName {
+            max-width: 180px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .badge {
+            padding: 4px 9px;
+            border-radius: 999px;
+            font-weight: 600;
+            font-size: 11.5px;
+            white-space: nowrap;
+        }
+        .badge-role-admin { background: #dc2626; color: #fff; }
+        .badge-role-teacher { background: #7c3aed; color: #fff; }
+        .badge-role-student { background: #2563eb; color: #fff; }
+        .badge-grade { background: #0f766e; color: #ccfbf1; }
+        .badge-fb { background: #1e3a8a; color: #93c5fd; border: 1px solid #3b82f6; }
+
+        .quota-banner {
+            background: rgba(245, 158, 11, 0.14);
+            border: 1px solid rgba(245, 158, 11, 0.45);
+            color: #fde68a;
+            border-radius: 10px;
+            padding: 9px 12px;
+            font-size: 12px;
+            line-height: 1.4;
+            display: none;
+            overflow-wrap: anywhere;
+        }
+        .quota-banner.show {
+            display: block;
+        }
+
+        .card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 14px;
+            padding: 14px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+            min-width: 0;
+            width: 100%;
+        }
+        .card-header {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            gap: 10px;
+            padding-bottom: 10px;
+            margin-bottom: 12px;
+            border-bottom: 1px solid #334155;
+            min-width: 0;
+        }
+        .card-header h2 {
+            margin: 0;
+            font-size: clamp(14px, 3.9vw, 16px);
+            font-weight: 700;
+            color: #f8fafc;
+            line-height: 1.35;
+            overflow-wrap: anywhere;
+        }
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+            gap: 8px;
+            align-items: center;
+            width: 100%;
+            min-width: 0;
+        }
+        select, input {
+            background: #0f172a;
+            color: #f8fafc;
+            border: 1px solid #475569;
+            border-radius: 8px;
+            padding: 8px 10px;
+            font-family: inherit;
+            font-size: 13px;
+            width: 100%;
+            min-width: 0;
+            max-width: 100%;
+        }
+        input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #ef4444;
+            cursor: pointer;
+        }
+        select:focus, input:focus {
+            outline: none;
+            border-color: #38bdf8;
+        }
+        button {
+            font-family: inherit;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 12.5px;
+            font-weight: 600;
+            cursor: pointer;
+            max-width: 100%;
+        }
+        button:hover { opacity: 0.92; }
+        button:disabled { opacity: 0.6; cursor: not-allowed; }
+        .btn-save { background: #16a34a; color: #fff; white-space: nowrap; }
+        .btn-sync { background: #0284c7; color: #fff; white-space: nowrap; }
+        .btn-del { background: #dc2626; color: #fff; padding: 5px 9px; font-size: 11.5px; white-space: nowrap; }
+
+        .deduct-info {
+            font-size: 12px;
+            color: #93c5fd;
+            background: #0f172a;
+            border: 1px solid #334155;
+            padding: 7px 10px;
+            border-radius: 8px;
+            line-height: 1.35;
+            overflow-wrap: anywhere;
+            min-width: 0;
+        }
+        .deduct-val {
+            color: #f87171;
+            font-weight: 700;
+        }
+        .score-pill {
+            background: rgba(37, 99, 235, 0.22);
+            color: #93c5fd;
+            border: 1px solid #3b82f6;
+            padding: 3px 9px;
+            border-radius: 999px;
+            font-weight: 700;
+            font-size: 11.5px;
+            display: inline-block;
+            white-space: nowrap;
+        }
+
+        .table-wrap {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 640px;
+        }
+        th, td {
+            border: 1px solid #334155;
+            padding: 9px 11px;
+            text-align: left;
+            font-size: 13px;
+            line-height: 1.35;
+        }
+        th {
+            background: #0f172a;
+            color: #93c5fd;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+        td {
+            background: #162032;
+            color: #e2e8f0;
+            overflow-wrap: anywhere;
+        }
+        tr:hover td { background: #24334d; }
+        .center { text-align: center; }
+        .status-absent {
+            background: rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+            border: 1px solid #ef4444;
+            padding: 3px 8px;
+            border-radius: 999px;
+            font-size: 11.5px;
+            font-weight: 600;
+            display: inline-block;
+            white-space: nowrap;
+        }
+        .status-present {
+            background: rgba(34, 197, 94, 0.18);
+            color: #86efac;
+            border: 1px solid #22c55e;
+            padding: 3px 8px;
+            border-radius: 999px;
+            font-size: 11.5px;
+            font-weight: 600;
+            display: inline-block;
+            white-space: nowrap;
+        }
+        .note-text {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-top: 8px;
+            line-height: 1.4;
+            overflow-wrap: anywhere;
+        }
+
+        /* Mobile Card List */
+        .mobile-cards {
+            display: none;
+            flex-direction: column;
+            gap: 9px;
+            width: 100%;
+            min-width: 0;
+        }
+        .att-card {
+            background: #162032;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 10px 11px;
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            width: 100%;
+            min-width: 0;
+        }
+        .att-card-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 8px;
+            padding-bottom: 7px;
+            border-bottom: 1px solid #26354d;
+            min-width: 0;
+        }
+        .att-card-head > div:first-child {
+            min-width: 0;
+            flex: 1 1 auto;
+        }
+        .att-card-name {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #f8fafc;
+            overflow-wrap: anywhere;
+            line-height: 1.35;
+        }
+        .att-card-sub {
+            font-size: 11.5px;
+            color: #94a3b8;
+            margin-top: 2px;
+            overflow-wrap: anywhere;
+        }
+        .att-card-rows {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            font-size: 12px;
+            min-width: 0;
+        }
+        .att-card-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            min-width: 0;
+        }
+        .att-card-label {
+            color: #94a3b8;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        .att-card-val {
+            text-align: right;
+            color: #e2e8f0;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+            min-width: 0;
+            flex: 1 1 auto;
+        }
+        .att-card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 6px;
+            padding-top: 6px;
+            border-top: 1px solid #26354d;
+            flex-wrap: wrap;
+        }
+
+        .toast-msg {
+            position: fixed;
+            bottom: 14px;
+            left: 50%;
+            transform: translate(-50%, 12px);
+            background: #1e293b;
+            border: 1px solid #38bdf8;
+            color: #f8fafc;
+            padding: 9px 13px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.45);
+            z-index: 1200;
+            opacity: 0;
+            transition: 0.2s;
+            pointer-events: none;
+            max-width: calc(100% - 20px);
+            text-align: center;
+            overflow-wrap: anywhere;
+        }
+        .toast-msg.show {
+            opacity: 1;
+            transform: translate(-50%, 0);
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 8px; }
+            .topbar {
+                flex-direction: column;
+                align-items: stretch;
+                padding: 10px;
+                gap: 8px;
+            }
+            .topbar-left, .user-meta {
+                width: 100%;
+            }
+            .user-meta {
+                justify-content: space-between;
+            }
+            #currentUserName {
+                max-width: 150px;
+            }
+            .card {
+                padding: 10px;
+                border-radius: 12px;
+            }
+            .controls {
+                grid-template-columns: 1fr;
+            }
+            .btn-save, .btn-sync {
+                width: 100%;
+                text-align: center;
+            }
+            .table-wrap { display: none; }
+            .mobile-cards { display: flex; }
+        }
+
+        @media (max-width: 380px) {
+            body { padding: 6px; }
+            .back-btn, a.btn-link {
+                padding: 6px 8px;
+                font-size: 11px;
+            }
+            #currentUserName { max-width: 110px; }
+            .att-card { padding: 9px; }
+            .att-card-head { flex-direction: column; align-items: stretch; gap: 5px; }
+        }
+
+        /* ເຊື່ອງ badge / ປ້າຍສະຖານະ Firebase */
+        #fbSyncBadge,
+        .badge-fb,
+        [data-hide-firebase="true"],
+        [class*="firebase" i],
+        [id*="firebase" i] {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="topbar">
+        <div class="topbar-left">
+            <a href="index.html" class="back-btn">⬅ ກັບໄປໜ້າຫຼັກ</a>
+            <a href="scores.html" class="btn-link">📊 ຫ້ອງຄະແນນ</a>
+            <a href="update.html?tab=scores" class="btn-link btn-upd" id="btnUpdScores" style="display: none;">🛠️ ຫ້ອງອັບເດດຄະແນນ</a>
+            <h1 class="page-title">📋 5. ຈັດການການມາຮຽນ (ຕາມຈຳນວນຄາບ)</h1>
+        </div>
+        <div class="user-meta">
+            <span id="fbSyncBadge" class="badge badge-fb">📊 Google Sheet</span>
+            <span id="currentUserName">ຜູ້ໃຊ້ງານ</span>
+            <span id="currentUserRole" class="badge badge-role-student">STUDENT</span>
+            <span id="currentUserGrade" class="badge badge-grade">ມ.5</span>
+        </div>
+    </div>
+
+    <div class="quota-banner" id="quotaBanner">
+        ⚠️ ການເຊື່ອມຕໍ່ Google Sheet ຊົ່ວຄາວມີບັນຫາ — ລະບົບກຳລັງໃຊ້ຂໍ້ມູນທີ່ເກັບໃນເຄື່ອງ (`localStorage`) ແລະ ຫຼຸດການເອີ້ນຖານຂໍ້ມູນອັດຕະໂນມັດ.
+    </div>
+
+    <!-- 1. ກວດລາຍຊື່ນັກຮຽນຂາດຮຽນ -->
+    <section class="card" id="room-1-check-absent">
+        <div class="card-header">
+            <h2>📝 1. ກວດລາຍຊື່ນັກຮຽນຂາດຮຽນ</h2>
+            <div class="controls">
+                <select id="checkTerm" onchange="renderAll()">
+                    <option value="ເທີມ 1 / 2026-2027">ເທີມ 1 / 2026-2027</option>
+                    <option value="ເທີມ 2 / 2026-2027">ເທີມ 2 / 2026-2027</option>
+                    <option value="ເທີມ 1 / 2027-2028">ເທີມ 1 / 2027-2028</option>
+                    <option value="ເທີມ 2 / 2027-2028">ເທີມ 2 / 2027-2028</option>
+                </select>
+                <input type="date" id="checkDate" onchange="renderCheckAbsentList()" />
+                <select id="checkGrade" onchange="renderAll()">
+                    <option value="ມ.1">ຫ້ອງ ມ.1</option>
+                    <option value="ມ.2">ຫ້ອງ ມ.2</option>
+                    <option value="ມ.3">ຫ້ອງ ມ.3</option>
+                    <option value="ມ.4">ຫ້ອງ ມ.4</option>
+                    <option value="ມ.5">ຫ້ອງ ມ.5</option>
+                    <option value="ມ.6">ຫ້ອງ ມ.6</option>
+                    <option value="ມ.7">ຫ້ອງ ມ.7</option>
+                </select>
+                <select id="checkPeriod" onchange="renderCheckAbsentList()">
+                    <option value="ຊົ່ວໂມງທີ 1">ຊົ່ວໂມງທີ 1 (08:00 - 08:45)</option>
+                    <option value="ຊົ່ວໂມງທີ 2">ຊົ່ວໂມງທີ 2 (08:50 - 09:35)</option>
+                    <option value="ຊົ່ວໂມງທີ 3">ຊົ່ວໂມງທີ 3 (09:50 - 10:35)</option>
+                    <option value="ຊົ່ວໂມງທີ 4">ຊົ່ວໂມງທີ 4 (10:40 - 11:25)</option>
+                </select>
+                <button type="button" class="btn-save" id="btnSaveAbsent" onclick="saveAbsentRecords()">💾 ບັນທຶກການຂາດຮຽນ</button>
+            </div>
+        </div>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 60px;">ລ/ດ</th>
+                        <th>ລະຫັດ</th>
+                        <th>ຊື່ນັກຮຽນ</th>
+                        <th>ຫ້ອງ</th>
+                        <th style="width: 110px;">ຂາດຮຽນ</th>
+                        <th>ເຫດຜົນ / ໝາຍເຫດ</th>
+                    </tr>
+                </thead>
+                <tbody id="checkAbsentBody"></tbody>
+            </table>
+        </div>
+        <div class="mobile-cards" id="checkAbsentCards"></div>
+        <div class="note-text" id="checkAbsentPermissionNote"></div>
+    </section>
+
+    <!-- ສະຫຼຸບຄະແນນການມາຮຽນປະຈຳເທີມ -->
+    <section class="card" id="room-term-score-summary">
+        <div class="card-header">
+            <h2 id="termScoreTitle">🎯 ສະຫຼຸບຄະແນນການມາຮຽນປະຈຳເທີມ</h2>
+            <div class="controls">
+                <span class="deduct-info" id="termFormulaInfo">ຄະແນນເຕັມ: <strong>20</strong> • ຄາບທັງໝົດ: <strong>40 ຄາບ</strong> • ຄິດຕາມອັດຕາສ່ວນການມາຮຽນ</span>
+                <button type="button" class="btn-sync" id="syncBtn" onclick="loadAbsentFromSheet(true)">🔄 ໂຫຼດຂໍ້ມູນ</button>
+            </div>
+        </div>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 60px;">ລ/ດ</th>
+                        <th>ຊື່ນັກຮຽນ</th>
+                        <th>ຫ້ອງ</th>
+                        <th>ເທີມ</th>
+                        <th>ຈຳນວນຄັ້ງຂາດ</th>
+                        <th>ຄະແນນທີ່ຖືກຕັດ</th>
+                        <th id="termScoreColHeader">ຄະແນນມາຮຽນ</th>
+                    </tr>
+                </thead>
+                <tbody id="termScoreSummaryBody"></tbody>
+            </table>
+        </div>
+        <div class="mobile-cards" id="termScoreSummaryCards"></div>
+    </section>
+
+    <!-- 2. ສະຫຼຸບວັນຂາດປະຈຳອາທິດພ້ອມຕັດຄະແນນ -->
+    <section class="card" id="room-2-weekly-summary">
+        <div class="card-header">
+            <h2>📊 2. ສະຫຼຸບວັນຂາດປະຈຳອາທິດພ້ອມຕັດຄະແນນ</h2>
+            <div class="controls">
+                <select id="weeklyGrade" onchange="renderWeeklySummary()">
+                    <option value="ມ.1">ຫ້ອງ ມ.1</option>
+                    <option value="ມ.2">ຫ້ອງ ມ.2</option>
+                    <option value="ມ.3">ຫ້ອງ ມ.3</option>
+                    <option value="ມ.4">ຫ້ອງ ມ.4</option>
+                    <option value="ມ.5">ຫ້ອງ ມ.5</option>
+                    <option value="ມ.6">ຫ້ອງ ມ.6</option>
+                    <option value="ມ.7">ຫ້ອງ ມ.7</option>
+                </select>
+                <span class="deduct-info" id="weeklyFormulaInfo">ຄິດຕາມອັດຕາສ່ວນຈຳນວນຄາບຂອງເທີມ</span>
+            </div>
+        </div>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 60px;">ລ/ດ</th>
+                        <th>ຊື່ນັກຮຽນ</th>
+                        <th>ຫ້ອງ</th>
+                        <th>ຈຳນວນຄັ້ງຂາດ (ອາທິດນີ້)</th>
+                        <th>ຄະແນນທີ່ຖືກຕັດ</th>
+                    </tr>
+                </thead>
+                <tbody id="weeklySummaryBody"></tbody>
+            </table>
+        </div>
+        <div class="mobile-cards" id="weeklySummaryCards"></div>
+    </section>
+
+    <!-- 3. ສະຫຼຸບວັນຂາດປະຈຳເດືອນພ້ອມຕັດຄະແນນ -->
+    <section class="card" id="room-3-monthly-summary">
+        <div class="card-header">
+            <h2>📅 3. ສະຫຼຸບວັນຂາດປະຈຳເດືອນພ້ອມຕັດຄະແນນ</h2>
+            <div class="controls">
+                <input type="month" id="monthlyPicker" onchange="renderMonthlySummary()" />
+                <select id="monthlyGrade" onchange="renderMonthlySummary()">
+                    <option value="ມ.1">ຫ້ອງ ມ.1</option>
+                    <option value="ມ.2">ຫ້ອງ ມ.2</option>
+                    <option value="ມ.3">ຫ້ອງ ມ.3</option>
+                    <option value="ມ.4">ຫ້ອງ ມ.4</option>
+                    <option value="ມ.5">ຫ້ອງ ມ.5</option>
+                    <option value="ມ.6">ຫ້ອງ ມ.6</option>
+                    <option value="ມ.7">ຫ້ອງ ມ.7</option>
+                </select>
+                <span class="deduct-info" id="monthlyFormulaInfo">ຄິດຕາມອັດຕາສ່ວນຈຳນວນຄາບຂອງເທີມ</span>
+            </div>
+        </div>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 60px;">ລ/ດ</th>
+                        <th>ຊື່ນັກຮຽນ</th>
+                        <th>ຫ້ອງ</th>
+                        <th>ຈຳນວນຄັ້ງຂາດ (ປະຈຳເດືອນ)</th>
+                        <th>ຄະແນນທີ່ຖືກຕັດ</th>
+                    </tr>
+                </thead>
+                <tbody id="monthlySummaryBody"></tbody>
+            </table>
+        </div>
+        <div class="mobile-cards" id="monthlySummaryCards"></div>
+    </section>
+
+    <!-- 4. ກວດເບິ່ງລາຍຊື່ຄົນຂາດໃນຊົ່ວໂມງນັ້ນ -->
+    <section class="card" id="room-4-period-absent">
+        <div class="card-header">
+            <h2>🕒 4. ກວດເບິ່ງລາຍຊື່ຄົນຂາດໃນຊົ່ວໂມງນັ້ນ (ກວດຢ້ອນຫຼັງໄດ້)</h2>
+            <div class="controls">
+                <input type="date" id="historyDate" onchange="renderPeriodAbsentHistory()" />
+                <select id="historyGrade" onchange="renderPeriodAbsentHistory()">
+                    <option value="ມ.1">ຫ້ອງ ມ.1</option>
+                    <option value="ມ.2">ຫ້ອງ ມ.2</option>
+                    <option value="ມ.3">ຫ້ອງ ມ.3</option>
+                    <option value="ມ.4">ຫ້ອງ ມ.4</option>
+                    <option value="ມ.5">ຫ້ອງ ມ.5</option>
+                    <option value="ມ.6">ຫ້ອງ ມ.6</option>
+                    <option value="ມ.7">ຫ້ອງ ມ.7</option>
+                </select>
+                <select id="historyPeriod" onchange="renderPeriodAbsentHistory()">
+                    <option value="ຊົ່ວໂມງທີ 1">ຊົ່ວໂມງທີ 1 (08:00 - 08:45)</option>
+                    <option value="ຊົ່ວໂມງທີ 2">ຊົ່ວໂມງທີ 2 (08:50 - 09:35)</option>
+                    <option value="ຊົ່ວໂມງທີ 3">ຊົ່ວໂມງທີ 3 (09:50 - 10:35)</option>
+                    <option value="ຊົ່ວໂມງທີ 4">ຊົ່ວໂມງທີ 4 (10:40 - 11:25)</option>
+                </select>
+            </div>
+        </div>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 60px;">ລ/ດ</th>
+                        <th>ວັນທີ</th>
+                        <th>ຊົ່ວໂມງ</th>
+                        <th>ຫ້ອງ</th>
+                        <th>ຊື່ນັກຮຽນທີ່ຂາດ</th>
+                        <th>ເຫດຜົນ / ໝາຍເຫດ</th>
+                        <th id="historyActionCol" style="width: 90px;">ລົບ</th>
+                    </tr>
+                </thead>
+                <tbody id="periodAbsentBody"></tbody>
+            </table>
+        </div>
+        <div class="mobile-cards" id="periodAbsentCards"></div>
+        <div class="note-text" id="historyScopeNote"></div>
+    </section>
+</div>
+
+<div class="toast-msg" id="toastMsg"></div>
+
+<script>
+    const APPS_SCRIPT_URL = window.APPS_SCRIPT_URL || "https://script.google.com/macros/s/AKfycbwp7pM_Lx8qdeuGC_nA_zvxTCltlOvJKNN-tjkRX_wi8JMt6EVyheyRNFambP69dOc9Yg/exec";
+    const SHEET_CHECKIN = "checkin";
+    const SHEET_STUDENTS = "students";
+    const SHEET_TERM_PERIODS = "term_periods";
+    const SHEET_ATTENDANCE_SCORES = "attendance_scores";
+
+    const DEFAULT_MAX_SCORE = 20;
+    const DEFAULT_TOTAL_PERIODS = 40;
+    const SYNC_STORAGE_KEY = "schoolSystemDataUpdated";
+    const SYNC_EVENT_NAME = "school-data-updated";
+    const DEFAULT_GRADES = ["ມ.1", "ມ.2", "ມ.3", "ມ.4", "ມ.5", "ມ.6", "ມ.7"];
+    const GRADE_SELECT_IDS = ["checkGrade", "weeklyGrade", "monthlyGrade", "historyGrade"];
+
+    const LAST_FETCH_TS_KEY = "school_checkin_last_fetch_ts";
+    const QUOTA_BLOCK_UNTIL_KEY = "school_sheet_quota_blocked_until";
+    const FETCH_COOLDOWN_MS = 60000;
+    const QUOTA_COOLDOWN_MS = 1800000;
+
+    function showToast(message) {
+        const el = document.getElementById("toastMsg");
+        if (!el) return;
+        el.textContent = message;
+        el.classList.add("show");
+        clearTimeout(showToast._timer);
+        showToast._timer = setTimeout(() => {
+            el.classList.remove("show");
+        }, 3200);
+    }
+
+    function isQuotaError(err) {
+        const msg = String(err?.message || err || "").toLowerCase();
+        return (
+            msg.includes("quota") ||
+            msg.includes("resource exhausted") ||
+            msg.includes("daily usage") ||
+            msg.includes("service invoked too many times") ||
+            msg.includes("rate limit")
+        );
+    }
+
+    function setQuotaNotice(active, customMsg = "") {
+        const banner = document.getElementById("quotaBanner");
+        if (!banner) return;
+        if (customMsg) {
+            banner.textContent = customMsg;
+        }
+        if (active) {
+            banner.classList.add("show");
+        } else {
+            banner.classList.remove("show");
+        }
+    }
+
+    function cleanVal(v) {
+        return String(v ?? "").trim().replace(/^["']+|["']+$/g, "");
+    }
+
+    function cleanGrade(v) {
+        return cleanVal(v)
+            .replace(/^ຫ້ອງ\s*/i, "")
+            .replace(/\s+/g, "");
+    }
+
+    function isSameGrade(a, b) {
+        const ga = cleanGrade(a);
+        const gb = cleanGrade(b);
+        if (!ga || !gb) return false;
+        return ga === gb || ga.startsWith(gb + "/") || gb.startsWith(ga + "/");
+    }
+
+    function resolveRole() {
+        const raw = cleanVal(
+            localStorage.getItem("userRole") ||
+            localStorage.getItem("role") ||
+            localStorage.getItem("user_role") ||
+            "student"
+        ).toLowerCase();
+
+        if (["admin", "administrator", "ແອັດມິນ", "แอดมิน"].includes(raw)) return "admin";
+        if (["teacher", "ຄູ", "ຄູອາຈານ", "ครู"].includes(raw)) return "teacher";
+        return "student";
+    }
+
+    const role = resolveRole();
+    const userGrade = cleanGrade(localStorage.getItem("userGrade") || "ມ.5") || "ມ.5";
+    const userName = cleanVal(localStorage.getItem("userName")) || "ຜູ້ໃຊ້ງານ";
+
+    const isAdmin = role === "admin";
+    const isTeacher = role === "teacher";
+
+    const PERMISSIONS = {
+        canMarkAttendance: isAdmin || isTeacher,
+        canDeleteRecord: isAdmin || isTeacher,
+        canSelectAnyGrade: isAdmin || isTeacher,
+        canViewAllGrades: isAdmin || isTeacher
+    };
+
+    function broadcastSystemDataUpdated(tabKey = "scores") {
+        const payload = {
+            tab: tabKey,
+            updatedBy: userName,
+            timestamp: Date.now()
+        };
+        try {
+            localStorage.setItem(SYNC_STORAGE_KEY, JSON.stringify(payload));
+        } catch (e) {}
+        window.dispatchEvent(new CustomEvent(SYNC_EVENT_NAME, { detail: payload }));
+    }
+
+    const roleBadgeEl = document.getElementById("currentUserRole");
+    roleBadgeEl.textContent = role.toUpperCase();
+    roleBadgeEl.className = `badge badge-role-${role}`;
+
+    document.getElementById("currentUserName").textContent = userName;
+    document.getElementById("currentUserGrade").textContent = userGrade;
+    if (PERMISSIONS.canMarkAttendance) {
+        document.getElementById("btnUpdScores").style.display = "inline-flex";
+    }
+
+    function updateSyncBadge(text) {
+        const el = document.getElementById("fbSyncBadge");
+        if (el) el.textContent = text;
+    }
+
+    function withTimeout(promise, ms = 12000) {
+        return Promise.race([
+            promise,
+            new Promise((_, reject) =>
+                setTimeout(() => reject(new Error("ໝົດເວລາການເຊື່ອມຕໍ່ Google Sheet")), ms)
+            )
+        ]);
+    }
+
+    async function fetchSheetRows(sheetName) {
+        if (!APPS_SCRIPT_URL) {
+            throw new Error("ຍັງບໍ່ໄດ້ຕັ້ງຄ່າ APPS_SCRIPT_URL");
+        }
+        const url = new URL(APPS_SCRIPT_URL);
+        url.searchParams.set("sheet", sheetName);
+        url.searchParams.set("_t", String(Date.now()));
+
+        const res = await withTimeout(fetch(url.toString(), { method: "GET", cache: "no-store" }), 12000);
+        if (!res.ok) {
+            throw new Error(`HTTP ${res.status}`);
+        }
+        const data = await res.json();
+        if (!data || data.ok === false) {
+            throw new Error(data?.error || `ບໍ່ສາມາດອ່ານແທັບ ${sheetName} ໄດ້`);
+        }
+        return Array.isArray(data.rows) ? data.rows : [];
+    }
+
+    async function postSheetAction(payload) {
+        if (!APPS_SCRIPT_URL) {
+            throw new Error("ຍັງບໍ່ໄດ້ຕັ້ງຄ່າ APPS_SCRIPT_URL");
+        }
+        const res = await withTimeout(
+            fetch(APPS_SCRIPT_URL, {
+                method: "POST",
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                body: JSON.stringify(payload)
+            }),
+            12000
+        );
+        if (!res.ok) {
+            throw new Error(`HTTP ${res.status}`);
+        }
+        const data = await res.json();
+        if (!data || data.ok === false) {
+            throw new Error(data?.error || "ບໍ່ສາມາດບັນທຶກຂໍ້ມູນລົງ Google Sheet ໄດ້");
+        }
+        return data;
+    }
+
+    let termPeriodsConfigs = JSON.parse(localStorage.getItem("school_term_periods") || "null") || [];
+
+    function getTermPeriodRule(term, grade) {
+        const tVal = cleanVal(term);
+        const gVal = cleanGrade(grade);
+
+        const exactRoom = termPeriodsConfigs.find(
+            (x) => cleanVal(x.term) === tVal && cleanGrade(x.grade) !== "ALL" && isSameGrade(x.grade, gVal)
+        );
+        const allRoom = termPeriodsConfigs.find(
+            (x) => cleanVal(x.term) === tVal && (cleanVal(x.grade) === "ALL" || !cleanVal(x.grade))
+        );
+        const matched = exactRoom || allRoom;
+
+        const totalPeriods = Math.max(1, Number(matched?.totalPeriods) || DEFAULT_TOTAL_PERIODS);
+        const maxScore = Math.max(1, Number(matched?.maxScore) || DEFAULT_MAX_SCORE);
+        return { totalPeriods, maxScore };
+    }
+
+    function calcScoreByPeriods(absentCount, term, grade) {
+        const { totalPeriods, maxScore } = getTermPeriodRule(term, grade);
+        const count = Math.max(0, Number(absentCount) || 0);
+        const attended = Math.max(0, totalPeriods - count);
+        const score = Number(((attended / totalPeriods) * maxScore).toFixed(2));
+        const deducted = Number(Math.max(0, maxScore - score).toFixed(2));
+        return { count, deducted, score, totalPeriods, maxScore };
+    }
+
+    let studentsList = JSON.parse(localStorage.getItem("school_students_list") || "null") || [
+        { id: "STD-001", name: "ທ. ສົມໃຈ ພົມມະວົງ", grade: "ມ.5" },
+        { id: "STD-002", name: "ນ. ມາລີ ໄຊຍະສິດ", grade: "ມ.5" },
+        { id: "STD-003", name: "ທ. ອານຸສອນ ວົງສາ", grade: "ມ.5" },
+        { id: "STD-004", name: "ນ. ດາລາວັນ ແກ້ວມະນີ", grade: "ມ.6" },
+        { id: "STD-005", name: "ທ. ບຸນມີ ຈັນທະວົງ", grade: "ມ.7" }
+    ];
+
+    const todayStr = new Date().toISOString().slice(0, 10);
+    const currentMonthStr = todayStr.slice(0, 7);
+
+    let absentRecords = JSON.parse(localStorage.getItem("school_absent_records") || "null") || [];
+
+    function saveLocalRecords() {
+        localStorage.setItem("school_absent_records", JSON.stringify(absentRecords));
+    }
+
+    function getActiveGrade(selectId) {
+        if (!PERMISSIONS.canSelectAnyGrade) return userGrade;
+        const el = document.getElementById(selectId);
+        return cleanGrade(el ? el.value : "") || userGrade;
+    }
+
+    function getTermScoreForStudent(studentId, studentName, grade, term) {
+        const count = absentRecords.filter((r) => {
+            const matchTerm = cleanVal(r.term || "ເທີມ 1 / 2026-2027") === cleanVal(term);
+            const matchGrade = isSameGrade(r.grade, grade);
+            const matchStudent =
+                (studentId && cleanVal(r.studentId) === cleanVal(studentId)) ||
+                (studentName && cleanVal(r.studentName || r.name) === cleanVal(studentName));
+            return matchTerm && matchGrade && matchStudent;
+        }).length;
+
+        return calcScoreByPeriods(count, term, grade);
+    }
+
+    async function syncTermAttendanceScoresToSheet(term, gradeVal) {
+        const cleanGr = cleanGrade(gradeVal);
+        const roomStudents = studentsList.filter((s) => isSameGrade(s.grade, cleanGr));
+        const summaries = roomStudents.map((s) => {
+            const info = getTermScoreForStudent(s.id, s.name, s.grade, term);
+            return {
+                id: `${s.id}_${cleanGr}_${term}`,
+                studentId: s.id,
+                studentName: s.name,
+                name: s.name,
+                grade: cleanGr,
+                term,
+                absentCount: info.count,
+                deducted: info.deducted,
+                attendanceScore: info.score,
+                totalPeriods: info.totalPeriods,
+                maxScore: info.maxScore,
+                updatedAt: new Date().toISOString()
+            };
+        });
+
+        try {
+            localStorage.setItem("school_attendance_scores_20", JSON.stringify(summaries));
+        } catch (e) {}
+
+        broadcastSystemDataUpdated("scores");
+
+        const blockedUntil = Number(localStorage.getItem(QUOTA_BLOCK_UNTIL_KEY) || "0");
+        if (Date.now() < blockedUntil) {
+            setQuotaNotice(true);
+            return;
+        }
+
+        for (const item of summaries) {
+            try {
+                await postSheetAction({
+                    action: "update",
+                    sheet: SHEET_ATTENDANCE_SCORES,
+                    id: item.id,
+                    data: item
+                });
+            } catch (_) {
+                // ຖ້າຍັງບໍ່ມີແຖວນີ້ ຫຼື ແທັບ attendance_scores ໃນ Sheet ໃຫ້ຂ້າມໄປແບບບໍ່ເຮັດໃຫ້ການບັນທຶກຫຼັກສະດຸດ
+            }
+        }
+    }
+
+    function syncAllRoomSelects(extraRooms = [], preserveCurrent = true) {
+        const roomMap = new Map();
+        const addRoom = (rawName) => {
+            const cleaned = cleanVal(rawName).replace(/^ຫ້ອງ\s*/i, "");
+            if (!cleaned) return;
+            const key = cleaned.replace(/\s+/g, "").toLowerCase();
+            if (!roomMap.has(key)) {
+                roomMap.set(key, cleaned);
+            }
+        };
+
+        const studentRooms = studentsList.map((s) => s.grade);
+        const absentRooms = absentRecords.map((r) => r.grade);
+        [...DEFAULT_GRADES, userGrade, ...studentRooms, ...absentRooms, ...extraRooms].forEach(addRoom);
+
+        const roomList = Array.from(roomMap.values());
+        GRADE_SELECT_IDS.forEach((id) => {
+            const selectEl = document.getElementById(id);
+            if (!selectEl) return;
+
+            const prevValue = cleanGrade(selectEl.value);
+            const existingKeys = new Set(
+                Array.from(selectEl.options).map((o) => cleanGrade(o.value).toLowerCase())
+            );
+
+            roomList.forEach((r) => {
+                const key = cleanGrade(r).toLowerCase();
+                if (key && !existingKeys.has(key)) {
+                    const opt = document.createElement("option");
+                    opt.value = r;
+                    opt.textContent = `ຫ້ອງ ${r}`;
+                    selectEl.appendChild(opt);
+                    existingKeys.add(key);
+                }
+            });
+
+            selectEl.disabled = !PERMISSIONS.canSelectAnyGrade;
+            selectEl.style.pointerEvents = "auto";
+
+            if (!PERMISSIONS.canSelectAnyGrade) {
+                const matchedUser = Array.from(selectEl.options).find((o) => isSameGrade(o.value, userGrade));
+                if (matchedUser) selectEl.value = matchedUser.value;
+            } else if (preserveCurrent && prevValue) {
+                const matchedPrev = Array.from(selectEl.options).find(
+                    (o) => cleanGrade(o.value).toLowerCase() === prevValue.toLowerCase()
+                );
+                if (matchedPrev) {
+                    selectEl.value = matchedPrev.value;
+                }
+            } else if (!selectEl.value) {
+                const fallback = Array.from(selectEl.options).find((o) => isSameGrade(o.value, userGrade)) || selectEl.options[0];
+                if (fallback) selectEl.value = fallback.value;
+            }
+        });
+    }
+
+    function setupRolePermissions() {
+        document.getElementById("checkDate").value = todayStr;
+        document.getElementById("historyDate").value = todayStr;
+        document.getElementById("monthlyPicker").value = currentMonthStr;
+
+        syncAllRoomSelects([], false);
+
+        document.getElementById("btnSaveAbsent").style.display = PERMISSIONS.canMarkAttendance ? "inline-block" : "none";
+        document.getElementById("historyActionCol").style.display = PERMISSIONS.canDeleteRecord ? "" : "none";
+
+        if (isAdmin) {
+            document.getElementById("checkAbsentPermissionNote").textContent =
+                "* ສິດ ADMIN: ເລືອກໄດ້ທຸກຫ້ອງ, ບັນທຶກການຂາດຮຽນ, ຄຳນວນຄະແນນຕາມຈຳນວນຄາບຂອງເທີມ ແລະ ລົບລາຍການໄດ້.";
+            document.getElementById("historyScopeNote").textContent =
+                "* ສິດ ADMIN: ກວດເບິ່ງຂໍ້ມູນຂາດຮຽນຍ້ອນຫຼັງໄດ້ທຸກຫ້ອງ ແລະ ລົບລາຍການໄດ້.";
+        } else if (isTeacher) {
+            document.getElementById("checkAbsentPermissionNote").textContent =
+                "* ສິດ TEACHER (ຄູ): ກວດ ແລະ ບັນທຶກການຂາດຮຽນໄດ້ຕາມຫ້ອງທີ່ສອນ, ຄິດໄລ່ຄະແນນຕາມຈຳນວນຄາບ ແລະ ລົບລາຍການໄດ້.";
+            document.getElementById("historyScopeNote").textContent =
+                "* ສິດ TEACHER (ຄູ): ກວດເບິ່ງລາຍຊື່ຄົນຂາດຍ້ອນຫຼັງ ແລະ ຈັດການລາຍການຂອງຫ້ອງໄດ້.";
+        } else {
+            document.getElementById("checkAbsentPermissionNote").textContent =
+                `* ສິດ STUDENT (ນັກຮຽນ): ເບິ່ງໄດ້ສະເພາະຫ້ອງຂອງຕົນເອງ (${userGrade}) ເທົ່ານັ້ນ ແລະ ບໍ່ສາມາດບັນທຶກ ຫຼື ແກ້ໄຂໄດ້.`;
+            document.getElementById("historyScopeNote").textContent =
+                `* ສິດ STUDENT (ນັກຮຽນ): ເບິ່ງໄດ້ສະເພາະຫ້ອງຂອງຕົນເອງ (${userGrade}) ເທົ່ານັ້ນ (ກວດວັນທີ/ຊົ່ວໂມງຍ້ອນຫຼັງໄດ້).`;
+        }
+    }
+
+    window.syncMobileAbsentState = function (sid) {
+        const cb = document.querySelector(`.absent-cb[data-sid="${CSS.escape(sid)}"]`);
+        const reasonInput = document.querySelector(`.absent-reason[data-sid="${CSS.escape(sid)}"]`);
+        const mCb = document.querySelector(`.mobile-absent-cb[data-sid="${CSS.escape(sid)}"]`);
+        const mReason = document.querySelector(`.mobile-absent-reason[data-sid="${CSS.escape(sid)}"]`);
+        if (cb && mCb) cb.checked = mCb.checked;
+        if (reasonInput && mReason) reasonInput.value = mReason.value;
+    };
+
+    window.renderCheckAbsentList = function () {
+        const termVal = document.getElementById("checkTerm").value;
+        const dateVal = document.getElementById("checkDate").value || todayStr;
+        const gradeVal = getActiveGrade("checkGrade");
+        const periodVal = document.getElementById("checkPeriod").value;
+        const tbody = document.getElementById("checkAbsentBody");
+        const cards = document.getElementById("checkAbsentCards");
+
+        const roomStudents = studentsList.filter((s) => isSameGrade(s.grade, gradeVal));
+        if (!roomStudents.length) {
+            tbody.innerHTML = `<tr><td colspan="6" class="center">ບໍ່ມີລາຍຊື່ນັກຮຽນໃນຫ້ອງ ${esc(gradeVal)}</td></tr>`;
+            cards.innerHTML = `<div class="att-card" style="text-align:center;color:#94a3b8;">ບໍ່ມີລາຍຊື່ນັກຮຽນໃນຫ້ອງ ${esc(gradeVal)}</div>`;
+            return;
+        }
+
+        const disabledAttr = PERMISSIONS.canMarkAttendance ? "" : "disabled";
+
+        tbody.innerHTML = roomStudents.map((s, idx) => {
+            const existing = absentRecords.find(
+                (r) =>
+                    cleanVal(r.term || "ເທີມ 1 / 2026-2027") === cleanVal(termVal) &&
+                    r.date === dateVal &&
+                    isSameGrade(r.grade, gradeVal) &&
+                    r.period === periodVal &&
+                    ((s.id && cleanVal(r.studentId) === cleanVal(s.id)) ||
+                     (s.name && cleanVal(r.studentName || r.name) === cleanVal(s.name)))
+            );
+            const checkedAttr = existing ? "checked" : "";
+            const reasonVal = existing ? existing.reason || "" : "";
+
+            return `
+                <tr>
+                    <td>${idx + 1}</td>
+                    <td>${esc(s.id)}</td>
+                    <td>${esc(s.name)}</td>
+                    <td>${esc(s.grade)}</td>
+                    <td class="center">
+                        <input type="checkbox" class="absent-cb" data-sid="${esc(s.id)}" data-sname="${esc(s.name)}" ${checkedAttr} ${disabledAttr} />
+                    </td>
+                    <td>
+                        <input type="text" class="absent-reason" data-sid="${esc(s.id)}" value="${esc(reasonVal)}" placeholder="ເຊັ່ນ: ຂາດບໍ່ແຈ້ງ, ລາປ່ວຍ..." ${disabledAttr} style="width: 100%;" />
+                    </td>
+                </tr>
+            `;
+        }).join("");
+
+        cards.innerHTML = roomStudents.map((s, idx) => {
+            const existing = absentRecords.find(
+                (r) =>
+                    cleanVal(r.term || "ເທີມ 1 / 2026-2027") === cleanVal(termVal) &&
+                    r.date === dateVal &&
+                    isSameGrade(r.grade, gradeVal) &&
+                    r.period === periodVal &&
+                    ((s.id && cleanVal(r.studentId) === cleanVal(s.id)) ||
+                     (s.name && cleanVal(r.studentName || r.name) === cleanVal(s.name)))
+            );
+            const checkedAttr = existing ? "checked" : "";
+            const reasonVal = existing ? existing.reason || "" : "";
+
+            return `
+                <div class="att-card">
+                    <div class="att-card-head">
+                        <div>
+                            <div class="att-card-name">#${idx + 1} • ${esc(s.name)}</div>
+                            <div class="att-card-sub">ລະຫັດ: ${esc(s.id)}</div>
+                        </div>
+                        <span class="score-pill">ຫ້ອງ ${esc(s.grade)}</span>
+                    </div>
+                    <div class="att-card-rows">
+                        <div class="att-card-row">
+                            <span class="att-card-label">❌ ຂາດຮຽນ:</span>
+                            <input type="checkbox" class="mobile-absent-cb" data-sid="${esc(s.id)}" ${checkedAttr} ${disabledAttr} onchange="syncMobileAbsentState('${esc(s.id)}')" />
+                        </div>
+                    </div>
+                    <div>
+                        <input type="text" class="mobile-absent-reason" data-sid="${esc(s.id)}" value="${esc(reasonVal)}" placeholder="ເຫດຜົນ / ໝາຍເຫດ..." ${disabledAttr} oninput="syncMobileAbsentState('${esc(s.id)}')" />
+                    </div>
+                </div>
+            `;
+        }).join("");
+    };
+
+    window.renderTermScoreSummary = function () {
+        const termVal = document.getElementById("checkTerm").value;
+        const gradeVal = getActiveGrade("checkGrade");
+        const rule = getTermPeriodRule(termVal, gradeVal);
+
+        document.getElementById("termScoreTitle").textContent =
+            `🎯 ສະຫຼຸບຄະແນນການມາຮຽນປະຈຳເທີມ (${termVal} • ຫ້ອງ ${gradeVal}) — ${rule.totalPeriods} ຄາບ (ເຕັມ ${rule.maxScore})`;
+        document.getElementById("termFormulaInfo").innerHTML =
+            `ຄະແນນເຕັມ: <strong>${rule.maxScore}</strong> • ຄາບທັງໝົດ: <strong>${rule.totalPeriods} ຄາບ</strong> • ຄິດຕາມອັດຕາສ່ວນການມາຮຽນ`;
+        document.getElementById("termScoreColHeader").textContent =
+            `ຄະແນນມາຮຽນ (ເຕັມ ${rule.maxScore})`;
+
+        const tbody = document.getElementById("termScoreSummaryBody");
+        const cards = document.getElementById("termScoreSummaryCards");
+        const roomStudents = studentsList.filter((s) => isSameGrade(s.grade, gradeVal));
+
+        if (!roomStudents.length) {
+            tbody.innerHTML = `<tr><td colspan="7" class="center">ບໍ່ມີຂໍ້ມູນນັກຮຽນໃນຫ້ອງ ${esc(gradeVal)}</td></tr>`;
+            cards.innerHTML = `<div class="att-card" style="text-align:center;color:#94a3b8;">ບໍ່ມີຂໍ້ມູນນັກຮຽນໃນຫ້ອງ ${esc(gradeVal)}</div>`;
+            return;
+        }
+
+        tbody.innerHTML = roomStudents.map((s, idx) => {
+            const info = getTermScoreForStudent(s.id, s.name, s.grade, termVal);
+            return `
+                <tr>
+                    <td>${idx + 1}</td>
+                    <td>${esc(s.name)}</td>
+                    <td>${esc(s.grade)}</td>
+                    <td>${esc(termVal)}</td>
+                    <td><span class="${info.count > 0 ? "status-absent" : "status-present"}">${info.count} / ${info.totalPeriods} ຄາບ</span></td>
+                    <td><strong class="deduct-val">-${info.deducted}</strong></td>
+                    <td><span class="score-pill">${info.score} / ${info.maxScore}</span></td>
+                </tr>
+            `;
+        }).join("");
+
+        cards.innerHTML = roomStudents.map((s, idx) => {
+            const info = getTermScoreForStudent(s.id, s.name, s.grade, termVal);
+            return `
+                <div class="att-card">
+                    <div class="att-card-head">
+                        <div>
+                            <div class="att-card-name">#${idx + 1} • ${esc(s.name)}</div>
+                            <div class="att-card-sub">${esc(termVal)}</div>
+                        </div>
+                        <span class="score-pill">${info.score} / ${info.maxScore}</span>
+                    </div>
+                    <div class="att-card-rows">
+                        <div class="att-card-row">
+                            <span class="att-card-label">ຂາດຮຽນ:</span>
+                            <span class="att-card-val"><span class="${info.count > 0 ? "status-absent" : "status-present"}">${info.count} / ${info.totalPeriods} ຄາບ</span></span>
+                        </div>
+                        <div class="att-card-row">
+                            <span class="att-card-label">ຖືກຕັດ:</span>
+                            <span class="att-card-val"><strong class="deduct-val">-${info.deducted}</strong></span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join("");
+    };
+
+    window.saveAbsentRecords = async function () {
+        if (!PERMISSIONS.canMarkAttendance) {
+            return showToast("❌ ນັກຮຽນບໍ່ມີສິດບັນທຶກການຂາດຮຽນ (ສະເພາະ ຄູ ແລະ ແອັດມິນ)!");
+        }
+
+        const termVal = document.getElementById("checkTerm").value;
+        const dateVal = document.getElementById("checkDate").value || todayStr;
+        const gradeVal = getActiveGrade("checkGrade");
+        const periodVal = document.getElementById("checkPeriod").value;
+
+        const checkboxes = Array.from(document.querySelectorAll(".absent-cb"));
+        const reasons = Array.from(document.querySelectorAll(".absent-reason"));
+
+        const oldRecords = absentRecords.filter(
+            (r) =>
+                cleanVal(r.term || "ເທີມ 1 / 2026-2027") === cleanVal(termVal) &&
+                r.date === dateVal &&
+                isSameGrade(r.grade, gradeVal) &&
+                r.period === periodVal
+        );
+
+        absentRecords = absentRecords.filter(
+            (r) =>
+                !(
+                    cleanVal(r.term || "ເທີມ 1 / 2026-2027") === cleanVal(termVal) &&
+                    r.date === dateVal &&
+                    isSameGrade(r.grade, gradeVal) &&
+                    r.period === periodVal
+                )
+        );
+
+        let savedCount = 0;
+        const newAdded = [];
+
+        for (const cb of checkboxes) {
+            if (cb.checked) {
+                const sid = cleanVal(cb.getAttribute("data-sid")) || `STU-${Date.now()}-${savedCount}`;
+                const sname = cleanVal(cb.getAttribute("data-sname")) || "ນັກຮຽນ";
+                const rInput = reasons.find((el) => cleanVal(el.getAttribute("data-sid")) === cleanVal(cb.getAttribute("data-sid")));
+                const reasonText = cleanVal(rInput ? rInput.value : "") || "ຂາດຮຽນ";
+                const safePart = `${termVal}_${dateVal}_${periodVal}_${gradeVal}_${sid}`
+                    .replace(/[\/\?#%]/g, "_")
+                    .replace(/\s+/g, "_");
+                const recId = `ABS_${safePart}`;
+
+                const newRec = {
+                    id: recId,
+                    firestoreId: recId,
+                    term: termVal,
+                    date: dateVal,
+                    grade: gradeVal,
+                    period: periodVal,
+                    studentId: sid,
+                    studentName: sname,
+                    name: sname,
+                    reason: reasonText
+                };
+
+                absentRecords.push(newRec);
+                newAdded.push(newRec);
+                savedCount++;
+            }
+        }
+
+        saveLocalRecords();
+        await syncTermAttendanceScoresToSheet(termVal, gradeVal);
+
+        document.getElementById("historyDate").value = dateVal;
+        if (PERMISSIONS.canSelectAnyGrade) {
+            const hGradeEl = document.getElementById("historyGrade");
+            const matched = Array.from(hGradeEl.options).find((o) => isSameGrade(o.value, gradeVal));
+            if (matched) hGradeEl.value = matched.value;
+        }
+        document.getElementById("historyPeriod").value = periodVal;
+
+        renderAll();
+
+        const blockedUntil = Number(localStorage.getItem(QUOTA_BLOCK_UNTIL_KEY) || "0");
+        if (Date.now() < blockedUntil) {
+            setQuotaNotice(true);
+            showToast(`ບັນທຶກໃນເຄື່ອງແລ້ວ (${savedCount} ຄົນ) • ພັກການເຊື່ອມຕໍ່ Sheet ຊົ່ວຄາວ`);
+            return;
+        }
+
+        try {
+            for (const oldRec of oldRecords) {
+                await postSheetAction({
+                    action: "delete",
+                    sheet: SHEET_CHECKIN,
+                    id: oldRec.id,
+                    row: oldRec._row || oldRec.rowNumber || ""
+                });
+            }
+
+            for (const rec of newAdded) {
+                await postSheetAction({
+                    action: "add",
+                    sheet: SHEET_CHECKIN,
+                    id: rec.id,
+                    data: rec
+                });
+            }
+
+            setQuotaNotice(false);
+            if (savedCount > 0) {
+                showToast(`✅ ບັນທຶກຄົນຂາດຮຽນລົງ Google Sheet ສຳເລັດ (${savedCount} ຄົນ)`);
+            } else {
+                showToast(`✅ ບັນທຶກການກວດການມາຮຽນລົງ Google Sheet ສຳເລັດ`);
+            }
+        } catch (err) {
+            if (isQuotaError(err)) {
+                localStorage.setItem(QUOTA_BLOCK_UNTIL_KEY, String(Date.now() + QUOTA_COOLDOWN_MS));
+                setQuotaNotice(true);
+            } else {
+                setQuotaNotice(true, `⚠️ ການເຊື່ອມຕໍ່ Google Sheet ຊົ່ວຄາວມີບັນຫາ (${cleanVal(err?.message || err)}) — ລະບົບກຳລັງໃຊ້ຂໍ້ມູນໃນເຄື່ອງ (localStorage).`);
+            }
+            showToast("ບັນທຶກໃນເຄື່ອງແລ້ວ (ບໍ່ສາມາດສົ່ງຫາ Google Sheet ໄດ້ຊົ່ວຄາວ)");
+        }
+    };
+
+    function getCurrentWeekRange() {
+        const now = new Date();
+        const day = now.getDay();
+        const diffToMon = day === 0 ? -6 : 1 - day;
+        const monday = new Date(now);
+        monday.setDate(now.getDate() + diffToMon);
+        monday.setHours(0, 0, 0, 0);
+
+        const sunday = new Date(monday);
+        sunday.setDate(monday.getDate() + 6);
+        sunday.setHours(23, 59, 59, 999);
+
+        return { start: monday, end: sunday };
+    }
+
+    window.renderWeeklySummary = function () {
+        const termVal = document.getElementById("checkTerm").value;
+        const gradeVal = getActiveGrade("weeklyGrade");
+        const rule = getTermPeriodRule(termVal, gradeVal);
+        document.getElementById("weeklyFormulaInfo").textContent =
+            `ຄິດຕາມອັດຕາສ່ວນ ${rule.totalPeriods} ຄາບ (ເຕັມ ${rule.maxScore})`;
+
+        const tbody = document.getElementById("weeklySummaryBody");
+        const cards = document.getElementById("weeklySummaryCards");
+        const { start, end } = getCurrentWeekRange();
+
+        const roomStudents = studentsList.filter((s) => isSameGrade(s.grade, gradeVal));
+        if (!roomStudents.length) {
+            tbody.innerHTML = `<tr><td colspan="5" class="center">ບໍ່ມີຂໍ້ມູນ</td></tr>`;
+            cards.innerHTML = `<div class="att-card" style="text-align:center;color:#94a3b8;">ບໍ່ມີຂໍ້ມູນ</div>`;
+            return;
+        }
+
+        tbody.innerHTML = roomStudents.map((s, idx) => {
+            const count = absentRecords.filter((r) => {
+                if (!isSameGrade(r.grade, gradeVal)) return false;
+                const matchStu =
+                    (s.id && cleanVal(r.studentId) === cleanVal(s.id)) ||
+                    (s.name && cleanVal(r.studentName || r.name) === cleanVal(s.name));
+                if (!matchStu) return false;
+                const d = new Date(r.date + "T12:00:00");
+                return d >= start && d <= end;
+            }).length;
+
+            const calc = calcScoreByPeriods(count, termVal, gradeVal);
+            return `
+                <tr>
+                    <td>${idx + 1}</td>
+                    <td>${esc(s.name)}</td>
+                    <td>${esc(s.grade)}</td>
+                    <td><span class="${count > 0 ? "status-absent" : "status-present"}">${count} ຄັ້ງ</span></td>
+                    <td><strong class="deduct-val">-${calc.deducted} ຄະແນນ</strong></td>
+                </tr>
+            `;
+        }).join("");
+
+        cards.innerHTML = roomStudents.map((s, idx) => {
+            const count = absentRecords.filter((r) => {
+                if (!isSameGrade(r.grade, gradeVal)) return false;
+                const matchStu =
+                    (s.id && cleanVal(r.studentId) === cleanVal(s.id)) ||
+                    (s.name && cleanVal(r.studentName || r.name) === cleanVal(s.name));
+                if (!matchStu) return false;
+                const d = new Date(r.date + "T12:00:00");
+                return d >= start && d <= end;
+            }).length;
+
+            const calc = calcScoreByPeriods(count, termVal, gradeVal);
+            return `
+                <div class="att-card">
+                    <div class="att-card-head">
+                        <div>
+                            <div class="att-card-name">#${idx + 1} • ${esc(s.name)}</div>
+                            <div class="att-card-sub">ຫ້ອງ ${esc(s.grade)} • ອາທິດນີ້</div>
+                        </div>
+                        <span class="${count > 0 ? "status-absent" : "status-present"}">${count} ຄັ້ງ</span>
+                    </div>
+                    <div class="att-card-rows">
+                        <div class="att-card-row">
+                            <span class="att-card-label">ຖືກຕັດ:</span>
+                            <span class="att-card-val"><strong class="deduct-val">-${calc.deducted} ຄະແນນ</strong></span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join("");
+    };
+
+    window.renderMonthlySummary = function () {
+        const termVal = document.getElementById("checkTerm").value;
+        const monthVal = document.getElementById("monthlyPicker").value || currentMonthStr;
+        const gradeVal = getActiveGrade("monthlyGrade");
+        const rule = getTermPeriodRule(termVal, gradeVal);
+        document.getElementById("monthlyFormulaInfo").textContent =
+            `ຄິດຕາມອັດຕາສ່ວນ ${rule.totalPeriods} ຄາບ (ເຕັມ ${rule.maxScore})`;
+
+        const tbody = document.getElementById("monthlySummaryBody");
+        const cards = document.getElementById("monthlySummaryCards");
+
+        const roomStudents = studentsList.filter((s) => isSameGrade(s.grade, gradeVal));
+        if (!roomStudents.length) {
+            tbody.innerHTML = `<tr><td colspan="5" class="center">ບໍ່ມີຂໍ້ມູນ</td></tr>`;
+            cards.innerHTML = `<div class="att-card" style="text-align:center;color:#94a3b8;">ບໍ່ມີຂໍ້ມູນ</div>`;
+            return;
+        }
+
+        tbody.innerHTML = roomStudents.map((s, idx) => {
+            const count = absentRecords.filter((r) => {
+                if (!isSameGrade(r.grade, gradeVal) || !String(r.date || "").startsWith(monthVal)) return false;
+                return (
+                    (s.id && cleanVal(r.studentId) === cleanVal(s.id)) ||
+                    (s.name && cleanVal(r.studentName || r.name) === cleanVal(s.name))
+                );
+            }).length;
+
+            const calc = calcScoreByPeriods(count, termVal, gradeVal);
+            return `
+                <tr>
+                    <td>${idx + 1}</td>
+                    <td>${esc(s.name)}</td>
+                    <td>${esc(s.grade)}</td>
+                    <td><span class="${count > 0 ? "status-absent" : "status-present"}">${count} ຄັ້ງ</span></td>
+                    <td><strong class="deduct-val">-${calc.deducted} ຄະແນນ</strong></td>
+                </tr>
+            `;
+        }).join("");
+
+        cards.innerHTML = roomStudents.map((s, idx) => {
+            const count = absentRecords.filter((r) => {
+                if (!isSameGrade(r.grade, gradeVal) || !String(r.date || "").startsWith(monthVal)) return false;
+                return (
+                    (s.id && cleanVal(r.studentId) === cleanVal(s.id)) ||
+                    (s.name && cleanVal(r.studentName || r.name) === cleanVal(s.name))
+                );
+            }).length;
+
+            const calc = calcScoreByPeriods(count, termVal, gradeVal);
+            return `
+                <div class="att-card">
+                    <div class="att-card-head">
+                        <div>
+                            <div class="att-card-name">#${idx + 1} • ${esc(s.name)}</div>
+                            <div class="att-card-sub">ຫ້ອງ ${esc(s.grade)} • ${esc(monthVal)}</div>
+                        </div>
+                        <span class="${count > 0 ? "status-absent" : "status-present"}">${count} ຄັ້ງ</span>
+                    </div>
+                    <div class="att-card-rows">
+                        <div class="att-card-row">
+                            <span class="att-card-label">ຖືກຕັດ:</span>
+                            <span class="att-card-val"><strong class="deduct-val">-${calc.deducted} ຄະແນນ</strong></span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join("");
+    };
+
+    window.renderPeriodAbsentHistory = function () {
+        const dateVal = document.getElementById("historyDate").value;
+        const gradeVal = getActiveGrade("historyGrade");
+        const periodVal = document.getElementById("historyPeriod").value;
+        const tbody = document.getElementById("periodAbsentBody");
+        const cards = document.getElementById("periodAbsentCards");
+
+        const matches = absentRecords.filter((r) => {
+            const matchGrade = isSameGrade(r.grade, gradeVal);
+            const matchDate = !dateVal || r.date === dateVal;
+            const matchPeriod = !periodVal || r.period === periodVal;
+            return matchGrade && matchDate && matchPeriod;
+        });
+
+        const cols = PERMISSIONS.canDeleteRecord ? 7 : 6;
+        if (!matches.length) {
+            tbody.innerHTML = `<tr><td colspan="${cols}" class="center">ບໍ່ມີນັກຮຽນຂາດໃນຊົ່ວໂມງນີ້ (${esc(gradeVal)} • ${esc(dateVal || "ທຸກວັນ")})</td></tr>`;
+            cards.innerHTML = `<div class="att-card" style="text-align:center;color:#94a3b8;">ບໍ່ມີນັກຮຽນຂາດໃນຊົ່ວໂມງນີ້ (${esc(gradeVal)})</div>`;
+            return;
+        }
+
+        tbody.innerHTML = matches.map((r, idx) => `
+            <tr>
+                <td>${idx + 1}</td>
+                <td>${esc(r.date)}</td>
+                <td>${esc(r.period)}</td>
+                <td>${esc(r.grade)}</td>
+                <td><span class="status-absent">${esc(r.studentName || r.name)}</span></td>
+                <td>${esc(r.reason || "-")}</td>
+                ${PERMISSIONS.canDeleteRecord ? `
+                    <td>
+                        <button type="button" class="btn-del" onclick="deleteAbsentRecord('${esc(r.id)}')">ລົບ</button>
+                    </td>
+                ` : ""}
+            </tr>
+        `).join("");
+
+        cards.innerHTML = matches.map((r, idx) => `
+            <div class="att-card">
+                <div class="att-card-head">
+                    <div>
+                        <div class="att-card-name">#${idx + 1} • ${esc(r.studentName || r.name)}</div>
+                        <div class="att-card-sub">${esc(r.date)} • ${esc(r.period)}</div>
+                    </div>
+                    <span class="status-absent">ຂາດຮຽນ</span>
+                </div>
+                <div class="att-card-rows">
+                    <div class="att-card-row">
+                        <span class="att-card-label">ຫ້ອງ:</span>
+                        <span class="att-card-val">${esc(r.grade)}</span>
+                    </div>
+                    <div class="att-card-row">
+                        <span class="att-card-label">ເຫດຜົນ:</span>
+                        <span class="att-card-val">${esc(r.reason || "-")}</span>
+                    </div>
+                </div>
+                ${PERMISSIONS.canDeleteRecord ? `
+                    <div class="att-card-footer">
+                        <button type="button" class="btn-del" onclick="deleteAbsentRecord('${esc(r.id)}')">ລົບ</button>
+                    </div>
+                ` : ""}
+            </div>
+        `).join("");
+    };
+
+    window.deleteAbsentRecord = async function (recId) {
+        if (!PERMISSIONS.canDeleteRecord) {
+            return showToast("❌ ນັກຮຽນບໍ່ມີສິດລົບລາຍການ (ສະເພາະ ຄູ ແລະ ແອັດມິນ)!");
+        }
+        const target = absentRecords.find((r) => r.id === recId);
+        if (!target) return;
+        if (!confirm(`ຢືນຢັນລົບລາຍການຂາດຂອງ "${target.studentName || target.name}"?`)) return;
+
+        absentRecords = absentRecords.filter((r) => r.id !== recId);
+        saveLocalRecords();
+        const termVal = document.getElementById("checkTerm").value;
+        await syncTermAttendanceScoresToSheet(termVal, target.grade);
+        renderAll();
+
+        const blockedUntil = Number(localStorage.getItem(QUOTA_BLOCK_UNTIL_KEY) || "0");
+        if (Date.now() < blockedUntil) {
+            setQuotaNotice(true);
+            showToast("ລົບໃນເຄື່ອງແລ້ວ (ພັກການເຊື່ອມຕໍ່ Sheet ຊົ່ວຄາວ)");
+            return;
+        }
+
+        try {
+            await postSheetAction({
+                action: "delete",
+                sheet: SHEET_CHECKIN,
+                id: target.id,
+                row: target._row || target.rowNumber || ""
+            });
+            setQuotaNotice(false);
+            showToast("ລົບລາຍການອອກຈາກ Google Sheet ສຳເລັດແລ້ວ");
+        } catch (err) {
+            if (isQuotaError(err)) {
+                localStorage.setItem(QUOTA_BLOCK_UNTIL_KEY, String(Date.now() + QUOTA_COOLDOWN_MS));
+                setQuotaNotice(true);
+            } else {
+                setQuotaNotice(true, `⚠️ ການເຊື່ອມຕໍ່ Google Sheet ຊົ່ວຄາວມີບັນຫາ (${cleanVal(err?.message || err)}) — ລະບົບກຳລັງໃຊ້ຂໍ້ມູນໃນເຄື່ອງ (localStorage).`);
+            }
+            showToast("ລົບໃນເຄື່ອງແລ້ວ");
+        }
+    };
+
+    window.renderAll = function () {
+        renderCheckAbsentList();
+        renderTermScoreSummary();
+        renderWeeklySummary();
+        renderMonthlySummary();
+        renderPeriodAbsentHistory();
+    };
+
+    async function loadTermPeriodsFromSheet() {
+        try {
+            const rows = await fetchSheetRows(SHEET_TERM_PERIODS);
+            if (rows.length > 0) {
+                termPeriodsConfigs = rows.map((d, idx) => ({
+                    id: cleanVal(d.id || `TP-${idx + 1}`),
+                    ...d
+                }));
+                localStorage.setItem("school_term_periods", JSON.stringify(termPeriodsConfigs));
+            }
+        } catch (_) {}
+    }
+
+    async function loadStudentsFromSheet() {
+        try {
+            const rows = await fetchSheetRows(SHEET_STUDENTS);
+            if (rows.length > 0) {
+                const loaded = [];
+                rows.forEach((data, idx) => {
+                    const sName = cleanVal(data.name || data.studentName || "");
+                    const sGrade = cleanGrade(data.grade || data.room || userGrade) || userGrade;
+                    if (sName) {
+                        loaded.push({
+                            id: cleanVal(data.id || data.code || data.studentCode || `STD-${idx + 1}`),
+                            name: sName,
+                            grade: sGrade
+                        });
+                    }
+                });
+                if (loaded.length > 0) {
+                    studentsList = loaded;
+                    localStorage.setItem("school_students_list", JSON.stringify(studentsList));
+                }
+            }
+        } catch (_) {}
+    }
+
+    window.loadAbsentFromSheet = async function (showAlert = false) {
+        const now = Date.now();
+        const blockedUntil = Number(localStorage.getItem(QUOTA_BLOCK_UNTIL_KEY) || "0");
+        const lastFetchTs = Number(localStorage.getItem(LAST_FETCH_TS_KEY) || "0");
+
+        if (now < blockedUntil) {
+            setQuotaNotice(true);
+            syncAllRoomSelects([], true);
+            renderAll();
+            if (showAlert) showToast("ພັກການເຊື່ອມຕໍ່ Sheet ຊົ່ວຄາວ ກຳລັງໃຊ້ຂໍ້ມູນໃນເຄື່ອງ");
+            return;
+        }
+
+        if (!showAlert && now - lastFetchTs < FETCH_COOLDOWN_MS) {
+            syncAllRoomSelects([], true);
+            renderAll();
+            return;
+        }
+
+        const syncBtn = document.getElementById("syncBtn");
+        if (syncBtn) syncBtn.disabled = true;
+
+        try {
+            await Promise.all([loadTermPeriodsFromSheet(), loadStudentsFromSheet()]);
+            const rows = await fetchSheetRows(SHEET_CHECKIN);
+            if (rows.length > 0) {
+                absentRecords = rows.map((d, idx) => ({
+                    id: cleanVal(d.id || `ABS-${idx + 1}`),
+                    firestoreId: cleanVal(d.id || `ABS-${idx + 1}`),
+                    rowNumber: d._row || d.row || "",
+                    ...d
+                }));
+                saveLocalRecords();
+            }
+            localStorage.setItem(LAST_FETCH_TS_KEY, String(Date.now()));
+            localStorage.removeItem(QUOTA_BLOCK_UNTIL_KEY);
+            setQuotaNotice(false);
+            updateSyncBadge("📊 Google Sheet");
+            syncAllRoomSelects([], true);
+            renderAll();
+            if (showAlert) showToast("✅ ໂຫຼດຂໍ້ມູນການມາຮຽນຈາກ Google Sheet ສຳເລັດ!");
+        } catch (err) {
+            if (isQuotaError(err)) {
+                localStorage.setItem(QUOTA_BLOCK_UNTIL_KEY, String(Date.now() + QUOTA_COOLDOWN_MS));
+                setQuotaNotice(true);
+                if (showAlert) showToast("⚠️ ໂຄຕ້າເຕັມ ກຳລັງໃຊ້ຂໍ້ມູນໃນເຄື່ອງ");
+            } else {
+                setQuotaNotice(true, `⚠️ ການເຊື່ອມຕໍ່ Google Sheet ຊົ່ວຄາວມີບັນຫາ (${cleanVal(err?.message || err)}) — ລະບົບກຳລັງໃຊ້ຂໍ້ມູນໃນເຄື່ອງ (localStorage).`);
+                if (showAlert) showToast("⚠️ ເຊື່ອມຕໍ່ Google Sheet ບໍ່ໄດ້ ໃຊ້ຂໍ້ມູນໃນເຄື່ອງ");
+            }
+            syncAllRoomSelects([], true);
+            renderAll();
+        } finally {
+            if (syncBtn) syncBtn.disabled = false;
+        }
+    };
+
+    window.loadAbsentFromFirestore = window.loadAbsentFromSheet;
+
+    window.addEventListener("storage", (e) => {
+        if (e.key === SYNC_STORAGE_KEY || e.key === "school_term_periods" || e.key === "school_absent_records") {
+            termPeriodsConfigs = JSON.parse(localStorage.getItem("school_term_periods") || "null") || termPeriodsConfigs;
+            absentRecords = JSON.parse(localStorage.getItem("school_absent_records") || "null") || absentRecords;
+            syncAllRoomSelects([], true);
+            renderAll();
+        }
+    });
+
+    function esc(str) {
+        return String(str ?? "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;");
+    }
+
+    setupRolePermissions();
+    renderAll();
+    loadAbsentFromSheet(false);
+</script>
+</body>
+</html>
