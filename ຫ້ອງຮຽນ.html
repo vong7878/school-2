@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>🏫 ຫ້ອງຮຽນ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        html, body {
+            margin: 0;
+            font-family: 'Noto Sans Lao', sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+            padding: 14px;
+            min-height: 100vh;
+            min-height: 100dvh;
+            width: 100%;
+            max-width: 100%;
+            overflow-x: hidden;
+            -webkit-text-size-adjust: 100%;
+        }
+        .container {
+            width: 100%;
+            max-width: 1180px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            min-width: 0;
+        }
+        .quota-banner {
+            background: rgba(245, 158, 11, 0.16);
+            border: 1px solid rgba(245, 158, 11, 0.55);
+            color: #fef08a;
+            border-radius: 12px;
+            padding: 10px 14px;
+            font-size: 12px;
+            line-height: 1.4;
+            display: none;
+            overflow-wrap: anywhere;
+        }
+        .quota-banner.show {
+            display: block;
+        }
+        .topbar {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 14px;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            min-width: 0;
+        }
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            min-width: 0;
+            flex: 1 1 auto;
+        }
+        .back-btn {
+            background: #334155;
+            color: #f8fafc;
+            text-decoration: none;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 13.5px;
+            font-weight: 600;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .back-btn:hover { background: #475569; }
+        .page-title {
+            margin: 0;
+            font-size: clamp(16px, 4.2vw, 18.5px);
+            font-weight: 700;
+            color: #f8fafc;
+            line-height: 1.3;
+            overflow-wrap: anywhere;
+        }
+        .user-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            flex-wrap: wrap;
+            max-width: 100%;
+            min-width: 0;
+        }
+        #currentUserName {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 200px;
+        }
+        .badge {
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-weight: 600;
+            font-size: 11.5px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .badge-role-admin { background: #dc2626; color: #fff; }
+        .badge-role-teacher { background: #7c3aed; color: #fff; }
+        .badge-role-student { background: #2563eb; color: #fff; }
+
+        .admin-only,
+        #adminClassroomSection,
+        .btn-edit,
+        .btn-del {
+            display: none !important;
+        }
+
+        .card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 14px;
+            padding: 16px 18px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+            min-width: 0;
+            width: 100%;
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding-bottom: 12px;
+            margin-bottom: 14px;
+            border-bottom: 1px solid #334155;
+            min-width: 0;
+        }
+        .card-header h2 {
+            margin: 0;
+            font-size: clamp(14.5px, 3.8vw, 16.5px);
+            font-weight: 700;
+            color: #f8fafc;
+            line-height: 1.35;
+            overflow-wrap: anywhere;
+        }
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            min-width: 0;
+        }
+        input {
+            background: #0f172a;
+            color: #f8fafc;
+            border: 1px solid #475569;
+            border-radius: 8px;
+            padding: 8px 11px;
+            font-family: inherit;
+            font-size: 13px;
+            min-width: 0;
+            max-width: 100%;
+        }
+        .controls input {
+            flex: 1 1 200px;
+        }
+        button {
+            font-family: inherit;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 13px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            max-width: 100%;
+        }
+        button:hover:not(:disabled) { opacity: 0.92; }
+        button:disabled { opacity: 0.6; cursor: not-allowed; }
+        .btn-sync { background: #0284c7; color: #fff; }
+
+        .table-wrap {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            border-radius: 8px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 640px;
+        }
+        th, td {
+            border: 1px solid #334155;
+            padding: 9px 11px;
+            text-align: left;
+            font-size: 13px;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+        th {
+            background: #0f172a;
+            color: #93c5fd;
+            font-weight: 700;
+        }
+        td {
+            background: #162032;
+            color: #e2e8f0;
+        }
+        tr:hover td { background: #24334d; }
+        .center { text-align: center; }
+
+        @media (max-width: 640px) {
+            html, body {
+                padding: 10px;
+            }
+            .topbar, .card {
+                padding: 13px 12px;
+                border-radius: 12px;
+            }
+            .controls {
+                width: 100%;
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .controls input,
+            .controls button {
+                width: 100%;
+                flex: 1 1 auto;
+            }
+            table {
+                min-width: 560px;
+            }
+            th, td {
+                padding: 8px 9px;
+                font-size: 12px;
+            }
+            #currentUserName {
+                max-width: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="quota-banner" id="quotaBanner">
+        ⚠️ ການເຊື່ອມຕໍ່ Google Sheet ຊົ່ວຄາວມີບັນຫາ — ລະບົບກຳລັງໃຊ້ຂໍ້ມູນທີ່ບັນທຶກໃນເຄື່ອງ (`localStorage`) ແລະ ຈຳກັດການໂຫຼດຊ້ຳ.
+    </div>
+
+    <div class="topbar">
+        <div class="topbar-left">
+            <a href="index.html" class="back-btn">⬅ ກັບໄປໜ້າຫຼັກ</a>
+            <h1 class="page-title">🏫 ຫ້ອງຮຽນ</h1>
+        </div>
+        <div class="user-meta">
+            <span id="currentUserName">ຜູ້ໃຊ້ງານ</span>
+            <span id="currentUserRole" class="badge badge-role-student">STUDENT</span>
+        </div>
+    </div>
+
+    <section class="card">
+        <div class="card-header">
+            <h2>📋 ລາຍການຫ້ອງຮຽນທັງໝົດ (ໂຕບໍ່ຊ້ຳກັນ)</h2>
+            <div class="controls">
+                <input type="text" id="searchRoomInput" placeholder="ຄົ້ນຫາຊື່ຫ້ອງ, ຄູປະຈຳຫ້ອງ..." oninput="renderClassroomsTable()" />
+                <button type="button" class="btn-sync" id="btnLoadRooms" onclick="loadClassroomsFromSheet(true)">🔄 ໂຫຼດຂໍ້ມູນໃໝ່</button>
+            </div>
+        </div>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 55px;">ລ/ດ</th>
+                        <th>ຊື່ຫ້ອງ</th>
+                        <th>ຄູປະຈຳຫ້ອງ</th>
+                        <th>ອາຄານ / ຊັ້ນ</th>
+                        <th>ຈຳນວນນັກຮຽນ</th>
+                        <th>ໝາຍເຫດ</th>
+                    </tr>
+                </thead>
+                <tbody id="classroomsTableBody"></tbody>
+            </table>
+        </div>
+    </section>
+</div>
+
+<script>
+    const APPS_SCRIPT_URL = window.APPS_SCRIPT_URL || "https://script.google.com/macros/s/AKfycbwp7pM_Lx8qdeuGC_nA_zvxTCltlOvJKNN-tjkRX_wi8JMt6EVyheyRNFambP69dOc9Yg/exec";
+    const SHEET_NAME = "classes";
+    const QUOTA_BLOCK_UNTIL_KEY = "school_sheet_quota_blocked_until";
+    const ROOMS_FETCH_TS_KEY = "school_rooms_last_fetch_ts";
+    const ROOMS_COOLDOWN_MS = 60000;
+    const QUOTA_COOLDOWN_MS = 1800000;
+
+    function setRoomsQuotaBanner(active, customMsg = "") {
+        const banner = document.getElementById("quotaBanner");
+        if (!banner) return;
+        if (customMsg) {
+            banner.textContent = customMsg;
+        }
+        if (active) banner.classList.add("show");
+        else banner.classList.remove("show");
+    }
+
+    function cleanVal(v) {
+        return String(v ?? "").trim().replace(/^["']+|["']+$/g, "");
+    }
+
+    function cleanRoomName(v) {
+        return cleanVal(v).replace(/\s+/g, "").toLowerCase();
+    }
+
+    function isQuotaErr(err) {
+        const msg = String(err?.message || err || "").toLowerCase();
+        return (
+            msg.includes("quota") ||
+            msg.includes("resource exhausted") ||
+            msg.includes("daily usage") ||
+            msg.includes("service invoked too many times") ||
+            msg.includes("rate limit")
+        );
+    }
+
+    function resolveRole() {
+        try {
+            const raw = (
+                localStorage.getItem("userRole") ||
+                localStorage.getItem("role") ||
+                localStorage.getItem("user_role") ||
+                "student"
+            ).trim().toLowerCase();
+            if (["admin", "administrator", "ແອັດມິນ", "แอดมิน"].includes(raw)) return "admin";
+            if (["teacher", "ຄູ", "ຄູອາຈານ", "ครู"].includes(raw)) return "teacher";
+        } catch (e) {}
+        return "student";
+    }
+
+    const role = resolveRole();
+    const userName = (function () {
+        try {
+            return localStorage.getItem("userName") || "ຜູ້ໃຊ້ງານ";
+        } catch (e) {
+            return "ຜູ້ໃຊ້ງານ";
+        }
+    })();
+
+    const DEFAULT_ROOMS = [
+        { id: "ROOM-M5", firestoreId: "ROOM-M5", name: "ມ.5", advisor: "ອ. ຄຳຜາຍ ສີສະຫວັດ", building: "ອາຄານ A - ຊັ້ນ 1", studentCount: 32, note: "ຫ້ອງຮຽນ ມ.5 ປົກກະຕິ" },
+        { id: "ROOM-M6", firestoreId: "ROOM-M6", name: "ມ.6", advisor: "ອ. ສຸກສາຄອນ ແສງດາວ", building: "ອາຄານ A - ຊັ້ນ 2", studentCount: 28, note: "ຫ້ອງຮຽນ ມ.6 ປົກກະຕິ" },
+        { id: "ROOM-M7", firestoreId: "ROOM-M7", name: "ມ.7", advisor: "ອ. ສາຍສະຖອນ ວົງວິໄລ", building: "ອາຄານ B - ຊັ້ນ 2", studentCount: 26, note: "ຫ້ອງຮຽນ ມ.7 ກຽມສອບເສັງ" }
+    ];
+
+    function normalizeRoom(raw, idx = 0) {
+        const d = raw || {};
+        const roomName = cleanVal(d.name || d.roomName || d.room || d.grade || "");
+        const countRaw = d.studentCount ?? d.studentsCount ?? d.capacity ?? d.count ?? 0;
+        const parsedCount = Number(String(countRaw).replace(/[^\d.-]/g, ""));
+        return {
+            ...d,
+            id: cleanVal(d.id || d.firestoreId || roomName || `ROOM-${idx + 1}`),
+            firestoreId: cleanVal(d.firestoreId || d.id || roomName || `ROOM-${idx + 1}`),
+            name: roomName,
+            advisor: cleanVal(d.advisor || d.homeroomTeacher || d.teacher || ""),
+            building: cleanVal(d.building || d.floor || d.level || ""),
+            studentCount: Number.isFinite(parsedCount) ? parsedCount : 0,
+            note: cleanVal(d.note || d.description || "")
+        };
+    }
+
+    function roomCompleteness(r) {
+        return ["name", "advisor", "building", "note"]
+            .reduce((acc, k) => acc + (cleanVal(r[k]) ? 1 : 0), 0) + (Number(r.studentCount) > 0 ? 1 : 0);
+    }
+
+    function dedupeClassrooms(list = []) {
+        const map = new Map();
+        list.forEach((rawItem, idx) => {
+            const item = normalizeRoom(rawItem, idx);
+            const keyVal = cleanRoomName(item.name) || cleanVal(item.id).toLowerCase();
+            if (!keyVal) return;
+            const prev = map.get(keyVal);
+            if (!prev) {
+                map.set(keyVal, item);
+            } else {
+                const prevScore = roomCompleteness(prev);
+                const nextScore = roomCompleteness(item);
+                const prevTime = prev.updatedAt?.seconds || prev.createdAt?.seconds || 0;
+                const nextTime = item.updatedAt?.seconds || item.createdAt?.seconds || 0;
+                if (nextScore > prevScore || (nextScore === prevScore && nextTime >= prevTime)) {
+                    map.set(keyVal, { ...prev, ...item });
+                } else {
+                    map.set(keyVal, { ...item, ...prev });
+                }
+            }
+        });
+        return Array.from(map.values());
+    }
+
+    let classroomsData = dedupeClassrooms((function () {
+        try {
+            return JSON.parse(localStorage.getItem("school_classrooms_data") || "null") || DEFAULT_ROOMS;
+        } catch (e) {
+            return DEFAULT_ROOMS;
+        }
+    })());
+
+    function saveClassroomsLocal() {
+        classroomsData = dedupeClassrooms(classroomsData);
+        try {
+            localStorage.setItem("school_classrooms_data", JSON.stringify(classroomsData));
+        } catch (e) {}
+    }
+
+    function esc(str) {
+        return String(str || "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;");
+    }
+
+    function withTimeout(promise, ms = 12000) {
+        return Promise.race([
+            promise,
+            new Promise((_, reject) =>
+                setTimeout(() => reject(new Error("ໝົດເວລາການເຊື່ອມຕໍ່ Google Sheet")), ms)
+            )
+        ]);
+    }
+
+    async function fetchSheetRows(sheetName) {
+        if (!APPS_SCRIPT_URL) {
+            throw new Error("ຍັງບໍ່ໄດ້ຕັ້ງຄ່າ APPS_SCRIPT_URL");
+        }
+        const url = new URL(APPS_SCRIPT_URL);
+        url.searchParams.set("sheet", sheetName);
+        url.searchParams.set("_t", String(Date.now()));
+
+        const res = await withTimeout(fetch(url.toString(), { method: "GET", cache: "no-store" }), 12000);
+        if (!res.ok) {
+            throw new Error(`HTTP ${res.status}`);
+        }
+        const data = await res.json();
+        if (!data || data.ok === false) {
+            throw new Error(data?.error || "ບໍ່ສາມາດອ່ານຂໍ້ມູນຈາກ Google Sheet ໄດ້");
+        }
+        return Array.isArray(data.rows) ? data.rows : [];
+    }
+
+    function renderClassroomsTable() {
+        const q = (document.getElementById("searchRoomInput").value || "").trim().toLowerCase();
+        const tbody = document.getElementById("classroomsTableBody");
+        if (!tbody) return;
+
+        const uniqueRooms = dedupeClassrooms(classroomsData);
+        const filtered = uniqueRooms.filter((r) => {
+            const hay = `${r.name || ""} ${r.advisor || ""} ${r.building || ""} ${r.note || ""}`.toLowerCase();
+            return !q || hay.includes(q);
+        });
+
+        if (!filtered.length) {
+            tbody.innerHTML = `<tr><td colspan="6" class="center">ບໍ່ພົບຂໍ້ມູນຫ້ອງຮຽນ</td></tr>`;
+            return;
+        }
+
+        tbody.innerHTML = filtered.map((r, idx) => `
+            <tr>
+                <td>${idx + 1}</td>
+                <td><strong>${esc(r.name)}</strong></td>
+                <td>${esc(r.advisor || "-")}</td>
+                <td>${esc(r.building || "-")}</td>
+                <td>${Number(r.studentCount || 0)} ຄົນ</td>
+                <td>${esc(r.note || "-")}</td>
+            </tr>
+        `).join("");
+    }
+
+    async function loadClassroomsFromSheet(showAlert = false) {
+        const now = Date.now();
+        const blockedUntil = Number(localStorage.getItem(QUOTA_BLOCK_UNTIL_KEY) || "0");
+        const lastFetchTs = Number(localStorage.getItem(ROOMS_FETCH_TS_KEY) || "0");
+        const btn = document.getElementById("btnLoadRooms");
+
+        if (now < blockedUntil) {
+            setRoomsQuotaBanner(true);
+            renderClassroomsTable();
+            if (showAlert) alert("⚠️ ການເຊື່ອມຕໍ່ Sheet ຖືກພັກຊົ່ວຄາວ — ສະແດງຂໍ້ມູນໃນເຄື່ອງ.");
+            return;
+        }
+
+        if (!showAlert && now - lastFetchTs < ROOMS_COOLDOWN_MS) {
+            renderClassroomsTable();
+            return;
+        }
+
+        if (btn) btn.disabled = true;
+        try {
+            const rows = await fetchSheetRows(SHEET_NAME);
+            localStorage.setItem(ROOMS_FETCH_TS_KEY, String(Date.now()));
+            localStorage.removeItem(QUOTA_BLOCK_UNTIL_KEY);
+            setRoomsQuotaBanner(false);
+
+            if (rows.length > 0) {
+                classroomsData = dedupeClassrooms(rows);
+                saveClassroomsLocal();
+            }
+            renderClassroomsTable();
+            if (showAlert) alert("✅ ໂຫຼດຂໍ້ມູນຫ້ອງຮຽນຈາກ Google Sheet ສຳເລັດ!");
+        } catch (err) {
+            if (isQuotaErr(err)) {
+                localStorage.setItem(QUOTA_BLOCK_UNTIL_KEY, String(Date.now() + QUOTA_COOLDOWN_MS));
+                setRoomsQuotaBanner(true);
+            } else {
+                setRoomsQuotaBanner(true, `⚠️ ການເຊື່ອມຕໍ່ Google Sheet ຊົ່ວຄາວມີບັນຫາ (${cleanVal(err?.message || err)}) — ລະບົບກຳລັງໃຊ້ຂໍ້ມູນທີ່ບັນທຶກໃນເຄື່ອງ (localStorage) ແລະ ຈຳກັດການໂຫຼດຊ້ຳ.`);
+            }
+            renderClassroomsTable();
+            if (showAlert) alert("⚠️ ເຊື່ອມຕໍ່ Google Sheet ບໍ່ໄດ້ — ສະແດງຂໍ້ມູນໃນເຄື່ອງ.");
+        } finally {
+            if (btn) btn.disabled = false;
+        }
+    }
+
+    window.loadClassroomsFromFirestore = loadClassroomsFromSheet;
+
+    const roleBadge = document.getElementById("currentUserRole");
+    if (roleBadge) {
+        roleBadge.textContent = role.toUpperCase();
+        roleBadge.className = `badge badge-role-${role}`;
+    }
+    const nameEl = document.getElementById("currentUserName");
+    if (nameEl) nameEl.textContent = userName;
+
+    if (Date.now() < Number(localStorage.getItem(QUOTA_BLOCK_UNTIL_KEY) || "0")) {
+        setRoomsQuotaBanner(true);
+    }
+
+    renderClassroomsTable();
+    loadClassroomsFromSheet(false);
+
+    window.addEventListener("storage", (e) => {
+        if (e.key === "schoolSystemDataUpdated") loadClassroomsFromSheet(false);
+    });
+    window.addEventListener("school-data-updated", () => loadClassroomsFromSheet(false));
+</script>
+</body>
+</html>
+ສິ່
