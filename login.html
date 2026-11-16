@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>ເຂົ້າສູ່ລະບົບ - School Management System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        html, body {
+            font-family: 'Noto Sans Lao', 'Phetsarath OT', Arial, sans-serif;
+            background: #f4f7f6;
+            margin: 0;
+            padding: 14px;
+            width: 100%;
+            min-height: 100vh;
+            min-height: 100dvh;
+            max-width: 100%;
+            overflow-x: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            -webkit-text-size-adjust: 100%;
+        }
+        .login-card {
+            background: #ffffff;
+            padding: 24px 20px;
+            border-radius: 12px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 400px;
+            min-width: 0;
+        }
+        h2 {
+            text-align: center;
+            color: #1e293b;
+            margin: 0 0 18px;
+            font-size: clamp(18px, 5vw, 22px);
+            line-height: 1.35;
+            overflow-wrap: anywhere;
+        }
+        .form-group {
+            margin-bottom: 14px;
+            min-width: 0;
+        }
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: #334155;
+            font-size: 13.5px;
+        }
+        input {
+            width: 100%;
+            min-width: 0;
+            max-width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 14px;
+            color: #0f172a;
+            background: #ffffff;
+        }
+        input:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+        button {
+            width: 100%;
+            max-width: 100%;
+            padding: 11px 14px;
+            background: #2563eb;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s, opacity 0.2s;
+        }
+        button:hover:not(:disabled) {
+            background: #1d4ed8;
+        }
+        button:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+        }
+        .error-msg {
+            color: #dc2626;
+            text-align: center;
+            margin-top: 12px;
+            font-size: 13px;
+            line-height: 1.4;
+            overflow-wrap: anywhere;
+        }
+        .quota-note {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            color: #92400e;
+            border-radius: 8px;
+            padding: 8px 10px;
+            font-size: 12px;
+            line-height: 1.4;
+            margin-bottom: 14px;
+            display: none;
+            overflow-wrap: anywhere;
+        }
+        .quota-note.show {
+            display: block;
+        }
+
+        @media (max-width: 420px) {
+            html, body {
+                padding: 10px;
+            }
+            .login-card {
+                padding: 18px 14px;
+                border-radius: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-card">
+        <h2>🔐 ເຂົ້າສູ່ລະບົບໂຮງຮຽນ</h2>
+
+        <div class="quota-note" id="quotaNote">
+            ⚠️ ບໍ່ສາມາດເຊື່ອມຕໍ່ Google Sheet ໄດ້ຊົ່ວຄາວ — ລະບົບຈະກວດສອບຈາກບັນຊີທີ່ເກັບໃນເຄື່ອງ (`localStorage`) ຖ້າມີ.
+        </div>
+
+        <form id="login-form">
+            <div class="form-group">
+                <label for="login-email">ອີເມວ (Email):</label>
+                <input type="email" id="login-email" required autocomplete="email" placeholder="example@school.com">
+            </div>
+            <div class="form-group">
+                <label for="login-password">ລະຫັດຜ່ານ (Password):</label>
+                <input type="password" id="login-password" required autocomplete="current-password" placeholder="********">
+            </div>
+            <button type="submit" id="loginSubmitBtn">ເຂົ້າສູ່ລະບົບ</button>
+            <div id="login-error" class="error-msg"></div>
+        </form>
+    </div>
+
+    <script>
+        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz2GeJz9zdeNbJ__dOuVkW5oT1Gfzdz5OZekUhBiGU0AlBE46lBre1JH_GFr3agr5Gi/exec";
+        const KNOWN_ACCOUNTS_KEY = "school_known_login_accounts";
+        const LOGIN_COOLDOWN_MS = 2000;
+
+        function normalizeRole(rawRole, fallbackRole = "student") {
+            const val = String(rawRole || fallbackRole || "student").trim().toLowerCase();
+            if (["admin", "administrator", "ແອັດມິນ", "ຜູ້ດູແລລະບົບ"].includes(val)) {
+                return "admin";
+            }
+            if (["teacher", "ຄູ", "ຄູອາຈານ", "ອາຈານ"].includes(val)) {
+                return "teacher";
+            }
+            if (["student", "ນັກຮຽນ", "ນັກສຶກສາ"].includes(val)) {
+                return "student";
+            }
+            return val || "student";
+        }
+
+        function getRoleLabelLo(role) {
+            if (role === "admin") return "ແອັດມິນ (ADMIN)";
+            if (role === "teacher") return "ຄູອາຈານ (TEACHER)";
+            return "ນັກຮຽນ (STUDENT)";
+        }
+
+        function stripQuotes(val) {
+            return String(val || "")
+                .trim()
+                .replace(/^["']+|["']+$/g, "");
+        }
+
+        function setQuotaNote(active) {
+            const el = document.getElementById("quotaNote");
+            if (!el) return;
+            if (active) el.classList.add("show");
+            else el.classList.remove("show");
+        }
+
+        function loadKnownAccounts() {
+            try {
+                const list = JSON.parse(localStorage.getItem(KNOWN_ACCOUNTS_KEY) || "[]");
+                return Array.isArray(list) ? list : [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function saveKnownAccount(account) {
+            try {
+                const list = loadKnownAccounts();
+                const idx = list.findIndex(
+                    (a) => String(a.email || "").toLowerCase() === String(account.email || "").toLowerCase()
+                );
+                if (idx >= 0) {
+                    list[idx] = { ...list[idx], ...account };
+                } else {
+                    list.push(account);
+                }
+                localStorage.setItem(KNOWN_ACCOUNTS_KEY, JSON.stringify(list.slice(-50)));
+            } catch (e) {}
+        }
+
+        function matchUserDoc(data, emailLower, password, defaultRole = "student") {
+            if (!data) return null;
+            const cleanEmail = stripQuotes(data.email).toLowerCase();
+            const cleanPass = stripQuotes(data.password);
+
+            if (cleanEmail === emailLower && cleanPass === password) {
+                const role = normalizeRole(data.role, defaultRole);
+                return {
+                    ...data,
+                    email: cleanEmail,
+                    password: cleanPass,
+                    role,
+                    grade: stripQuotes(data.grade || data.room || data.classRoom || "ມ.5"),
+                    name: stripQuotes(data.name || "User")
+                };
+            }
+            return null;
+        }
+
+        function finishLogin(userData, fallbackEmail) {
+            const roleValue = normalizeRole(userData.role, "student");
+            const gradeValue = userData.grade || "ມ.5";
+            const nameValue = userData.name || "User";
+            const emailValue = userData.email || fallbackEmail;
+
+            saveKnownAccount({
+                email: emailValue,
+                password: userData.password || "",
+                role: roleValue,
+                grade: gradeValue,
+                name: nameValue
+            });
+
+            localStorage.setItem("isLoggedIn", "true");
+            localStorage.setItem("userEmail", emailValue);
+            localStorage.setItem("userRole", roleValue);
+            localStorage.setItem("role", roleValue);
+            localStorage.setItem("userGrade", gradeValue);
+            localStorage.setItem("userName", nameValue);
+
+            alert(`✅ ເຂົ້າສູ່ລະບົບສຳເລັດ! ຍິນດີຕ້ອນຮັບ ${getRoleLabelLo(roleValue)}`);
+            window.location.href = "index.html";
+        }
+
+        async function fetchAccountsFromSheet() {
+            const candidateSheets = ["admins", "teachers", "students", "users"];
+            const collected = [];
+            let anySheetResponded = false;
+
+            for (const sName of candidateSheets) {
+                const url = `${APPS_SCRIPT_URL}?sheet=${encodeURIComponent(sName)}&_t=${Date.now()}`;
+                const res = await fetch(url, { method: "GET", cache: "no-store" });
+                if (!res.ok) continue;
+                const data = await res.json();
+                if (!data || !data.ok) continue;
+                anySheetResponded = true;
+
+                const list = Array.isArray(data.rows)
+                    ? data.rows
+                    : Array.isArray(data.accounts)
+                        ? data.accounts
+                        : Array.isArray(data.users)
+                            ? data.users
+                            : [];
+
+                const fallbackRole =
+                    sName === "admins" ? "admin" :
+                    sName === "teachers" ? "teacher" : "student";
+
+                list.forEach((item) => {
+                    collected.push({
+                        ...item,
+                        role: item.role || fallbackRole
+                    });
+                });
+            }
+
+            if (collected.length > 0) {
+                return collected;
+            }
+
+            // ກໍລະນີ Script ຂອງທ່ານສົ່ງຂໍ້ມູນທັງໝົດກັບມາເມື່ອເອີ້ນ URL ໂດຍບໍ່ໃສ່ ?sheet=
+            const rootRes = await fetch(`${APPS_SCRIPT_URL}?_t=${Date.now()}`, { method: "GET", cache: "no-store" });
+            if (!rootRes.ok) {
+                throw new Error("HTTP " + rootRes.status);
+            }
+            const rootData = await rootRes.json();
+            const fallbackList = Array.isArray(rootData.accounts)
+                ? rootData.accounts
+                : Array.isArray(rootData.users)
+                    ? rootData.users
+                    : Array.isArray(rootData.rows)
+                        ? rootData.rows
+                        : null;
+
+            if (rootData.ok && fallbackList) {
+                return fallbackList;
+            }
+
+            if (anySheetResponded) {
+                return [];
+            }
+
+            throw new Error(rootData.error || "ບໍ່ສາມາດດຶງຂໍ້ມູນບັນຊີຈາກ Script ໄດ້");
+        }
+
+        let lastSubmitTs = 0;
+
+        document.getElementById("login-form").addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const now = Date.now();
+            if (now - lastSubmitTs < LOGIN_COOLDOWN_MS) return;
+            lastSubmitTs = now;
+
+            const email = document.getElementById("login-email").value.trim();
+            const password = document.getElementById("login-password").value.trim();
+            const emailLower = email.toLowerCase();
+            const errorDiv = document.getElementById("login-error");
+            const submitBtn = document.getElementById("loginSubmitBtn");
+
+            errorDiv.innerText = "ກຳລັງກວດສອບຂໍ້ມູນ...";
+            if (submitBtn) submitBtn.disabled = true;
+
+            try {
+                const sheetAccounts = await fetchAccountsFromSheet();
+                setQuotaNote(false);
+
+                const priorityOrder = ["admin", "teacher", "student"];
+                let userData = null;
+
+                for (const targetRole of priorityOrder) {
+                    for (const item of sheetAccounts) {
+                        const itemRole = normalizeRole(item.role, "student");
+                        if (itemRole !== targetRole) continue;
+                        const matched = matchUserDoc(item, emailLower, password, targetRole);
+                        if (matched) {
+                            userData = matched;
+                            break;
+                        }
+                    }
+                    if (userData) break;
+                }
+
+                if (!userData) {
+                    for (const item of sheetAccounts) {
+                        const matched = matchUserDoc(item, emailLower, password, item.role || "student");
+                        if (matched) {
+                            userData = matched;
+                            break;
+                        }
+                    }
+                }
+
+                if (!userData) {
+                    errorDiv.innerText = "❌ ອີເມວ ຫຼື ລະຫັດຜ່ານບໍ່ຖືກຕ້ອງ!";
+                    return;
+                }
+
+                finishLogin(userData, email);
+            } catch (error) {
+                setQuotaNote(true);
+                const localMatch = loadKnownAccounts().find(
+                    (acc) => matchUserDoc(acc, emailLower, password, acc.role || "student")
+                );
+                if (localMatch) {
+                    finishLogin(localMatch, email);
+                    return;
+                }
+                errorDiv.innerText = "❌ ເກີດຂໍ້ຜິດພາດໃນການດຶງຂໍ້ມູນຈາກ Sheet: " + error.message;
+            } finally {
+                if (submitBtn) submitBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
