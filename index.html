@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>ລະບົບຄຸ້ມຄອງໂຮງຮຽນ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+
+    <!-- ກວດສອບ Login ກ່ອນໂຫຼດໜ້າເວັບ -->
+    <script>
+        if (localStorage.getItem('isLoggedIn') !== 'true') {
+            window.location.href = 'login.html';
+        }
+    </script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        html, body {
+            width: 100%;
+            max-width: 100%;
+            min-height: 100vh;
+            min-height: 100dvh;
+            overflow-x: hidden;
+            -webkit-text-size-adjust: 100%;
+        }
+        .quota-banner {
+            background: rgba(245, 158, 11, 0.16);
+            border: 1px solid rgba(245, 158, 11, 0.55);
+            color: #fef08a;
+            border-radius: 10px;
+            padding: 9px 12px;
+            font-size: 12px;
+            line-height: 1.4;
+            display: none;
+            margin-bottom: 12px;
+            overflow-wrap: anywhere;
+        }
+        .quota-banner.show {
+            display: block;
+        }
+        .btn-sync-index {
+            background: #0284c7;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            padding: 6px 11px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .btn-sync-index:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .idx-dash-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 12px;
+            margin-top: 14px;
+            width: 100%;
+        }
+        .idx-fin-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+            margin-bottom: 14px;
+            width: 100%;
+        }
+        .idx-main-wrap {
+            flex: 1;
+            padding: 18px;
+            overflow-y: auto;
+            background: #f4f6f9;
+            width: 100%;
+            min-width: 0;
+        }
+        .mobile-cards {
+            display: none;
+            flex-direction: column;
+            gap: 9px;
+            width: 100%;
+            min-width: 0;
+            margin-top: 10px;
+        }
+        .idx-card {
+            background: #162032;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 10px 11px;
+            color: #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            min-width: 0;
+            width: 100%;
+        }
+        .idx-card-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 8px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid #26354d;
+            font-weight: 700;
+            color: #f8fafc;
+            font-size: 13px;
+            overflow-wrap: anywhere;
+        }
+        .idx-card-row {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 8px;
+            font-size: 12px;
+            min-width: 0;
+        }
+        .idx-card-label {
+            color: #94a3b8;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        .idx-card-val {
+            text-align: right;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+            min-width: 0;
+            flex: 1 1 auto;
+        }
+        .toast-msg {
+            position: fixed;
+            bottom: 14px;
+            left: 50%;
+            transform: translate(-50%, 12px);
+            background: #1e293b;
+            border: 1px solid #38bdf8;
+            color: #f8fafc;
+            padding: 9px 13px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.45);
+            z-index: 250000;
+            opacity: 0;
+            transition: 0.2s;
+            pointer-events: none;
+            max-width: calc(100% - 20px);
+            text-align: center;
+            overflow-wrap: anywhere;
+        }
+        .toast-msg.show {
+            opacity: 1;
+            transform: translate(-50%, 0);
+        }
+
+        @media (max-width: 900px) {
+            .idx-dash-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .idx-main-wrap,
+            .main-content {
+                padding: 10px !important;
+            }
+            .idx-dash-grid,
+            .idx-fin-grid {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+            .user-profile-badge {
+                flex-wrap: wrap;
+                max-width: calc(100% - 16px);
+                gap: 6px;
+            }
+            .table-responsive,
+            table {
+                max-width: 100%;
+            }
+            #teaching-schedule-panel .table-responsive,
+            #student-room-timetable-panel .table-responsive {
+                display: none;
+            }
+            #teaching-schedule-panel .mobile-cards,
+            #student-room-timetable-panel .mobile-cards {
+                display: flex;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="topbar">
+    <button type="button" class="menu-toggle-btn" id="menuToggleBtn" onclick="toggleMenuBar(event)" aria-label="ເປີດ/ປິດ ເມນູ">
+        ☰
+    </button>
+    <div class="top-navbar-title">🏫 ລະບົບຄຸ້ມຄອງໂຮງຮຽນ</div>
+</div>
+
+<!-- 👤 ປ້າຍສະແດງຊື່ຜູ້ໃຊ້ ແລະ ໄອຄອນຫົວຄົນ -->
+<div class="user-profile-badge">
+    <span style="font-size: 22px;">👤</span>
+    <div class="user-info">
+        <span id="user-display-name">ກຳລັງໂຫຼດ...</span>
+        <span id="user-display-role">--</span>
+    </div>
+    <button type="button" class="logout-btn" onclick="logout()">ອອກຈາກລະບົບ</button>
+</div>
+
+<!-- ພື້ນຫຼັງມືດເວລາເປີດເມນູ -->
+<div class="menu-backdrop" id="menuBackdrop" onclick="closeMenuBar()"></div>
+
+<!-- ເມນູບາເລື່ອນເປີດ/ປິດ (Slide Menubar) -->
+<aside class="slide-menubar" id="slideMenubar">
+    <div class="menubar-header">
+        <span>🏫 ເມນູລະບົບ</span>
+        <button type="button" class="menu-close-btn" onclick="closeMenuBar()" aria-label="ປິດເມນູ">✕</button>
+    </div>
+
+    <ul class="menubar-list">
+        <li id="menu-dashboard"><a href="#" onclick="showSection('section-dashboard'); closeMenuBar();">📊 1. Dashboard (ພາບລວມ)</a></li>
+        <a href="ຫ້ອງຈັດນັກຮຽນ.html" id="sidebar-room-2" class="nav-item" style="display:flex;align-items:center;gap:10px;color:#e2e8f0;text-decoration:none;padding:10px 14px;border-radius:10px;">
+            <span>🎓</span>
+            <span>2. ຈັດການນັກຮຽນ</span>
+        </a>
+        <a href="ຫ້ອງຈັດການຄູ.html" class="nav-item" style="display:flex;align-items:center;gap:10px;color:#e2e8f0;text-decoration:none;padding:10px 14px;border-radius:10px;">
+            <span>👩‍🏫</span>
+            <span>3. ຫ້ອງຈັດການຄູ</span>
+        </a>
+        <li id="menu-classes"><a href="class-management.html">🏫 4. ຈັດການຫ້ອງຮຽນ, ລາຍຊື່ &amp; ຕາຕະລາງ</a></li>
+        <li id="menu-attendance"><a href="check-in.html">📋 5. ຈັດການການມາຮຽນ</a></li>
+        <li id="menu-scores"><a href="scores.html" onclick="if(typeof closeMenuBar==='function') closeMenuBar();">📝 6. ຈັດການຄະແນນ</a></li>
+        <li id="menu-finance"><a href="finance.html">💰 7. ການເງິນ &amp; ຊຳລະຄ່າຮຽນ</a></li>
+        <a href="ຂ່າວສານແລະແຈ້ງເຕືອນ.html" id="sidebar-room-8" class="nav-item" style="display:flex;align-items:center;gap:10px;color:#e2e8f0;text-decoration:none;padding:10px 14px;border-radius:10px;">
+            <span>📢</span>
+            <span>8. ຂ່າວສານ &amp; ແຈ້ງເຕືອນ</span>
+        </a>
+        <li id="menu-teachers-room" class="menu-highlight"><a href="teachers-room.html">👩‍🏫 9. ລາຍຊື່ຄູປະຈຳຫ້ອງ</a></li>
+        <a href="ຫ້ອງຮຽນ.html" id="menu-classrooms" class="nav-item" style="display:flex;align-items:center;gap:10px;color:#e2e8f0;text-decoration:none;padding:10px 14px;border-radius:10px;">
+            <span>🏫</span>
+            <span>10. ຫ້ອງຮຽນ</span>
+        </a>
+        <li id="menu-calendar">
+            <a href="ປະຕິທິນ.html" onclick="if(typeof closeMenuBar==='function') closeMenuBar();">📅 11. ຫອງປະຕິທິນ</a>
+        </li>
+        <li id="menu-update-12">
+            <a href="update.html" onclick="if(typeof closeMenuBar==='function') closeMenuBar();">🛠️ 12. ຫອງອັບເດດ</a>
+        </li>
+    </ul>
+</aside>
+
+<!-- 🖥️ Main Content Area -->
+<div class="idx-main-wrap">
+    <div class="quota-banner" id="quotaBanner">
+        ⚠️ ບໍ່ສາມາດເຊື່ອມຕໍ່ Google Sheet ໄດ້ຊົ່ວຄາວ — ລະບົບກຳລັງໃຊ້ຂໍ້ມູນທີ່ເກັບໃນເຄື່ອງ (`localStorage`).
+    </div>
+
+    <!-- 1. Dashboard Section -->
+    <div id="section-dashboard" class="content-section">
+        <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+            <h2 style="margin:0;">📊 Dashboard - ພາບລວມລະບົບ</h2>
+            <button type="button" class="btn-sync-index" id="indexSyncBtn" onclick="window.manualSyncIndexSchedules && window.manualSyncIndexSchedules(true)">🔄 ໂຫຼດຂໍ້ມູນ</button>
+        </div>
+        <div class="idx-dash-grid">
+            <div style="background: white; padding: 18px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                <h4 style="margin:0 0 6px;">ນັກຮຽນທັງໝົດ</h4>
+                <p id="dash-total-students" style="margin:0; font-size: 22px; font-weight: bold; color: #007bff;">0 ຄົນ</p>
+            </div>
+            <div style="background: white; padding: 18px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                <h4 style="margin:0 0 6px;">ຄູອາຈານທັງໝົດ</h4>
+                <p id="dash-total-teachers" style="margin:0; font-size: 22px; font-weight: bold; color: #28a745;">0 ຄົນ</p>
+            </div>
+            <div style="background: white; padding: 18px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                <h4 style="margin:0 0 6px;">ຫ້ອງຮຽນທັງໝົດ</h4>
+                <p id="dash-total-rooms" style="margin:0; font-size: 22px; font-weight: bold; color: #d97706;">0 ຫ້ອງ</p>
+            </div>
+            <div style="background: white; padding: 18px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                <h4 style="margin:0 0 6px;">ສະຖິຕິມາຮຽນ</h4>
+                <p id="dash-attendance-rate" style="margin:0; font-size: 22px; font-weight: bold; color: #17a2b8;">0%</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<main class="main-content" id="mainContent">
+    <!-- 👩‍🏫 ສຳລັບ Admin ແລະ ຄູອາຈານ: ສະແດງຕາຕະລາງສອນສະເພາະຊົ່ວໂມງສອນຂອງຕົນເອງ -->
+    <section class="panel-card" id="teaching-schedule-panel" style="display: none;">
+        <div class="panel-header" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                <h3 id="teaching-panel-title" style="margin: 0;">👩‍🏫 ຕາຕະລາງສອນຂອງຂ້ອຍ</h3>
+                <button type="button" id="btn-schedule-detail-staff" onclick="openScheduleDetailModal()" style="background: #2563eb; color: #ffffff; border: 1px solid #3b82f6; border-radius: 7px; padding: 4px 10px; font-size: 12px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center;">
+                    ລາຍລະອຽດ
+                </button>
+            </div>
+            <span class="role-view-badge" id="teaching-owner-badge">ສະເພາະຊົ່ວໂມງສອນຂອງຕົນເອງ</span>
+        </div>
+
+        <div class="table-responsive">
+            <table class="dark-table">
+                <thead>
+                    <tr>
+                        <th style="width: 60px;">ລ/ດ</th>
+                        <th>ຊື່ຄູຜູ້ສອນ</th>
+                        <th>ວິຊາສອນ</th>
+                        <th>ຫ້ອງ</th>
+                        <th>ມື້ / ເວລາສອນ</th>
+                    </tr>
+                </thead>
+                <tbody id="index-teaching-body"></tbody>
+            </table>
+        </div>
+        <div class="mobile-cards" id="index-teaching-cards"></div>
+    </section>
+
+    <!-- 📅 ສຳລັບນັກຮຽນ: ສະແດງຕາຕະລາງຮຽນສະເພາະຫ້ອງຕົນເອງ -->
+    <section class="panel-card" id="student-room-timetable-panel" style="display: none;">
+        <div class="panel-header" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                <h3 id="student-timetable-title" style="margin: 0;">📅 ຕາຕະລາງຮຽນສະເພາະຫ້ອງ</h3>
+                <button type="button" id="btn-schedule-detail-student" onclick="openScheduleDetailModal()" style="background: #2563eb; color: #ffffff; border: 1px solid #3b82f6; border-radius: 7px; padding: 4px 10px; font-size: 12px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center;">
+                    ລາຍລະອຽດ
+                </button>
+            </div>
+            <span class="room-badge" id="student-timetable-badge">ຫ້ອງ: ມ.5</span>
+        </div>
+
+        <div class="table-responsive">
+            <table class="dark-table">
+                <thead>
+                    <tr>
+                        <th>ມື້ / ຊົ່ວໂມງ</th>
+                        <th>ຊົ່ວໂມງທີ 1<br><small>08:00 - 08:45</small></th>
+                        <th>ຊົ່ວໂມງທີ 2<br><small>08:50 - 09:35</small></th>
+                        <th>ຊົ່ວໂມງທີ 3<br><small>09:50 - 10:35</small></th>
+                        <th>ຊົ່ວໂມງທີ 4<br><small>10:40 - 11:25</small></th>
+                    </tr>
+                </thead>
+                <tbody id="student-timetable-body"></tbody>
+            </table>
+        </div>
+        <div class="mobile-cards" id="student-timetable-cards"></div>
+    </section>
+</main>
+
+<div class="toast-msg" id="toastMsg"></div>
+
+<script>
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz2GeJz9zdeNbJ__dOuVkW5oT1Gfzdz5OZekUhBiGU0AlBE46lBre1JH_GFr3agr5Gi/exec";
+const DAYS_ORDER = ["ຈັນ", "ອັງຄານ", "ພຸດ", "ພະຫັດ", "ສຸກ", "ເສົາ", "ອາທິດ"];
+const SCHEDULE_SHEETS = ["weekly_schedules", "timetables", "schedules", "teaching_schedules", "class_timetables"];
+
+const LAST_FETCH_TS_KEY = "school_index_last_fetch_ts";
+const CACHE_BLOCK_UNTIL_KEY = "school_sheet_cache_fallback_until";
+const FETCH_COOLDOWN_MS = 30000;
+const FALLBACK_COOLDOWN_MS = 600000;
+
+function showIndexToast(msg) {
+    const el = document.getElementById("toastMsg");
+    if (!el) return;
+    el.textContent = msg;
+    el.classList.add("show");
+    clearTimeout(showIndexToast._t);
+    showIndexToast._t = setTimeout(() => el.classList.remove("show"), 3200);
+}
+
+function setQuotaNotice(active) {
+    const banner = document.getElementById("quotaBanner");
+    if (!banner) return;
+    if (active) banner.classList.add("show");
+    else banner.classList.remove("show");
+}
+
+let colBuffers = {};
+try {
+    colBuffers = JSON.parse(localStorage.getItem("school_index_col_buffers") || "null") || {};
+} catch (e) {
+    colBuffers = {};
+}
+SCHEDULE_SHEETS.forEach((c) => {
+    if (!Array.isArray(colBuffers[c])) colBuffers[c] = [];
+});
+
+function cleanStorageValue(val) {
+    return String(val || "")
+        .trim()
+        .replace(/^["']+|["']+$/g, "")
+        .trim();
+}
+
+function cleanRoomKey(v) {
+    return cleanStorageValue(v)
+        .replace(/^ຫ້ອງ\s*/i, "")
+        .replace(/\s+/g, "");
+}
+
+function cleanDayKey(v) {
+    const base = cleanStorageValue(v)
+        .replace(/^ວັນ/i, "")
+        .replace(/^ມື້/i, "")
+        .trim();
+    const lower = base.toLowerCase();
+
+    if (["ຈັນ", "mon", "monday"].includes(lower)) return "ຈັນ";
+    if (["ອັງຄານ", "ຄານ", "ຄາມ", "tue", "tuesday"].includes(lower)) return "ອັງຄານ";
+    if (["ພຸດ", "wed", "wednesday"].includes(lower)) return "ພຸດ";
+    if (["ພະຫັດ", "ພຶຫັດ", "thu", "thursday"].includes(lower)) return "ພະຫັດ";
+    if (["ສຸກ", "fri", "friday"].includes(lower)) return "ສຸກ";
+    if (["ເສົາ", "sat", "saturday"].includes(lower)) return "ເສົາ";
+    if (["ອາທິດ", "sun", "sunday"].includes(lower)) return "ອາທິດ";
+    return base;
+}
+
+function parsePeriodIndex(v) {
+    const m = String(v ?? "").match(/[1-4]/);
+    return m ? Math.max(1, Math.min(4, parseInt(m[0], 10))) : null;
+}
+
+function escapeHtmlText(str) {
+    return String(str || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+}
+
+function ensureEmptyRoomGrid() {
+    return DAYS_ORDER.map((d) => ({
+        day: d,
+        slots: [
+            { subject: "-", teacher: "" },
+            { subject: "-", teacher: "" },
+            { subject: "-", teacher: "" },
+            { subject: "-", teacher: "" }
+        ]
+    }));
+}
+
+async function readSheetRows(sheetName) {
+    const url = `${APPS_SCRIPT_URL}?sheet=${encodeURIComponent(sheetName)}&_t=${Date.now()}`;
+    const res = await fetch(url, { method: "GET", cache: "no-store" });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const data = await res.json();
+    if (!data || !data.ok) {
+        throw new Error((data && data.error) || "ອ່ານຂໍ້ມູນບໍ່ສຳເລັດ");
+    }
+    if (Array.isArray(data.rows)) return data.rows;
+    if (Array.isArray(data.data)) return data.data;
+    return [];
+}
+
+function updateDashboardSummary(counts = {}) {
+    const sEl = document.getElementById("dash-total-students");
+    const tEl = document.getElementById("dash-total-teachers");
+    const rEl = document.getElementById("dash-total-rooms");
+    const aEl = document.getElementById("dash-attendance-rate");
+
+    if (typeof counts.students === "number" && sEl) sEl.textContent = `${counts.students} ຄົນ`;
+    if (typeof counts.teachers === "number" && tEl) tEl.textContent = `${counts.teachers} ຄົນ`;
+    if (typeof counts.rooms === "number" && rEl) rEl.textContent = `${counts.rooms} ຫ້ອງ`;
+    if (typeof counts.attendanceRate === "string" && aEl) aEl.textContent = counts.attendanceRate;
+}
+
+function syncSheetSchedulesToIndex() {
+    const mergedMap = {};
+    const collectedTeaching = [];
+    const roomSet = new Set();
+
+    const ensureRoomRow = (roomKey, dayName) => {
+        if (roomKey) roomSet.add(roomKey);
+        if (!mergedMap[roomKey]) {
+            mergedMap[roomKey] = ensureEmptyRoomGrid();
+        }
+        let dayRow = mergedMap[roomKey].find((r) => cleanDayKey(r.day) === dayName);
+        if (!dayRow) {
+            dayRow = {
+                day: dayName,
+                slots: [
+                    { subject: "-", teacher: "" },
+                    { subject: "-", teacher: "" },
+                    { subject: "-", teacher: "" },
+                    { subject: "-", teacher: "" }
+                ]
+            };
+            mergedMap[roomKey].push(dayRow);
+        }
+        mergedMap[roomKey].sort((a, b) => {
+            const ia = DAYS_ORDER.indexOf(cleanDayKey(a.day));
+            const ib = DAYS_ORDER.indexOf(cleanDayKey(b.day));
+            return (ia === -1 ? 999 : ia) - (ib === -1 ? 999 : ib);
+        });
+        return dayRow;
+    };
+
+    Object.entries(colBuffers).forEach(([colName, docs]) => {
+        if (!Array.isArray(docs)) return;
+        docs.forEach((raw) => {
+            if (colName === "class_timetables" && Array.isArray(raw.rows)) {
+                const roomKey = cleanRoomKey(raw.grade || raw.room || raw.classRoom);
+                if (!roomKey) return;
+                roomSet.add(roomKey);
+                raw.rows.forEach((r) => {
+                    const dayName = cleanDayKey(r.day);
+                    if (!dayName) return;
+                    const dayRow = ensureRoomRow(roomKey, dayName);
+                    [
+                        [r.p1, r.t1],
+                        [r.p2, r.t2],
+                        [r.p3, r.t3],
+                        [r.p4, r.t4]
+                    ].forEach(([subj, tch], idx) => {
+                        if (subj || tch) {
+                            dayRow.slots[idx] = {
+                                subject: String(subj || "-").trim() || "-",
+                                teacher: String(tch || "").trim()
+                            };
+                        }
+                    });
+                });
+                return;
+            }
+
+            const roomKey = cleanRoomKey(raw.room || raw.grade || raw.classRoom || raw.className);
+            const dayName = cleanDayKey(raw.day || raw.weekday || raw.dayName);
+            const periodNum = parsePeriodIndex(raw.period ?? raw.hour ?? raw.slot ?? 1);
+            const subject = String(raw.subject || raw.subjectName || raw.course || "").trim();
+            const teacher = String(raw.teacher || raw.teacherName || raw.instructor || "").trim();
+            const scheduleText = String(raw.schedule || raw.scheduleText || "").trim();
+
+            if (roomKey) roomSet.add(roomKey);
+
+            if (teacher || subject || scheduleText) {
+                collectedTeaching.push({
+                    teacher,
+                    subject,
+                    grade: roomKey || "-",
+                    schedule: scheduleText || [dayName ? `ວັນ${dayName}` : "", periodNum ? `ຊົ່ວໂມງທີ ${periodNum}` : "", String(raw.time || "").trim()].filter(Boolean).join(" • ") || "-"
+                });
+            }
+
+            if (roomKey && dayName && periodNum && subject) {
+                const dayRow = ensureRoomRow(roomKey, dayName);
+                dayRow.slots[periodNum - 1] = { subject, teacher };
+            }
+        });
+    });
+
+    window.__syncedRoomTimetables = mergedMap;
+    window.__syncedTeachingSchedules = collectedTeaching;
+
+    if (roomSet.size > 0) {
+        updateDashboardSummary({ rooms: roomSet.size });
+    }
+
+    if (typeof window.applyIndexRoleRules === "function") {
+        window.applyIndexRoleRules();
+    }
+    if (typeof window.renderStudentTimetableWithTeachers === "function") {
+        window.renderStudentTimetableWithTeachers();
+    }
+    if (document.getElementById("scheduleDetailModal")?.style.display === "flex" && typeof window.renderScheduleDetailModal === "function") {
+        window.renderScheduleDetailModal();
+    }
+}
+
+window.manualSyncIndexSchedules = async function (showAlert = false) {
+    const now = Date.now();
+    const fallbackUntil = Number(localStorage.getItem(CACHE_BLOCK_UNTIL_KEY) || "0");
+    const lastFetchTs = Number(localStorage.getItem(LAST_FETCH_TS_KEY) || "0");
+
+    if (!showAlert && now < fallbackUntil) {
+        setQuotaNotice(true);
+        syncSheetSchedulesToIndex();
+        return;
+    }
+
+    if (!showAlert && now - lastFetchTs < FETCH_COOLDOWN_MS) {
+        syncSheetSchedulesToIndex();
+        return;
+    }
+
+    const btn = document.getElementById("indexSyncBtn");
+    if (btn) btn.disabled = true;
+
+    let anySuccess = false;
+
+    try {
+        for (const sheetName of SCHEDULE_SHEETS) {
+            try {
+                const rows = await readSheetRows(sheetName);
+                anySuccess = true;
+                if (rows.length > 0) {
+                    colBuffers[sheetName] = rows;
+                }
+            } catch (err) {}
+        }
+
+        // ອ່ານສະຖິຕິພາບລວມຈາກ Sheet ຖ້າມີ
+        const summaryCounts = {};
+        try {
+            const stRows = await readSheetRows("students");
+            summaryCounts.students = stRows.length;
+            anySuccess = true;
+        } catch (e) {}
+        try {
+            const tcRows = await readSheetRows("teachers");
+            summaryCounts.teachers = tcRows.length;
+            anySuccess = true;
+        } catch (e) {}
+        try {
+            const clsRows = await readSheetRows("classes");
+            if (clsRows.length > 0) summaryCounts.rooms = clsRows.length;
+            anySuccess = true;
+        } catch (e) {}
+
+        if (anySuccess) {
+            try {
+                localStorage.setItem("school_index_col_buffers", JSON.stringify(colBuffers));
+            } catch (e) {}
+            localStorage.setItem(LAST_FETCH_TS_KEY, String(Date.now()));
+            localStorage.removeItem(CACHE_BLOCK_UNTIL_KEY);
+            setQuotaNotice(false);
+            updateDashboardSummary(summaryCounts);
+            syncSheetSchedulesToIndex();
+            if (showAlert) showIndexToast("✅ ໂຫຼດຂໍ້ມູນຈາກ Google Sheet ສຳເລັດແລ້ວ");
+        } else {
+            throw new Error("ບໍ່ສາມາດດຶງຂໍ້ມູນຈາກ Sheet ໄດ້");
+        }
+    } catch (err) {
+        localStorage.setItem(CACHE_BLOCK_UNTIL_KEY, String(Date.now() + FALLBACK_COOLDOWN_MS));
+        setQuotaNotice(true);
+        syncSheetSchedulesToIndex();
+        if (showAlert) showIndexToast("⚠️ ເຊື່ອມຕໍ່ Sheet ບໍ່ໄດ້ຊົ່ວຄາວ ໃຊ້ຂໍ້ມູນໃນເຄື່ອງ");
+    } finally {
+        if (btn) btn.disabled = false;
+    }
+};
+
+window.addEventListener("storage", (e) => {
+    if (e.key === "schoolSystemDataUpdated" || e.key === "userGrade" || e.key === "userName" || e.key === "userRole") {
+        syncSheetSchedulesToIndex();
+    }
+});
+
+function getAllTeachingSchedules() {
+    if (Array.isArray(window.__syncedTeachingSchedules) && window.__syncedTeachingSchedules.length > 0) {
+        return window.__syncedTeachingSchedules;
+    }
+    try {
+        const saved = JSON.parse(localStorage.getItem("school_teaching_schedules") || "null");
+        if (Array.isArray(saved) && saved.length > 0) {
+            return saved;
+        }
+    } catch (e) {}
+    return [];
+}
+
+function normalizeText(str) {
+    return cleanStorageValue(str).toLowerCase().replace(/\s+/g, " ");
+}
+
+function getCurrentRoleClean() {
+    const raw = localStorage.getItem("userRole") || localStorage.getItem("role") || "student";
+    return cleanStorageValue(raw).toLowerCase() || "student";
+}
+
+function getCurrentGradeClean() {
+    const raw =
+        localStorage.getItem("userGrade") ||
+        localStorage.getItem("studentGrade") ||
+        localStorage.getItem("grade") ||
+        "ມ.5";
+    const cleaned = cleanRoomKey(raw);
+    return cleaned || "ມ.5";
+}
+
+function isStaffRole() {
+    const role = getCurrentRoleClean();
+    return role === "admin" || role === "teacher";
+}
+
+function getActionWord() {
+    return isStaffRole() ? "ສອນ" : "ຮຽນ";
+}
+
+function getActiveRoomTimetablesMap() {
+    return window.__syncedRoomTimetables || {};
+}
+
+function renderOwnTeachingSchedule(currentUserName) {
+    const tbody = document.getElementById("index-teaching-body");
+    const cards = document.getElementById("index-teaching-cards");
+    const titleEl = document.getElementById("teaching-panel-title");
+    const badgeEl = document.getElementById("teaching-owner-badge");
+
+    if (titleEl) {
+        titleEl.textContent = `👩‍🏫 ຕາຕະລາງສອນຂອງຂ້ອຍ (${currentUserName})`;
+    }
+    if (badgeEl) {
+        badgeEl.textContent = "ສະເພາະຊົ່ວໂມງສອນຂອງຕົນເອງ";
+    }
+    if (!tbody) return;
+
+    const allSchedules = getAllTeachingSchedules();
+    const targetName = normalizeText(currentUserName);
+
+    const mySchedules = allSchedules.filter(item => {
+        const itemTeacher = normalizeText(item.teacher);
+        return itemTeacher && targetName && (
+            itemTeacher === targetName ||
+            itemTeacher.includes(targetName) ||
+            targetName.includes(itemTeacher)
+        );
+    });
+
+    if (mySchedules.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="5" style="text-align: center; color: #94a3b8;">
+                    ຍັງບໍ່ມີຊົ່ວໂມງສອນສຳລັບ "${escapeHtmlText(currentUserName)}"
+                </td>
+            </tr>
+        `;
+        if (cards) {
+            cards.innerHTML = `<div class="idx-card" style="text-align:center;color:#94a3b8;">ຍັງບໍ່ມີຊົ່ວໂມງສອນສຳລັບ "${escapeHtmlText(currentUserName)}"</div>`;
+        }
+        return;
+    }
+
+    tbody.innerHTML = mySchedules.map((item, idx) => `
+        <tr>
+            <td>${idx + 1}</td>
+            <td>${escapeHtmlText(item.teacher)}</td>
+            <td>${escapeHtmlText(item.subject)}</td>
+            <td>${escapeHtmlText(item.grade)}</td>
+            <td>${escapeHtmlText(item.schedule)}</td>
+        </tr>
+    `).join("");
+
+    if (cards) {
+        cards.innerHTML = mySchedules.map((item, idx) => `
+            <div class="idx-card">
+                <div class="idx-card-head">
+                    <span>#${idx + 1} • ${escapeHtmlText(item.subject || "-")}</span>
+                    <span>ຫ້ອງ ${escapeHtmlText(item.grade || "-")}</span>
+                </div>
+                <div class="idx-card-row"><span class="idx-card-label">ຄູຜູ້ສອນ:</span><span class="idx-card-val">${escapeHtmlText(item.teacher || "-")}</span></div>
+                <div class="idx-card-row"><span class="idx-card-label">ມື້ / ເວລາ:</span><span class="idx-card-val">${escapeHtmlText(item.schedule || "-")}</span></div>
+            </div>
+        `).join("");
+    }
+}
+
+function applyIndexRoleRules() {
+    const role = getCurrentRoleClean();
+    const userGrade = getCurrentGradeClean();
+    const userName = cleanStorageValue(localStorage.getItem("userName")) || "ຜູ້ໃຊ້ງານ";
+
+    localStorage.setItem("userRole", role);
+    localStorage.setItem("role", role);
+    localStorage.setItem("userGrade", userGrade);
+    localStorage.setItem("userName", userName);
+
+    const teachingPanel = document.getElementById("teaching-schedule-panel");
+    const studentPanel = document.getElementById("student-room-timetable-panel");
+
+    if (role === "admin" || role === "teacher") {
+        if (teachingPanel) teachingPanel.style.display = "block";
+        if (studentPanel) studentPanel.style.display = "none";
+        renderOwnTeachingSchedule(userName);
+    } else {
+        if (teachingPanel) teachingPanel.style.display = "none";
+        if (studentPanel) studentPanel.style.display = "block";
+        renderStudentTimetableWithTeachers();
+    }
+
+    ensureScheduleDetailUi();
+}
+
+window.applyIndexRoleRules = applyIndexRoleRules;
+
+function getSidebarEl() {
+    return (
+        document.getElementById('slideMenubar') ||
+        document.querySelector('.slide-menubar') ||
+        document.getElementById('sidebar') ||
+        document.querySelector('aside')
+    );
+}
+
+function getBackdropEl() {
+    return (
+        document.getElementById('menuBackdrop') ||
+        document.querySelector('.menu-backdrop')
+    );
+}
+
+function getToggleButtons() {
+    const list = Array.from(document.querySelectorAll('#menuToggleBtn, .menu-toggle-btn, button'));
+    return list.filter(btn => {
+        const txt = (btn.textContent || '').trim();
+        const aria = (btn.getAttribute('aria-label') || '').trim();
+        return btn.id === 'menuToggleBtn' ||
+               btn.classList.contains('menu-toggle-btn') ||
+               txt === '☰' ||
+               aria.includes('ເມນູ');
+    });
+}
+
+function ensureToggleButtonVisible() {
+    getToggleButtons().forEach(btn => {
+        btn.classList.remove('hidden', 'hide', 'd-none');
+        btn.style.setProperty('display', 'inline-flex', 'important');
+        btn.style.setProperty('align-items', 'center', 'important');
+        btn.style.setProperty('justify-content', 'center', 'important');
+        btn.style.setProperty('visibility', 'visible', 'important');
+        btn.style.setProperty('opacity', '1', 'important');
+        btn.style.setProperty('pointer-events', 'auto', 'important');
+        btn.style.setProperty('position', 'relative', 'important');
+        btn.style.setProperty('z-index', '100001', 'important');
+    });
+}
+
+function setSidebarOpen(isOpen) {
+    const sidebar = getSidebarEl();
+    const backdrop = getBackdropEl();
+    ensureToggleButtonVisible();
+
+    if (!sidebar) return;
+
+    sidebar.classList.toggle('open', isOpen);
+    sidebar.classList.remove('collapsed', 'hidden', 'hide', 'd-none');
+
+    sidebar.style.setProperty('display', 'block', 'important');
+    sidebar.style.setProperty('position', 'fixed', 'important');
+    sidebar.style.setProperty('top', '0', 'important');
+    sidebar.style.setProperty('left', '0', 'important');
+    sidebar.style.setProperty('width', '280px', 'important');
+    sidebar.style.setProperty('max-width', '85vw', 'important');
+    sidebar.style.setProperty('height', '100vh', 'important');
+    sidebar.style.setProperty('background', '#1e293b', 'important');
+    sidebar.style.setProperty('color', '#f8fafc', 'important');
+    sidebar.style.setProperty('z-index', '100000', 'important');
+    sidebar.style.setProperty('overflow-y', 'auto', 'important');
+    sidebar.style.setProperty('visibility', 'visible', 'important');
+    sidebar.style.setProperty('opacity', '1', 'important');
+    sidebar.style.setProperty('box-shadow', '4px 0 24px rgba(0, 0, 0, 0.45)', 'important');
+    sidebar.style.setProperty('transition', 'transform 0.25s ease', 'important');
+    sidebar.style.setProperty('transform', isOpen ? 'translateX(0px)' : 'translateX(-100%)', 'important');
+
+    if (backdrop) {
+        backdrop.classList.toggle('show', isOpen);
+        backdrop.style.setProperty('display', isOpen ? 'block' : 'none', 'important');
+        backdrop.style.setProperty('position', 'fixed', 'important');
+        backdrop.style.setProperty('inset', '0', 'important');
+        backdrop.style.setProperty('background', 'rgba(15, 23, 42, 0.55)', 'important');
+        backdrop.style.setProperty('z-index', '99990', 'important');
+    }
+}
+
+window.toggleMenuBar = function(e) {
+    if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+    const sidebar = getSidebarEl();
+    if (!sidebar) return;
+    const currentlyOpen = sidebar.classList.contains('open');
+    setSidebarOpen(!currentlyOpen);
+};
+
+window.closeMenuBar = function(e) {
+    if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+    setSidebarOpen(false);
+};
+
+function logout() {
+    localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("userEmail");
+    localStorage.removeItem("userRole");
+    localStorage.removeItem("role");
+    localStorage.removeItem("userGrade");
+    localStorage.removeItem("userName");
+    window.location.href = 'login.html';
+}
+
+function formatSlotWithTeacher(slot) {
+    if (!slot) return "-";
+    if (typeof slot === "string") return escapeHtmlText(slot);
+    const subj = escapeHtmlText(slot.subject || "-");
+    const tch = slot.teacher ? `<br><small style="color:#93c5fd;">👩‍🏫 ${escapeHtmlText(slot.teacher)}</small>` : "";
+    return `<div><strong>${subj}</strong>${tch}</div>`;
+}
+
+function renderStudentTimetableWithTeachers() {
+    const role = getCurrentRoleClean();
+    if (role === "admin" || role === "teacher") return;
+
+    const activeMap = getActiveRoomTimetablesMap();
+    const cleanRoom = getCurrentGradeClean();
+    localStorage.setItem("userGrade", cleanRoom);
+
+    const titleEl = document.getElementById("student-timetable-title");
+    const badgeEl = document.getElementById("student-timetable-badge");
+    const tbody = document.getElementById("student-timetable-body");
+    const cards = document.getElementById("student-timetable-cards");
+
+    if (titleEl) titleEl.textContent = `📅 ຕາຕະລາງຮຽນສະເພາະຫ້ອງ ${cleanRoom}`;
+    if (badgeEl) badgeEl.textContent = `ຫ້ອງ: ${cleanRoom}`;
+    if (!tbody) return;
+
+    const rows = activeMap[cleanRoom];
+    if (!Array.isArray(rows) || !rows.length) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="5" style="text-align: center; color: #94a3b8;">
+                    ຍັງບໍ່ມີຂໍ້ມູນຕາຕະລາງຮຽນສຳລັບຫ້ອງ ${escapeHtmlText(cleanRoom)}
+                </td>
+            </tr>
+        `;
+        if (cards) {
+            cards.innerHTML = `<div class="idx-card" style="text-align:center;color:#94a3b8;">ຍັງບໍ່ມີຂໍ້ມູນຕາຕະລາງຮຽນສຳລັບຫ້ອງ ${escapeHtmlText(cleanRoom)}</div>`;
+        }
+        ensureScheduleDetailUi();
+        return;
+    }
+
+    const sortedRows = [...rows].sort((a, b) => {
+        const ia = DAYS_ORDER.indexOf(cleanDayKey(a.day));
+        const ib = DAYS_ORDER.indexOf(cleanDayKey(b.day));
+        return (ia === -1 ? 999 : ia) - (ib === -1 ? 999 : ib);
+    });
+
+    tbody.innerHTML = sortedRows.map(r => `
+        <tr>
+            <td><strong>${escapeHtmlText(cleanDayKey(r.day))}</strong></td>
+            ${(r.slots || []).map(s => `<td>${formatSlotWithTeacher(s)}</td>`).join("")}
+        </tr>
+    `).join("");
+
+    if (cards) {
+        const pTitles = ["ຊ.ມ. 1 (08:00-08:45)", "ຊ.ມ. 2 (08:50-09:35)", "ຊ.ມ. 3 (09:50-10:35)", "ຊ.ມ. 4 (10:40-11:25)"];
+        cards.innerHTML = sortedRows.map(r => `
+            <div class="idx-card">
+                <div class="idx-card-head">
+                    <span>ມື້${escapeHtmlText(cleanDayKey(r.day))}</span>
+                    <span>ຫ້ອງ ${escapeHtmlText(cleanRoom)}</span>
+                </div>
+                ${(r.slots || []).map((s, idx) => `
+                    <div class="idx-card-row">
+                        <span class="idx-card-label">${pTitles[idx] || `ຊ.ມ. ${idx + 1}`}:</span>
+                        <span class="idx-card-val">${formatSlotWithTeacher(s)}</span>
+                    </div>
+                `).join("")}
+            </div>
+        `).join("");
+    }
+
+    ensureScheduleDetailUi();
+}
+
+window.renderStudentOwnRoomTimetable = renderStudentTimetableWithTeachers;
+window.renderStudentTimetableWithTeachers = renderStudentTimetableWithTeachers;
+
+const SCHEDULE_PERIOD_LABELS = [
+    "ຊົ່ວໂມງທີ 1 (08:00 - 08:45)",
+    "ຊົ່ວໂມງທີ 2 (08:50 - 09:35)",
+    "ຊົ່ວໂມງທີ 3 (09:50 - 10:35)",
+    "ຊົ່ວໂມງທີ 4 (10:40 - 11:25)"
+];
+
+let selectedScheduleDetailType = "term";
+
+function getTodayDayShort() {
+    const dayMap = { 0: "ອາທິດ", 1: "ຈັນ", 2: "ອັງຄານ", 3: "ພຸດ", 4: "ພະຫັດ", 5: "ສຸກ", 6: "ເສົາ" };
+    return dayMap[new Date().getDay()] || "ຈັນ";
+}
+
+function getAllDetailedHours() {
+    const activeMap = getActiveRoomTimetablesMap();
+    const staff = isStaffRole();
+    const userName = normalizeText(localStorage.getItem("userName") || "");
+    const userGrade = getCurrentGradeClean();
+    const rows = [];
+
+    if (staff) {
+        Object.keys(activeMap).forEach(gradeKey => {
+            (activeMap[gradeKey] || []).forEach(dayItem => {
+                const dShort = cleanDayKey(dayItem.day);
+                (dayItem.slots || []).forEach((slot, idx) => {
+                    const subj = typeof slot === "string" ? slot : (slot.subject || "");
+                    const tch = typeof slot === "string" ? "" : (slot.teacher || "");
+                    if (!subj || subj === "-") return;
+                    const match = !userName || !normalizeText(tch) || normalizeText(tch).includes(userName) || userName.includes(normalizeText(tch));
+                    if (match) {
+                        rows.push({
+                            day: `ວັນ${dShort}`,
+                            shortDay: dShort,
+                            period: SCHEDULE_PERIOD_LABELS[idx] || `ຊົ່ວໂມງທີ ${idx + 1}`,
+                            subject: subj,
+                            grade: gradeKey,
+                            teacher: tch || "-"
+                        });
+                    }
+                });
+            });
+        });
+    } else {
+        (activeMap[userGrade] || []).forEach(dayItem => {
+            const dShort = cleanDayKey(dayItem.day);
+            (dayItem.slots || []).forEach((slot, idx) => {
+                const subj = typeof slot === "string" ? slot : (slot.subject || "");
+                const tch = typeof slot === "string" ? "-" : (slot.teacher || "-");
+                if (!subj || subj === "-") return;
+                rows.push({
+                    day: `ວັນ${dShort}`,
+                    shortDay: dShort,
+                    period: SCHEDULE_PERIOD_LABELS[idx] || `ຊົ່ວໂມງທີ ${idx + 1}`,
+                    subject: subj,
+                    grade: userGrade,
+                    teacher: tch
+                });
+            });
+        });
+    }
+
+    return rows;
+}
+
+function createScheduleDetailModalIfMissing() {
+    if (document.getElementById("scheduleDetailModal")) return;
+    const word = getActionWord();
+    const modal = document.createElement("div");
+    modal.id = "scheduleDetailModal";
+    modal.style.cssText = "display:none;position:fixed;inset:0;background:rgba(2,6,23,0.82);z-index:200000;padding:12px;align-items:center;justify-content:center;";
+    modal.addEventListener("click", function (e) {
+        if (e.target === modal) window.closeScheduleDetailModal();
+    });
+
+    modal.innerHTML = `
+        <div style="width:100%;max-width:920px;max-height:88vh;overflow-y:auto;background:#1e293b;color:#e2e8f0;border:1px solid #334155;border-radius:16px;padding:16px;box-shadow:0 20px 50px rgba(0,0,0,0.55);">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding-bottom:12px;margin-bottom:14px;border-bottom:1px solid #334155;flex-wrap:wrap;">
+                <h3 id="scheduleDetailModalTitle" style="margin:0;font-size:16px;font-weight:700;color:#f8fafc;">ຕາຕະລາງ${escapeHtmlText(word)}ທັງໝົດໃນເທີມ</h3>
+                <button type="button" onclick="window.closeScheduleDetailModal()" style="background:#334155;color:#f8fafc;border:none;border-radius:8px;padding:6px 12px;cursor:pointer;font-weight:600;">✕ ປິດ</button>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;">
+                <button type="button" id="schedule-tab-term" onclick="window.switchScheduleDetailType('term')" style="background:#2563eb;color:#ffffff;border:1px solid #3b82f6;border-radius:10px;padding:8px 14px;cursor:pointer;font-weight:600;">ຕາຕະລາງ${escapeHtmlText(word)}ທັງໝົດໃນເທີມ</button>
+                <button type="button" id="schedule-tab-today" onclick="window.switchScheduleDetailType('today')" style="background:#0f172a;color:#cbd5e1;border:1px solid #334155;border-radius:10px;padding:8px 14px;cursor:pointer;font-weight:600;">ຕາຕະລາງ${escapeHtmlText(word)}ສຳລັບມື້ນີ້</button>
+            </div>
+            <div style="width:100%;overflow-x:auto;">
+                <table style="width:100%;border-collapse:collapse;min-width:560px;">
+                    <thead>
+                        <tr>
+                            <th style="border:1px solid #334155;padding:9px 11px;background:#0f172a;color:#93c5fd;text-align:left;width:55px;">ລ/ດ</th>
+                            <th style="border:1px solid #334155;padding:9px 11px;background:#0f172a;color:#93c5fd;text-align:left;">ມື້</th>
+                            <th id="schedule-th-period" style="border:1px solid #334155;padding:9px 11px;background:#0f172a;color:#93c5fd;text-align:left;">ຊົ່ວໂມງ${escapeHtmlText(word)}</th>
+                            <th style="border:1px solid #334155;padding:9px 11px;background:#0f172a;color:#93c5fd;text-align:left;">ວິຊາ</th>
+                            <th style="border:1px solid #334155;padding:9px 11px;background:#0f172a;color:#93c5fd;text-align:left;">ຫ້ອງ</th>
+                            <th style="border:1px solid #334155;padding:9px 11px;background:#0f172a;color:#93c5fd;text-align:left;">ຄູຜູ້ສອນ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="scheduleDetailTbody"></tbody>
+                </table>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+}
+
+function renderScheduleDetailModal() {
+    createScheduleDetailModalIfMissing();
+    const word = getActionWord();
+    const todayShort = getTodayDayShort();
+    const allRows = getAllDetailedHours();
+
+    const rows = selectedScheduleDetailType === "today"
+        ? allRows.filter(r => normalizeText(r.shortDay).includes(normalizeText(todayShort)) || normalizeText(r.day).includes(normalizeText(todayShort)))
+        : allRows;
+
+    const tabTerm = document.getElementById("schedule-tab-term");
+    const tabToday = document.getElementById("schedule-tab-today");
+    const thPeriod = document.getElementById("schedule-th-period");
+    const titleEl = document.getElementById("scheduleDetailModalTitle");
+    const tbody = document.getElementById("scheduleDetailTbody");
+
+    if (tabTerm) {
+        tabTerm.textContent = `ຕາຕະລາງ${word}ທັງໝົດໃນເທີມ`;
+        tabTerm.style.background = selectedScheduleDetailType === "term" ? "#2563eb" : "#0f172a";
+        tabTerm.style.color = selectedScheduleDetailType === "term" ? "#ffffff" : "#cbd5e1";
+    }
+    if (tabToday) {
+        tabToday.textContent = `ຕາຕະລາງ${word}ສຳລັບມື້ນີ້`;
+        tabToday.style.background = selectedScheduleDetailType === "today" ? "#2563eb" : "#0f172a";
+        tabToday.style.color = selectedScheduleDetailType === "today" ? "#ffffff" : "#cbd5e1";
+    }
+    if (thPeriod) thPeriod.textContent = `ຊົ່ວໂມງ${word}`;
+    if (titleEl) {
+        titleEl.textContent = selectedScheduleDetailType === "today"
+            ? `ຕາຕະລາງ${word}ສຳລັບມື້ນີ້ (ວັນ${todayShort})`
+            : `ຕາຕະລາງ${word}ທັງໝົດໃນເທີມ`;
+    }
+    if (!tbody) return;
+
+    if (!rows.length) {
+        tbody.innerHTML = `<tr><td colspan="6" style="border:1px solid #334155;padding:12px;background:#162032;text-align:center;color:#94a3b8;">ບໍ່ມີຊົ່ວໂມງ${escapeHtmlText(word)}</td></tr>`;
+        return;
+    }
+
+    tbody.innerHTML = rows.map((r, i) => `
+        <tr>
+            <td style="border:1px solid #334155;padding:8px 10px;background:#162032;">${i + 1}</td>
+            <td style="border:1px solid #334155;padding:8px 10px;background:#162032;">${escapeHtmlText(r.day)}</td>
+            <td style="border:1px solid #334155;padding:8px 10px;background:#162032;">${escapeHtmlText(r.period)}</td>
+            <td style="border:1px solid #334155;padding:8px 10px;background:#162032;"><strong>${escapeHtmlText(r.subject)}</strong></td>
+            <td style="border:1px solid #334155;padding:8px 10px;background:#162032;">${escapeHtmlText(r.grade)}</td>
+            <td style="border:1px solid #334155;padding:8px 10px;background:#162032;">${escapeHtmlText(r.teacher)}</td>
+        </tr>
+    `).join("");
+}
+
+window.renderScheduleDetailModal = renderScheduleDetailModal;
+
+window.openScheduleDetailModal = function () {
+    createScheduleDetailModalIfMissing();
+    const modal = document.getElementById("scheduleDetailModal");
+    if (modal) modal.style.display = "flex";
+    renderScheduleDetailModal();
+};
+
+window.closeScheduleDetailModal = function () {
+    const modal = document.getElementById("scheduleDetailModal");
+    if (modal) modal.style.display = "none";
+};
+
+window.switchScheduleDetailType = function (type) {
+    selectedScheduleDetailType = type === "today" ? "today" : "term";
+    renderScheduleDetailModal();
+};
+
+function ensureScheduleDetailUi() {
+    createScheduleDetailModalIfMissing();
+    const headers = [
+        document.querySelector("#student-room-timetable-panel .panel-header"),
+        document.querySelector("#teaching-schedule-panel .panel-header")
+    ].filter(Boolean);
+
+    headers.forEach((hdr, i) => {
+        const btnId = `mini-detail-btn-${i}`;
+        if (!document.getElementById(btnId)) {
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.id = btnId;
+            btn.textContent = "ລາຍລະອຽດ";
+            btn.style.cssText = "background:#2563eb;color:#ffffff;border:1px solid #60a5fa;border-radius:7px;padding:4px 10px;font-size:12px;font-weight:600;cursor:pointer;margin-left:8px;display:inline-flex;align-items:center;";
+            btn.addEventListener("click", function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                window.openScheduleDetailModal();
+            });
+            hdr.appendChild(btn);
+        }
+    });
+}
+
+function initIndexView() {
+    const userName = cleanStorageValue(localStorage.getItem('userName')) || 'ຜູ້ໃຊ້ງານ';
+    const userRole = getCurrentRoleClean();
+
+    const nameEl = document.getElementById('user-display-name');
+    const roleEl = document.getElementById('user-display-role');
+    if (nameEl) nameEl.innerText = userName;
+    if (roleEl) roleEl.innerText = userRole;
+
+    applyIndexRoleRules();
+    renderStudentTimetableWithTeachers();
+    ensureScheduleDetailUi();
+}
+
+syncSheetSchedulesToIndex();
+window.manualSyncIndexSchedules(false);
+
+window.addEventListener('DOMContentLoaded', () => {
+    initIndexView();
+    setSidebarOpen(false);
+    ensureToggleButtonVisible();
+
+    getToggleButtons().forEach(btn => {
+        btn.removeAttribute('onclick');
+        btn.addEventListener('click', window.toggleMenuBar);
+    });
+
+    const backdrop = getBackdropEl();
+    if (backdrop) {
+        backdrop.addEventListener('click', window.closeMenuBar);
+    }
+});
+</script>
+</body>
+</html>
