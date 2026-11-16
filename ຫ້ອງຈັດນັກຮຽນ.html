@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>🎓 ຫ້ອງຈັດການນັກຮຽນ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        html, body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Noto Sans Lao', sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+            width: 100%;
+            min-height: 100vh;
+            min-height: 100dvh;
+            max-width: 100%;
+            overflow-x: hidden;
+            -webkit-text-size-adjust: 100%;
+        }
+        body {
+            padding: 12px;
+        }
+        .container {
+            max-width: 1320px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+            min-width: 0;
+        }
+        .topbar {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 14px;
+            padding: 12px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            min-width: 0;
+            width: 100%;
+        }
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            min-width: 0;
+            flex: 1 1 auto;
+        }
+        .back-btn {
+            background: #334155;
+            color: #f8fafc;
+            text-decoration: none;
+            padding: 7px 11px;
+            border-radius: 8px;
+            font-size: 12.5px;
+            font-weight: 600;
+            white-space: nowrap;
+            max-width: 100%;
+        }
+        .back-btn:hover { background: #475569; }
+        .page-title {
+            margin: 0;
+            font-size: clamp(14.5px, 4.2vw, 18px);
+            font-weight: 700;
+            color: #f8fafc;
+            line-height: 1.3;
+            min-width: 0;
+            overflow-wrap: anywhere;
+        }
+        .user-meta {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            flex-wrap: wrap;
+            min-width: 0;
+            max-width: 100%;
+        }
+        #currentUserName {
+            max-width: 180px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .badge {
+            padding: 4px 9px;
+            border-radius: 999px;
+            font-weight: 600;
+            font-size: 11.5px;
+            white-space: nowrap;
+        }
+        .badge-role-admin { background: #dc2626; color: #fff; }
+        .badge-role-teacher { background: #7c3aed; color: #fff; }
+        .badge-role-student { background: #2563eb; color: #fff; }
+        .badge-grade { background: #0f766e; color: #ccfbf1; }
+
+        .quota-banner {
+            background: rgba(245, 158, 11, 0.14);
+            border: 1px solid rgba(245, 158, 11, 0.45);
+            color: #fde68a;
+            border-radius: 10px;
+            padding: 9px 12px;
+            font-size: 12px;
+            line-height: 1.4;
+            display: none;
+            overflow-wrap: anywhere;
+        }
+        .quota-banner.show {
+            display: block;
+        }
+
+        .admin-only,
+        #nav-manage,
+        #panel-manage,
+        .btn-edit,
+        .btn-del {
+            display: none !important;
+        }
+
+        .card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 14px;
+            padding: 14px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+            min-width: 0;
+            width: 100%;
+        }
+        .card-header {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            gap: 10px;
+            padding-bottom: 12px;
+            margin-bottom: 12px;
+            border-bottom: 1px solid #334155;
+            min-width: 0;
+        }
+        .card-header h2 {
+            margin: 0;
+            font-size: clamp(14.5px, 4vw, 16.5px);
+            font-weight: 700;
+            color: #f8fafc;
+            line-height: 1.35;
+            overflow-wrap: anywhere;
+        }
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 8px;
+            width: 100%;
+            min-width: 0;
+        }
+        input, select {
+            background: #0f172a;
+            color: #f8fafc;
+            border: 1px solid #475569;
+            border-radius: 8px;
+            padding: 8px 10px;
+            font-family: inherit;
+            font-size: 13px;
+            width: 100%;
+            min-width: 0;
+            max-width: 100%;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #38bdf8;
+        }
+        button {
+            font-family: inherit;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 12.5px;
+            font-weight: 600;
+            cursor: pointer;
+            max-width: 100%;
+        }
+        button:hover { opacity: 0.92; }
+        button:disabled { opacity: 0.6; cursor: not-allowed; }
+        .btn-sync {
+            background: #0284c7;
+            color: #fff;
+            white-space: nowrap;
+        }
+        .btn-view {
+            background: #2563eb;
+            color: #fff;
+            padding: 6px 11px;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .table-wrap {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1020px;
+        }
+        th, td {
+            border: 1px solid #334155;
+            padding: 10px 11px;
+            text-align: left;
+            font-size: 13px;
+            line-height: 1.35;
+        }
+        th {
+            background: #0f172a;
+            color: #93c5fd;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+        td {
+            background: #162032;
+            color: #e2e8f0;
+            overflow-wrap: anywhere;
+        }
+        tr:hover td { background: #24334d; }
+        .center { text-align: center; }
+        .actions { display: flex; gap: 6px; flex-wrap: wrap; }
+
+        .grade-pill {
+            background: rgba(15, 118, 110, 0.25);
+            color: #5eead4;
+            border: 1px solid #14b8a6;
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-size: 11.5px;
+            font-weight: 600;
+            display: inline-block;
+            white-space: nowrap;
+        }
+        .status-active {
+            background: rgba(34, 197, 94, 0.18);
+            color: #86efac;
+            border: 1px solid #22c55e;
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-size: 11.5px;
+            font-weight: 600;
+            display: inline-block;
+            white-space: nowrap;
+        }
+
+        .pass-cell-box {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 5px;
+            flex-wrap: wrap;
+            min-width: 0;
+        }
+        table .pass-cell-box {
+            justify-content: center;
+        }
+        .pass-value {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            background: #0f172a;
+            border: 1px solid #334155;
+            padding: 3px 7px;
+            border-radius: 6px;
+            font-size: 12px;
+            color: #e2e8f0;
+            max-width: 100%;
+            overflow-wrap: anywhere;
+        }
+        .pass-hidden-text {
+            color: #64748b;
+            font-size: 12px;
+            font-style: italic;
+        }
+        .mini-btn {
+            background: #334155;
+            color: #f8fafc;
+            border: 1px solid #475569;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11.5px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .mini-btn:hover { background: #475569; }
+        .mini-btn.edit-btn {
+            background: rgba(37, 99, 235, 0.25);
+            border-color: rgba(96, 165, 250, 0.5);
+            color: #93c5fd;
+        }
+
+        .mobile-cards {
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+            min-width: 0;
+        }
+        .student-card {
+            background: #162032;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 11px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 100%;
+            min-width: 0;
+        }
+        .student-card-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #26354d;
+            min-width: 0;
+        }
+        .student-card-head > div:first-child {
+            min-width: 0;
+            flex: 1 1 auto;
+        }
+        .student-card-name {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #f8fafc;
+            overflow-wrap: anywhere;
+            line-height: 1.35;
+        }
+        .student-card-sub {
+            font-size: 11.5px;
+            color: #94a3b8;
+            margin-top: 2px;
+            overflow-wrap: anywhere;
+        }
+        .student-card-rows {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            font-size: 12px;
+            min-width: 0;
+        }
+        .student-card-row {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 8px;
+            min-width: 0;
+        }
+        .student-card-label {
+            color: #94a3b8;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        .student-card-val {
+            text-align: right;
+            color: #e2e8f0;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+            min-width: 0;
+            flex: 1 1 auto;
+        }
+        .student-card-pass {
+            padding-top: 8px;
+            border-top: 1px solid #26354d;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            flex-wrap: wrap;
+            min-width: 0;
+        }
+        .student-card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            padding-top: 6px;
+            border-top: 1px solid #26354d;
+            flex-wrap: wrap;
+        }
+
+        .history-box {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 12px;
+            margin-top: 12px;
+            min-width: 0;
+        }
+        .history-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        .history-item {
+            background: #162032;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 9px 11px;
+            font-size: 12.5px;
+            overflow-wrap: anywhere;
+            min-width: 0;
+        }
+        .history-label {
+            color: #94a3b8;
+            font-size: 11px;
+            display: block;
+            margin-bottom: 2px;
+        }
+        .note-text {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-top: 6px;
+            overflow-wrap: anywhere;
+        }
+
+        .modal-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(2, 6, 23, 0.84);
+            z-index: 999;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+        }
+        .modal-backdrop.active { display: flex; }
+        .modal-card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 14px;
+            width: 100%;
+            max-width: 420px;
+            max-height: 92dvh;
+            overflow-y: auto;
+            padding: 15px;
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.6);
+        }
+        .modal-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #38bdf8;
+            margin-bottom: 4px;
+            overflow-wrap: anywhere;
+        }
+        .modal-sub {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-bottom: 12px;
+            overflow-wrap: anywhere;
+        }
+        .form-field { margin-bottom: 11px; }
+        .form-field label {
+            display: block;
+            font-size: 12px;
+            color: #cbd5e1;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+        .form-field input {
+            width: 100%;
+            padding: 8px 10px;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            background: #0f172a;
+            color: #f8fafc;
+            font-size: 13.5px;
+        }
+        .form-field input:disabled { opacity: 0.55; cursor: not-allowed; }
+        .field-hint { font-size: 11px; color: #94a3b8; margin-top: 4px; }
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-top: 14px;
+            flex-wrap: wrap;
+        }
+        .btn-cancel { background: #334155; color: #f8fafc; }
+        .btn-save { background: #2563eb; color: #fff; }
+        .btn-save:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        .toast-msg {
+            position: fixed;
+            bottom: 14px;
+            left: 50%;
+            transform: translate(-50%, 12px);
+            background: #1e293b;
+            border: 1px solid #38bdf8;
+            color: #f8fafc;
+            padding: 9px 13px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.45);
+            z-index: 1200;
+            opacity: 0;
+            transition: 0.2s;
+            pointer-events: none;
+            max-width: calc(100% - 20px);
+            text-align: center;
+            overflow-wrap: anywhere;
+        }
+        .toast-msg.show {
+            opacity: 1;
+            transform: translate(-50%, 0);
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 8px; }
+            .topbar {
+                flex-direction: column;
+                align-items: stretch;
+                padding: 10px;
+                gap: 8px;
+            }
+            .topbar-left, .user-meta {
+                width: 100%;
+            }
+            .user-meta {
+                justify-content: space-between;
+            }
+            #currentUserName {
+                max-width: 150px;
+            }
+            .card {
+                padding: 10px;
+                border-radius: 12px;
+            }
+            .controls {
+                grid-template-columns: 1fr;
+            }
+            .btn-sync {
+                width: 100%;
+                text-align: center;
+            }
+            .table-wrap { display: none; }
+            .mobile-cards { display: flex; }
+            .history-grid { grid-template-columns: 1fr; }
+            .modal-actions .btn-cancel,
+            .modal-actions .btn-save {
+                flex: 1 1 auto;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 380px) {
+            body { padding: 6px; }
+            .back-btn {
+                padding: 6px 8px;
+                font-size: 11px;
+            }
+            #currentUserName { max-width: 110px; }
+            .student-card { padding: 9px; }
+            .student-card-head { flex-direction: column; align-items: stretch; gap: 6px; }
+        }
+
+        #fbSyncBadge,
+        .badge-fb,
+        [data-hide-firebase="true"],
+        [class*="firebase" i],
+        [id*="firebase" i] {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="topbar">
+        <div class="topbar-left">
+            <a href="index.html" class="back-btn">⬅ ກັບໄປໜ້າຫຼັກ</a>
+            <h1 class="page-title">🎓 ຫ້ອງຈັດການນັກຮຽນ</h1>
+        </div>
+        <div class="user-meta">
+            <span id="currentUserName">ຜູ້ໃຊ້ງານ</span>
+            <span id="currentUserRole" class="badge badge-role-student">STUDENT</span>
+            <span id="currentUserGrade" class="badge badge-grade">ມ.5</span>
+        </div>
+    </div>
+
+    <div class="quota-banner" id="quotaBanner">
+        ⚠️ ການເຊື່ອມຕໍ່ Google Sheet ຊົ່ວຄາວມີບັນຫາ — ລະບົບກຳລັງໃຊ້ຂໍ້ມູນທີ່ເກັບໃນເຄື່ອງ (`localStorage`).
+    </div>
+
+    <section class="card" id="panel-history">
+        <div class="card-header">
+            <h2>🔍 ຄົ້ນຫາ ແລະ ເບິ່ງປະຫວັດນັກຮຽນໃນໂຮງຮຽນ (ໂຕບໍ່ຊ້ຳກັນ)</h2>
+            <div class="controls">
+                <input type="text" id="searchStudentInput" placeholder="ຄົ້ນຫາຊື່ນັກຮຽນ, ລະຫັດ, ອີເມວ..." oninput="renderStudentsTable()" />
+                <select id="filterGradeSelect" onchange="renderStudentsTable()">
+                    <option value="">ທຸກຫ້ອງ</option>
+                    <option value="ມ.5">ຫ້ອງ ມ.5</option>
+                    <option value="ມ.6">ຫ້ອງ ມ.6</option>
+                    <option value="ມ.7">ຫ້ອງ ມ.7</option>
+                </select>
+                <button type="button" class="btn-sync" id="syncBtn" onclick="loadStudentsFromFirestore(true)">🔄 ໂຫຼດຂໍ້ມູນ</button>
+            </div>
+        </div>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 55px;">ລ/ດ</th>
+                        <th>ລະຫັດນັກຮຽນ</th>
+                        <th>ຊື່ ແລະ ນາມສະກຸນ</th>
+                        <th>ຫ້ອງ</th>
+                        <th>ເພດ</th>
+                        <th>ເບີໂທຜູ້ປົກຄອງ</th>
+                        <th>ອີເມວ</th>
+                        <th class="center" style="width: 210px;">ລະຫັດຜ່ານ</th>
+                        <th>ສະຖານະ</th>
+                        <th style="width: 120px;">ປະຫວັດ</th>
+                    </tr>
+                </thead>
+                <tbody id="studentsTableBody"></tbody>
+            </table>
+        </div>
+
+        <div class="mobile-cards" id="studentsMobileCards"></div>
+
+        <div class="history-box" id="studentDetailBox">
+            <h3 style="margin: 0 0 10px; font-size: 14.5px; color: #93c5fd;">📖 ລາຍລະອຽດປະຫວັດນັກຮຽນ</h3>
+            <div id="studentDetailContent" class="note-text">
+                ກົດປຸ່ມ "ເບິ່ງປະຫວັດ" ໃນຕາຕະລາງດ້ານເທິງ ເພື່ອເບິ່ງປະຫວັດສ່ວນຕົວ, ຂໍ້ມູນຜູ້ປົກຄອງ ແລະ ບັນທຶກປະຫວັດຂອງນັກຮຽນ.
+            </div>
+        </div>
+    </section>
+</div>
+
+<div class="modal-backdrop" id="editCredModal" onclick="if(event.target===this) closeEditModal()">
+    <div class="modal-card">
+        <div class="modal-title" id="editModalTitle">✏️ ແກ້ໄຂຂໍ້ມູນບັນຊີ</div>
+        <div class="modal-sub" id="editModalSubtitle">ນັກຮຽນ</div>
+        <form id="editCredForm" onsubmit="saveCredentialEdit(event)">
+            <div class="form-field">
+                <label for="editEmailInput">📧 ອີເມວ (Email)</label>
+                <input type="email" id="editEmailInput" placeholder="student@school.edu.la" />
+                <div class="field-hint" id="emailFieldHint">ແອັດມິນສາມາດປ່ຽນອີເມວໄດ້</div>
+            </div>
+            <div class="form-field">
+                <label for="editPasswordInput">🔑 ລະຫັດຜ່ານ (Password)</label>
+                <input type="text" id="editPasswordInput" placeholder="ປ້ອນລະຫັດຜ່ານ" />
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel" onclick="closeEditModal()">ຍົກເລີກ</button>
+                <button type="submit" class="btn-save" id="saveCredBtn">ບັນທຶກ</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="toast-msg" id="toastMsg"></div>
+
+<script>
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz2GeJz9zdeNbJ__dOuVkW5oT1Gfzdz5OZekUhBiGU0AlBE46lBre1JH_GFr3agr5Gi/exec";
+    const SHEET_NAME = "students";
+    const CRED_OVERRIDE_STORAGE_KEY = "school_student_cred_overrides_v1";
+    const LAST_FETCH_TS_KEY = "school_students_last_fetch_ts";
+    const FETCH_COOLDOWN_MS = 15000;
+
+    function cleanVal(v) {
+        return String(v ?? "").trim().replace(/^["']+|["']+$/g, "");
+    }
+
+    function isEmailLike(v) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanVal(v));
+    }
+
+    function showToast(message) {
+        const el = document.getElementById("toastMsg");
+        if (!el) return;
+        el.textContent = message;
+        el.classList.add("show");
+        clearTimeout(showToast._timer);
+        showToast._timer = setTimeout(() => {
+            el.classList.remove("show");
+        }, 3200);
+    }
+
+    function setQuotaNotice(active) {
+        const banner = document.getElementById("quotaBanner");
+        if (!banner) return;
+        if (active) {
+            banner.classList.add("show");
+        } else {
+            banner.classList.remove("show");
+        }
+    }
+
+    async function readStudentsSheet() {
+        const url = `${APPS_SCRIPT_URL}?sheet=${encodeURIComponent(SHEET_NAME)}&_t=${Date.now()}`;
+        const res = await fetch(url, { method: "GET", cache: "no-store" });
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        const data = await res.json();
+        if (!data || !data.ok) {
+            throw new Error((data && data.error) || "ອ່ານຂໍ້ມູນບໍ່ສຳເລັດ");
+        }
+        return Array.isArray(data.rows) ? data.rows : (Array.isArray(data.data) ? data.data : []);
+    }
+
+    async function postStudentSheet(action, extra = {}) {
+        const res = await fetch(APPS_SCRIPT_URL, {
+            method: "POST",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify({ action, sheet: SHEET_NAME, ...extra })
+        });
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        const data = await res.json();
+        if (!data || !data.ok) {
+            throw new Error((data && data.error) || "ບັນທຶກບໍ່ສຳເລັດ");
+        }
+        return data;
+    }
+
+    function resolveRole() {
+        const raw = (
+            localStorage.getItem("userRole") ||
+            localStorage.getItem("role") ||
+            localStorage.getItem("user_role") ||
+            "student"
+        ).trim().toLowerCase();
+
+        if (["admin", "administrator", "ແອັດມິນ", "แอดมิน"].includes(raw)) return "admin";
+        if (["teacher", "ຄູ", "ຄູອາຈານ", "ครู"].includes(raw)) return "teacher";
+        return "student";
+    }
+
+    const role = resolveRole();
+    const userGrade = localStorage.getItem("userGrade") || "ມ.5";
+    const userName = cleanVal(localStorage.getItem("userName")) || "ຜູ້ໃຊ້ງານ";
+    const currentUserEmail = cleanVal(
+        localStorage.getItem("userEmail") || localStorage.getItem("email") || ""
+    ).toLowerCase();
+    const currentUserId = cleanVal(
+        localStorage.getItem("userId") || localStorage.getItem("uid") || ""
+    );
+
+    const roleBadge = document.getElementById("currentUserRole");
+    roleBadge.textContent = role.toUpperCase();
+    roleBadge.className = `badge badge-role-${role}`;
+
+    document.getElementById("currentUserName").textContent = userName;
+    document.getElementById("currentUserGrade").textContent = userGrade;
+
+    let currentFilteredStudents = [];
+    let activeEditingIndex = null;
+    const revealedPasswordKeys = new Set();
+
+    function getLocalOverrides() {
+        try {
+            return JSON.parse(localStorage.getItem(CRED_OVERRIDE_STORAGE_KEY) || "{}");
+        } catch (_) {
+            return {};
+        }
+    }
+
+    function saveLocalOverride(s, emailVal, passVal, allowEmail, allowPass) {
+        try {
+            const overrides = getLocalOverrides();
+            const keyId = cleanVal(s.code || s.id || s.name).toLowerCase();
+            if (!keyId) return;
+            const prev = overrides[keyId] || {};
+            overrides[keyId] = {
+                email: allowEmail ? emailVal : (prev.email ?? s.email ?? ""),
+                password: allowPass ? passVal : (prev.password ?? s.password ?? ""),
+                updatedAt: Date.now()
+            };
+            localStorage.setItem(CRED_OVERRIDE_STORAGE_KEY, JSON.stringify(overrides));
+        } catch (_) {}
+    }
+
+    function isOwnerOfRecord(s) {
+        const recName = cleanVal(s.name).toLowerCase();
+        const loggedName = cleanVal(userName).toLowerCase();
+        const recEmail = cleanVal(s.email).toLowerCase();
+        const recUid = cleanVal(s.uid || s.userId || "");
+        const recCode = cleanVal(s.code || s.id).toLowerCase();
+
+        if (currentUserId && ((recUid && currentUserId === recUid) || (recCode && currentUserId === recCode))) {
+            return true;
+        }
+        if (currentUserEmail && recEmail && currentUserEmail === recEmail) return true;
+        if (loggedName && loggedName !== "ຜູ້ໃຊ້ງານ" && loggedName !== "user" && recName && recName === loggedName) {
+            return true;
+        }
+        return false;
+    }
+
+    function canViewPassword(s) {
+        return role === "admin" || isOwnerOfRecord(s);
+    }
+
+    function canEditPassword(s) {
+        return role === "admin" || isOwnerOfRecord(s);
+    }
+
+    function canEditEmail(s) {
+        return role === "admin";
+    }
+
+    function cleanRoomToken(val) {
+        return String(val ?? "").trim().replace(/^ຫ້ອງ\s*/i, "").replace(/\s+/g, "");
+    }
+
+    function normalizeStudent(raw = {}, docId = "") {
+        const code = String(raw.code || raw.studentCode || raw.studentId || raw.id || docId || "").trim();
+        const name = String(raw.name || raw.studentName || "").trim();
+        const grade = cleanRoomToken(raw.grade || raw.room || raw.classRoom || "ມ.5") || "ມ.5";
+        const rawEmail = cleanVal(raw.email || raw.userEmail || raw.studentEmail || "");
+        const rawPhone = String(raw.phone || raw.tel || raw.contact || "").trim();
+        const emailVal = rawEmail || (isEmailLike(rawPhone) ? rawPhone : "");
+        const passVal = cleanVal(raw.password || raw.pass || raw.userPassword || raw.pwd || "");
+        const overrides = getLocalOverrides();
+        const ovKey = cleanVal(code || docId || name).toLowerCase();
+        const ov = overrides[ovKey];
+
+        return {
+            ...raw,
+            id: docId || code || ("STD-" + Math.random().toString(36).slice(2, 7)),
+            firestoreId: docId || raw.firestoreId || code,
+            _row: raw._row || null,
+            code,
+            name,
+            grade,
+            gender: String(raw.gender || raw.sex || "").trim(),
+            birthDate: String(raw.birthDate || raw.dob || raw.birthday || "").trim(),
+            parentName: String(raw.parentName || raw.guardianName || raw.guardian || "").trim(),
+            phone: isEmailLike(rawPhone) ? "" : rawPhone,
+            email: ov && ov.email !== undefined && ov.email !== "" ? ov.email : emailVal,
+            password: ov && ov.password !== undefined && ov.password !== "" ? ov.password : passVal,
+            uid: cleanVal(raw.uid || raw.userId || ""),
+            address: String(raw.address || raw.location || raw.village || "").trim(),
+            history: String(raw.history || raw.record || raw.achievements || raw.note || "").trim()
+        };
+    }
+
+    function studentKey(s) {
+        const c = String(s.code || "").trim().toLowerCase();
+        const ng = `${String(s.name || "").replace(/\s+/g, " ").trim().toLowerCase()}__${cleanRoomToken(s.grade).toLowerCase()}`;
+        return c ? `code:${c}` : `ng:${ng}`;
+    }
+
+    function completeness(s) {
+        return ["code", "name", "grade", "gender", "birthDate", "parentName", "phone", "email", "password", "address", "history"]
+            .reduce((acc, k) => acc + (String(s[k] || "").trim() ? 1 : 0), 0);
+    }
+
+    function dedupeStudents(list = []) {
+        const map = new Map();
+        list.forEach((rawItem) => {
+            const item = normalizeStudent(rawItem, rawItem.firestoreId || rawItem.id);
+            if (!item.name && !item.code) return;
+            const key = studentKey(item);
+            const prev = map.get(key);
+            if (!prev) {
+                map.set(key, item);
+            } else {
+                const prevScore = completeness(prev);
+                const nextScore = completeness(item);
+                if (nextScore >= prevScore) {
+                    map.set(key, { ...prev, ...item });
+                } else {
+                    map.set(key, { ...item, ...prev });
+                }
+            }
+        });
+        return Array.from(map.values());
+    }
+
+    let studentsData = dedupeStudents(
+        JSON.parse(localStorage.getItem("school_students_data") || "null") || [
+            {
+                id: "STD-001",
+                firestoreId: "STD-001",
+                code: "STD-001",
+                name: "ທ. ສົມໃຈ ພົມມະວົງ",
+                grade: "ມ.5",
+                gender: "ຊາຍ",
+                birthDate: "2009-05-12",
+                parentName: "ທ. ຄຳດີ ພົມມະວົງ",
+                phone: "020 5510 1122",
+                email: "somjai@school.edu.la",
+                password: "",
+                address: "ບ້ານສີສະຫວາດ, ນະຄອນຫຼວງວຽງຈັນ",
+                history: "ເຂົ້າຮຽນປົກກະຕິ, ເຂົ້າຮ່ວມກິດຈະກຳວິທະຍາສາດປະຈຳປີ."
+            },
+            {
+                id: "STD-002",
+                firestoreId: "STD-002",
+                code: "STD-002",
+                name: "ນ. ມາລີ ໄຊຍະສິດ",
+                grade: "ມ.5",
+                gender: "ຍິງ",
+                birthDate: "2009-08-24",
+                parentName: "ນ. ບົວຈັນ ໄຊຍະສິດ",
+                phone: "020 9920 3344",
+                email: "malee@school.edu.la",
+                password: "",
+                address: "ບ້ານດົງປ່າແຫຼບ, ນະຄອນຫຼວງວຽງຈັນ",
+                history: "ນັກຮຽນດີເດັ່ນດ້ານພາສາຕ່າງປະເທດ ແລະ ກິດຈະກຳຫ້ອງຮຽນ."
+            },
+            {
+                id: "STD-003",
+                firestoreId: "STD-003",
+                code: "STD-003",
+                name: "ທ. ອານຸສອນ ວົງສາ",
+                grade: "ມ.5",
+                gender: "ຊາຍ",
+                birthDate: "2009-03-19",
+                parentName: "ທ. ວັນໄຊ ວົງສາ",
+                phone: "020 7730 5566",
+                email: "anousone@school.edu.la",
+                password: "",
+                address: "ບ້ານໜອງບອນ, ນະຄອນຫຼວງວຽງຈັນ",
+                history: "ສົນໃຈດ້ານຄອມພິວເຕີ ແລະ ກິລາບານເຕະປະຈຳໂຮງຮຽນ."
+            }
+        ]
+    );
+
+    function saveStudentsLocal() {
+        studentsData = dedupeStudents(studentsData);
+        localStorage.setItem("school_students_data", JSON.stringify(studentsData));
+        const simpleList = studentsData.map((s) => ({
+            id: s.code || s.id,
+            name: s.name,
+            grade: s.grade
+        }));
+        localStorage.setItem("school_students_list", JSON.stringify(simpleList));
+    }
+
+    window.toggleStudentPassword = function (recKey) {
+        if (revealedPasswordKeys.has(recKey)) {
+            revealedPasswordKeys.delete(recKey);
+        } else {
+            revealedPasswordKeys.add(recKey);
+        }
+        renderStudentsTable();
+    };
+
+    window.openStudentEditModal = function (idx) {
+        const s = currentFilteredStudents[idx];
+        if (!s) return;
+        const allowPass = canEditPassword(s);
+        const allowEmail = canEditEmail(s);
+        if (!allowPass && !allowEmail) {
+            showToast("ທ່ານບໍ່ມີສິດແກ້ໄຂຂໍ້ມູນຂອງຜູ້ໃຊ້ອື່ນ");
+            return;
+        }
+        activeEditingIndex = idx;
+        document.getElementById("editModalTitle").textContent = allowEmail
+            ? "✏️ ແກ້ໄຂອີເມວ ແລະ ລະຫັດຜ່ານ"
+            : "🔑 ປ່ຽນລະຫັດຜ່ານ";
+        document.getElementById("editModalSubtitle").textContent = `${s.code || s.id} — ${s.name} (${s.grade})`;
+
+        const emailInput = document.getElementById("editEmailInput");
+        const emailHint = document.getElementById("emailFieldHint");
+        emailInput.value = s.email || "";
+        emailInput.disabled = !allowEmail;
+        emailHint.textContent = allowEmail
+            ? "ແອັດມິນສາມາດປ່ຽນອີເມວ ແລະ ລະຫັດຜ່ານໄດ້"
+            : "ສະເພາະແອັດມິນເທົ່ານັ້ນທີ່ປ່ຽນອີເມວໄດ້";
+
+        const passInput = document.getElementById("editPasswordInput");
+        passInput.value = s.password || "";
+        passInput.disabled = !allowPass;
+
+        document.getElementById("editCredModal").classList.add("active");
+    };
+
+    window.closeEditModal = function () {
+        activeEditingIndex = null;
+        document.getElementById("editCredModal").classList.remove("active");
+    };
+
+    window.saveCredentialEdit = async function (event) {
+        event.preventDefault();
+        if (activeEditingIndex === null) return;
+        const s = currentFilteredStudents[activeEditingIndex];
+        if (!s) return;
+
+        const allowPass = canEditPassword(s);
+        const allowEmail = canEditEmail(s);
+        if (!allowPass && !allowEmail) return;
+
+        const newEmail = allowEmail ? cleanVal(document.getElementById("editEmailInput").value) : (s.email || "");
+        const newPassword = allowPass ? cleanVal(document.getElementById("editPasswordInput").value) : (s.password || "");
+
+        const saveBtn = document.getElementById("saveCredBtn");
+        saveBtn.disabled = true;
+        saveBtn.textContent = "ກຳລັງບັນທຶກ...";
+
+        studentsData = studentsData.map((item) => {
+            if (item.code === s.code || item.id === s.id || item.name === s.name) {
+                return {
+                    ...item,
+                    email: allowEmail ? newEmail : item.email,
+                    password: allowPass ? newPassword : item.password
+                };
+            }
+            return item;
+        });
+        saveLocalOverride(s, newEmail, newPassword, allowEmail, allowPass);
+        saveStudentsLocal();
+
+        try {
+            const safeId = s.firestoreId || s.code || s.id;
+            const payload = {
+                id: safeId,
+                name: s.name,
+                code: s.code || safeId,
+                grade: s.grade
+            };
+            if (allowEmail) payload.email = newEmail;
+            if (allowPass) payload.password = newPassword;
+
+            await postStudentSheet("update", {
+                id: safeId,
+                row: s._row || null,
+                data: payload
+            });
+            setQuotaNotice(false);
+            renderStudentsTable();
+            closeEditModal();
+            showToast("✅ ບັນທຶກຂໍ້ມູນສຳເລັດແລ້ວ");
+        } catch (err) {
+            setQuotaNotice(true);
+            renderStudentsTable();
+            closeEditModal();
+            showToast("✅ ບັນທຶກໃນເຄື່ອງແລ້ວ (ການສົ່ງໄປ Google Sheet ມີບັນຫາ)");
+        } finally {
+            saveBtn.disabled = false;
+            saveBtn.textContent = "ບັນທຶກ";
+        }
+    };
+
+    function renderPasswordBlock(s, idx) {
+        const recKey = `std__${s.firestoreId || s.code || s.id || idx}`;
+        if (!canViewPassword(s)) {
+            return `<span class="pass-hidden-text">🔒 ເຊື່ອງໄວ້</span>`;
+        }
+        const isShown = revealedPasswordKeys.has(recKey);
+        const hasPass = Boolean(s.password);
+        const passText = !hasPass
+            ? `<span class="pass-hidden-text">-</span>`
+            : (isShown
+                ? `<span class="pass-value">${esc(s.password)}</span>`
+                : `<span class="pass-value">••••••••</span>`);
+        const toggleBtn = hasPass
+            ? `<button type="button" class="mini-btn" onclick="toggleStudentPassword('${esc(recKey)}')">${isShown ? "ເຊື່ອງ" : "ເບິ່ງ"}</button>`
+            : "";
+        const editBtn = canEditPassword(s)
+            ? `<button type="button" class="mini-btn edit-btn" onclick="openStudentEditModal(${idx})">${canEditEmail(s) ? "ແກ້ໄຂ" : "ປ່ຽນລະຫັດ"}</button>`
+            : "";
+        return `<div class="pass-cell-box">${passText}${toggleBtn}${editBtn}</div>`;
+    }
+
+    window.viewStudentHistory = function (id) {
+        const target = studentsData.find((s) => s.id === id || s.code === id);
+        const box = document.getElementById("studentDetailContent");
+        if (!target || !box) return;
+
+        box.innerHTML = `
+            <div class="history-grid">
+                <div class="history-item">
+                    <span class="history-label">ລະຫັດນັກຮຽນ</span>
+                    <strong>${esc(target.code || target.id)}</strong>
+                </div>
+                <div class="history-item">
+                    <span class="history-label">ຊື່ ແລະ ນາມສະກຸນ</span>
+                    <strong>${esc(target.name)}</strong>
+                </div>
+                <div class="history-item">
+                    <span class="history-label">ຫ້ອງ / ເພດ</span>
+                    <strong>${esc(target.grade)}</strong> (${esc(target.gender || "-")})
+                </div>
+                <div class="history-item">
+                    <span class="history-label">ວັນເດືອນປີເກີດ</span>
+                    <strong>${esc(target.birthDate || "-")}</strong>
+                </div>
+                <div class="history-item">
+                    <span class="history-label">ຜູ້ປົກຄອງ</span>
+                    <strong>${esc(target.parentName || "-")}</strong>
+                </div>
+                <div class="history-item">
+                    <span class="history-label">ເບີໂທຕິດຕໍ່</span>
+                    <strong>${esc(target.phone || "-")}</strong>
+                </div>
+                <div class="history-item">
+                    <span class="history-label">ອີເມວ</span>
+                    <strong>${esc(target.email || "-")}</strong>
+                </div>
+                <div class="history-item">
+                    <span class="history-label">ທີ່ຢູ່</span>
+                    <strong>${esc(target.address || "-")}</strong>
+                </div>
+            </div>
+            <div class="history-item">
+                <span class="history-label">ປະຫວັດການຮຽນ ແລະ ບັນທຶກປະຫວັດ</span>
+                <div>${esc(target.history || "ບໍ່ມີບັນທຶກປະຫວັດເພີ່ມເຕີມ")}</div>
+            </div>
+        `;
+    };
+
+    window.renderStudentsTable = function () {
+        const q = (document.getElementById("searchStudentInput").value || "").trim().toLowerCase();
+        const gradeFilter = cleanRoomToken(document.getElementById("filterGradeSelect").value).toLowerCase();
+        const tbody = document.getElementById("studentsTableBody");
+        const mobileCards = document.getElementById("studentsMobileCards");
+
+        const uniqueList = dedupeStudents(studentsData);
+        const filtered = uniqueList.filter((s) => {
+            const matchGrade = !gradeFilter || cleanRoomToken(s.grade).toLowerCase() === gradeFilter;
+            const hay = `${s.code || ""} ${s.name || ""} ${s.grade || ""} ${s.phone || ""} ${s.parentName || ""} ${s.email || ""}`.toLowerCase();
+            const matchQuery = !q || hay.includes(q);
+            return matchGrade && matchQuery;
+        });
+
+        currentFilteredStudents = filtered;
+
+        if (!filtered.length) {
+            tbody.innerHTML = `<tr><td colspan="10" class="center">ບໍ່ພົບຂໍ້ມູນນັກຮຽນທີ່ຄົ້ນຫາ</td></tr>`;
+            mobileCards.innerHTML = `<div class="student-card" style="text-align:center;color:#94a3b8;">ບໍ່ພົບຂໍ້ມູນນັກຮຽນທີ່ຄົ້ນຫາ</div>`;
+            return;
+        }
+
+        tbody.innerHTML = filtered.map((s, idx) => `
+            <tr>
+                <td>${idx + 1}</td>
+                <td>${esc(s.code || s.id)}</td>
+                <td><strong>${esc(s.name)}</strong></td>
+                <td><span class="grade-pill">${esc(s.grade)}</span></td>
+                <td>${esc(s.gender || "-")}</td>
+                <td>${esc(s.phone || "-")}</td>
+                <td>${esc(s.email || "-")}</td>
+                <td class="center">${renderPasswordBlock(s, idx)}</td>
+                <td><span class="status-active">ກຳລັງສຶກສາ</span></td>
+                <td>
+                    <div class="actions">
+                        <button type="button" class="btn-view" onclick="viewStudentHistory('${esc(s.id)}')">ເບິ່ງປະຫວັດ</button>
+                    </div>
+                </td>
+            </tr>
+        `).join("");
+
+        mobileCards.innerHTML = filtered.map((s, idx) => `
+            <div class="student-card">
+                <div class="student-card-head">
+                    <div>
+                        <div class="student-card-name">#${idx + 1} • ${esc(s.name)}</div>
+                        <div class="student-card-sub">ລະຫັດ: ${esc(s.code || s.id)}</div>
+                    </div>
+                    <span class="grade-pill">${esc(s.grade)}</span>
+                </div>
+                <div class="student-card-rows">
+                    <div class="student-card-row">
+                        <span class="student-card-label">⚧ ເພດ:</span>
+                        <span class="student-card-val">${esc(s.gender || "-")}</span>
+                    </div>
+                    <div class="student-card-row">
+                        <span class="student-card-label">📞 ເບີໂທ:</span>
+                        <span class="student-card-val">${esc(s.phone || "-")}</span>
+                    </div>
+                    <div class="student-card-row">
+                        <span class="student-card-label">📧 ອີເມວ:</span>
+                        <span class="student-card-val">${esc(s.email || "-")}</span>
+                    </div>
+                </div>
+                <div class="student-card-pass">
+                    <span class="student-card-label">🔑 ລະຫັດຜ່ານ:</span>
+                    <div>${renderPasswordBlock(s, idx)}</div>
+                </div>
+                <div class="student-card-footer">
+                    <span class="status-active">ກຳລັງສຶກສາ</span>
+                    <button type="button" class="btn-view" onclick="viewStudentHistory('${esc(s.id)}')">ເບິ່ງປະຫວັດ</button>
+                </div>
+            </div>
+        `).join("");
+    };
+
+    function syncRoomFilterOptions(extraRooms = []) {
+        const selectEl =
+            document.getElementById("filterGradeSelect") ||
+            document.getElementById("filterRoomSelect") ||
+            document.getElementById("roomFilter") ||
+            document.querySelector("select[id*='room' i], select[id*='grade' i]");
+        if (!selectEl) return;
+
+        const prevValue = cleanRoomToken(selectEl.value);
+        const uniqueMap = new Map();
+
+        const addRoom = (rawName) => {
+            const cleaned = String(rawName ?? "").trim().replace(/^ຫ້ອງ\s*/i, "");
+            if (!cleaned) return;
+            const key = cleaned.replace(/\s+/g, "").toLowerCase();
+            if (!uniqueMap.has(key)) {
+                uniqueMap.set(key, cleaned);
+            }
+        };
+
+        const studentRooms = studentsData.map((s) => s.grade);
+        ["ມ.5", "ມ.6", "ມ.7", ...studentRooms, ...extraRooms].forEach(addRoom);
+
+        const roomList = Array.from(uniqueMap.values());
+        selectEl.innerHTML =
+            `<option value="">ທຸກຫ້ອງ</option>` +
+            roomList.map((r) => `<option value="${esc(r)}">ຫ້ອງ ${esc(r)}</option>`).join("");
+
+        if (prevValue && Array.from(selectEl.options).some((o) => cleanRoomToken(o.value).toLowerCase() === prevValue.toLowerCase())) {
+            const matched = Array.from(selectEl.options).find((o) => cleanRoomToken(o.value).toLowerCase() === prevValue.toLowerCase());
+            if (matched) selectEl.value = matched.value;
+        }
+    }
+
+    window.loadStudentsFromFirestore = async function (showAlert = false) {
+        const now = Date.now();
+        const lastFetchTs = Number(localStorage.getItem(LAST_FETCH_TS_KEY) || "0");
+
+        if (!showAlert && now - lastFetchTs < FETCH_COOLDOWN_MS) {
+            syncRoomFilterOptions();
+            renderStudentsTable();
+            return;
+        }
+
+        const syncBtn = document.getElementById("syncBtn");
+        if (syncBtn) syncBtn.disabled = true;
+
+        try {
+            const rows = await readStudentsSheet();
+            localStorage.setItem(LAST_FETCH_TS_KEY, String(Date.now()));
+            setQuotaNotice(false);
+
+            if (rows && rows.length > 0) {
+                const loaded = rows.map((r, idx) =>
+                    normalizeStudent(r, String(r.id || r.docId || `student_${idx + 2}`))
+                );
+                studentsData = dedupeStudents(loaded);
+                saveStudentsLocal();
+            }
+            syncRoomFilterOptions();
+            renderStudentsTable();
+            if (showAlert) showToast("✅ ໂຫຼດຂໍ້ມູນນັກຮຽນສຳເລັດ!");
+        } catch (err) {
+            setQuotaNotice(true);
+            if (showAlert) showToast("⚠️ ເຊື່ອມຕໍ່ Google Sheet ບໍ່ໄດ້ — ໃຊ້ຂໍ້ມູນໃນເຄື່ອງ");
+            syncRoomFilterOptions();
+            renderStudentsTable();
+        } finally {
+            if (syncBtn) syncBtn.disabled = false;
+        }
+    };
+
+    function esc(str) {
+        return String(str || "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;");
+    }
+
+    syncRoomFilterOptions();
+    renderStudentsTable();
+    loadStudentsFromFirestore(false);
+</script>
+</body>
+</html>
