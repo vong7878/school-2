@@ -449,28 +449,44 @@
 <script>
     const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz2GeJz9zdeNbJ__dOuVkW5oT1Gfzdz5OZekUhBiGU0AlBE46lBre1JH_GFr3agr5Gi/exec";
 
-    const TAB_CACHE_PREFIX = "school_upd_tab_cache_v1_";
-    const TAB_FETCH_PREFIX = "school_upd_tab_ts_v1_";
-    const STUDENTS_DIR_CACHE_KEY = "school_upd_students_dir_v1";
-    const STUDENTS_DIR_TS_KEY = "school_upd_students_dir_ts_v1";
+    const TAB_CACHE_PREFIX = "school_upd_tab_cache_v2_";
+    const TAB_FETCH_PREFIX = "school_upd_tab_ts_v2_";
+    const STUDENTS_DIR_CACHE_KEY = "school_upd_students_dir_v2";
+    const STUDENTS_DIR_TS_KEY = "school_upd_students_dir_ts_v2";
     const SHARED_ROOMS_KEY = "school_classrooms_data";
     const SHARED_TEACHERS_KEY = "school_teachers_data";
     const TAB_COOLDOWN_MS = 15000;
     const SUBMIT_COOLDOWN_MS = 1200;
     let lastSubmitTs = 0;
 
-    function setNetNotice(active) {
+    function formatErrMsg(err) {
+        return (err && err.message) ? String(err.message) : String(err || "ເກີດຂໍ້ຜິດພາດບໍ່ຮູ້ສາເຫດ");
+    }
+
+    function setNetNotice(active, detail = "") {
         const banner = document.getElementById("quotaBanner");
         if (!banner) return;
-        if (active) banner.classList.add("show");
-        else banner.classList.remove("show");
+        if (active) {
+            banner.textContent = detail
+                ? `⚠️ ການເຊື່ອມຕໍ່ Google Sheet ຊົ່ວຄາວມີບັນຫາ (${detail}) — ລະບົບກຳລັງໃຊ້ຂໍ້ມູນໃນເຄື່ອງ (localStorage).`
+                : "⚠️ ການເຊື່ອມຕໍ່ Google Sheet ຊົ່ວຄາວມີບັນຫາ — ລະບົບກຳລັງໃຊ້ຂໍ້ມູນໃນເຄື່ອງ (localStorage).";
+            banner.classList.add("show");
+        } else {
+            banner.classList.remove("show");
+        }
     }
 
     async function sheetReadRows(sheetName) {
         const url = `${APPS_SCRIPT_URL}?sheet=${encodeURIComponent(sheetName)}&_t=${Date.now()}`;
         const res = await fetch(url, { method: "GET", cache: "no-store" });
         if (!res.ok) throw new Error("HTTP " + res.status);
-        const data = await res.json();
+        const text = await res.text();
+        let data;
+        try {
+            data = JSON.parse(text);
+        } catch (_) {
+            throw new Error("ຄຳຕອບຈາກ Server ບໍ່ແມ່ນ JSON");
+        }
         if (!data || !data.ok) throw new Error((data && data.error) || "ອ່ານຂໍ້ມູນບໍ່ສຳເລັດ");
         return Array.isArray(data.rows) ? data.rows : (Array.isArray(data.data) ? data.data : []);
     }
@@ -482,7 +498,13 @@
             body: JSON.stringify({ action, sheet: sheetName, ...extra })
         });
         if (!res.ok) throw new Error("HTTP " + res.status);
-        const data = await res.json();
+        const text = await res.text();
+        let data;
+        try {
+            data = JSON.parse(text);
+        } catch (_) {
+            throw new Error("ຄຳຕອບ POST ບໍ່ແມ່ນ JSON");
+        }
         if (!data || !data.ok) throw new Error((data && data.error) || "ບັນທຶກບໍ່ສຳເລັດ");
         return data;
     }
@@ -648,11 +670,12 @@
         { name: "earnedCredits", label: "ໜ່ວຍກິດສະສົມ (ຜ່ານ)", type: "number", required: true, placeholder: "24", min: 0, max: 200, step: "1" }
     ];
 
+    /* ກົງກັບແທັບໃນ Google Sheet `school`: classes, teachers, students, scores, finance, other */
     const TAB_CONFIGS = {
         rooms: {
-            title: "🏫 ເພີ່ມ / ແກ້ໄຂ / ລົບ ລາຍຊື່ຫ້ອງ",
-            collections: ["rooms", "classrooms"],
-            primaryCol: "rooms",
+            title: "🏫 ເພີ່ມ / ແກ້ໄຂ / ລົບ ລາຍຊື່ຫ້ອງ (classes)",
+            collections: ["classes", "rooms", "classrooms"],
+            primaryCol: "classes",
             fields: [
                 { name: "name", label: "ຊື່ຫ້ອງ (ເຊັ່ນ: ມ.6/1)", type: "text", required: true, placeholder: "ມ.6/1" },
                 { name: "level", label: "ຊັ້ນຮຽນ", type: "text", required: false, placeholder: "ມ.6" },
@@ -674,7 +697,7 @@
             })
         },
         teachers: {
-            title: "👩‍🏫 ເພີ່ມ / ແກ້ໄຂ / ລົບ ລາຍຊື່ຄູ",
+            title: "👩‍🏫 ເພີ່ມ / ແກ້ໄຂ / ລົບ ລາຍຊື່ຄູ (teachers)",
             collections: ["teachers"],
             primaryCol: "teachers",
             fields: [
@@ -701,35 +724,40 @@
             })
         },
         students: {
-            title: "🎓 ເພີ່ມ / ແກ້ໄຂ / ລົບ ລາຍຊື່ນັກຮຽນ",
+            title: "🎓 ເພີ່ມ / ແກ້ໄຂ / ລົບ ລາຍຊື່ນັກຮຽນ (students)",
             collections: ["students"],
             primaryCol: "students",
             fields: [
-                { name: "studentCode", label: "ລະຫັດນັກຮຽນ", type: "text", required: true, placeholder: "STU001" },
-                { name: "name", label: "ຊື່ ແລະ ນາມສະກຸນ", type: "text", required: true, placeholder: "ຊື່ນັກຮຽນ" },
-                { name: "grade", label: "ຫ້ອງຮຽນ", type: "text", required: true, placeholder: "ມ.6/1" },
-                { name: "status", label: "ສະຖານະ", type: "text", required: false, placeholder: "ກຳລັງຮຽນ" }
+                { name: "code", label: "ລະຫັດນັກຮຽນ (code)", type: "text", required: true, placeholder: "STU001" },
+                { name: "name", label: "ຊື່ ແລະ ນາມສະກຸນ (name)", type: "text", required: true, placeholder: "ຊື່ນັກຮຽນ" },
+                { name: "grade", label: "ຫ້ອງຮຽນ (grade)", type: "text", required: true, placeholder: "ມ.6/1" },
+                { name: "gender", label: "ເພດ (gender)", type: "text", required: false, placeholder: "ຊາຍ / ຍິງ" },
+                { name: "phone", label: "ເບີໂທ (phone)", type: "text", required: false, placeholder: "020..." },
+                { name: "address", label: "ທີ່ຢູ່ (address)", type: "text", required: false, placeholder: "ບ້ານ / ເມືອງ / ແຂວງ" }
             ],
             columns: [
-                { key: "studentCode", label: "ລະຫັດ" },
+                { key: "code", label: "ລະຫັດ" },
                 { key: "name", label: "ຊື່ນັກຮຽນ" },
                 { key: "grade", label: "ຫ້ອງ" },
-                { key: "status", label: "ສະຖານະ" }
+                { key: "gender", label: "ເພດ" },
+                { key: "phone", label: "ເບີໂທ" }
             ],
             mapDoc: (d, id) => ({
                 id,
-                studentCode: cleanVal(d.studentCode || d.studentId || d.code || id),
+                code: cleanVal(d.code || d.studentCode || d.studentId || id),
                 name: cleanVal(d.name || d.studentName),
                 grade: cleanVal(d.grade || d.room || d.classRoom),
-                status: cleanVal(d.status || "ກຳລັງຮຽນ")
+                gender: cleanVal(d.gender || ""),
+                phone: cleanVal(d.phone || ""),
+                address: cleanVal(d.address || "")
             })
         },
         schedules: {
-            title: "📅 ເພີ່ມ / ແກ້ໄຂ / ລົບ ຕາຕະລາງສອນປະຈຳວັນ - ປະຈຳອາທິດ",
-            collections: ["weekly_schedules", "timetables"],
-            primaryCol: "weekly_schedules",
+            title: "📅 ເພີ່ມ / ແກ້ໄຂ / ລົບ ຕາຕະລາງສອນ (other)",
+            collections: ["other", "weekly_schedules", "timetables"],
+            primaryCol: "other",
             fields: [
-                { name: "week", label: "ອາທິດ (ເຊັ່ນ 2026-W46 ຫຼື ວ່າງ=ທຸກອາທິດ)", type: "text", required: false, placeholder: "2026-W46" },
+                { name: "week", label: "ອາທິດ (ເຊັ່ນ 2026-W46)", type: "text", required: false, placeholder: "2026-W46" },
                 { name: "day", label: "ມື້ (ຈັນ-ສຸກ)", type: "text", required: true, placeholder: "ຈັນ" },
                 { name: "period", label: "ຊົ່ວໂມງທີ (1-4)", type: "text", required: true, placeholder: "1" },
                 { name: "room", label: "ຫ້ອງຮຽນ", type: "text", required: true, placeholder: "ມ.6/1" },
@@ -755,9 +783,9 @@
             })
         },
         scores: {
-            title: "📊 5. ຄະແນນນັກຮຽນ (ລາຍວິຊາ & ສະເລ່ຍໝົດປີ)",
-            collections: ["student_scores"],
-            primaryCol: "student_scores",
+            title: "📊 5. ຄະແນນນັກຮຽນ (scores)",
+            collections: ["scores", "student_scores"],
+            primaryCol: "scores",
             getFields: (subMode) => subMode === "annual" ? ANNUAL_SCORE_FIELDS : getSubjectScoreFields(),
             columns: [
                 { key: "studentName", label: "ຊື່ນັກຮຽນ" },
@@ -799,9 +827,9 @@
             }
         },
         tuition: {
-            title: "💰 ເພີ່ມ / ແກ້ໄຂ / ລົບ ລາຍການຄ່າຮຽນນັກຮຽນ",
-            collections: ["tuition", "finance", "payments"],
-            primaryCol: "tuition",
+            title: "💰 ເພີ່ມ / ແກ້ໄຂ / ລົບ ລາຍການຄ່າຮຽນ (finance)",
+            collections: ["finance", "tuition", "payments"],
+            primaryCol: "finance",
             fields: [
                 { name: "studentName", label: "ຊື່ນັກຮຽນ", type: "text", required: true, placeholder: "ຊື່ນັກຮຽນ" },
                 { name: "room", label: "ຫ້ອງຮຽນ", type: "text", required: true, placeholder: "ມ.6/1" },
@@ -823,9 +851,9 @@
             })
         },
         subjects: {
-            title: "📚 7. ເພີ່ມ / ແກ້ໄຂ / ລົບ ວິຊາຮຽນ",
-            collections: ["subjects"],
-            primaryCol: "subjects",
+            title: "📚 7. ເພີ່ມ / ແກ້ໄຂ / ລົບ ວິຊາຮຽນ (other)",
+            collections: ["other", "subjects"],
+            primaryCol: "other",
             fields: [
                 { name: "code", label: "ລະຫັດວິຊາ", type: "text", required: false, placeholder: "SUB01" },
                 { name: "name", label: "ຊື່ວິຊາຮຽນ", type: "text", required: true, placeholder: "ຄະນິດສາດ" },
@@ -897,18 +925,21 @@
         const lastTs = Number(localStorage.getItem(tsKey) || "0");
         if (!force && Date.now() - lastTs < TAB_COOLDOWN_MS) return;
 
-        try {
-            const rows = await sheetReadRows("subjects");
-            if (rows && rows.length) {
-                const subjs = rows
-                    .map((d) => cleanVal(d.name || d.subjectName || d.subject))
-                    .filter(Boolean);
-                if (subjs.length) {
-                    availableSubjects = Array.from(new Set([...DEFAULT_SUBJECTS, ...subjs]));
+        for (const sheetCandidate of ["other", "subjects"]) {
+            try {
+                const rows = await sheetReadRows(sheetCandidate);
+                if (rows && rows.length) {
+                    const subjs = rows
+                        .map((d) => cleanVal(d.name || d.subjectName || d.subject))
+                        .filter(Boolean);
+                    if (subjs.length) {
+                        availableSubjects = Array.from(new Set([...DEFAULT_SUBJECTS, ...subjs]));
+                        break;
+                    }
                 }
-            }
-            localStorage.setItem(tsKey, String(Date.now()));
-        } catch (_) {}
+            } catch (_) {}
+        }
+        localStorage.setItem(tsKey, String(Date.now()));
     }
 
     function getActiveFields() {
@@ -1075,15 +1106,25 @@
             }
 
             const merged = [];
+            let anySuccess = false;
+            let lastErr = null;
+
             for (const colName of cfg.collections) {
                 try {
                     const rows = await sheetReadRows(colName);
+                    anySuccess = true;
                     rows.forEach((rowObj, idx) => {
                         const rowId = String(rowObj.id || rowObj.docId || `${colName}_${idx + 2}`);
                         const mapped = cfg.mapDoc(rowObj, rowId);
                         merged.push({ ...mapped, _col: colName, _row: rowObj._row || null });
                     });
-                } catch (_) {}
+                } catch (e) {
+                    lastErr = e;
+                }
+            }
+
+            if (!anySuccess && lastErr) {
+                throw lastErr;
             }
 
             currentRecords = merged;
@@ -1093,9 +1134,10 @@
             renderTableBody();
             if (force) alert("✅ ໂຫຼດຂໍ້ມູນໃໝ່ສຳເລັດ!");
         } catch (err) {
-            setNetNotice(true);
+            const msg = formatErrMsg(err);
+            setNetNotice(true, msg);
             renderTableBody();
-            if (force) alert("⚠️ ບໍ່ສາມາດໂຫຼດຈາກ Google Sheet ໄດ້ — ສະແດງຂໍ້ມູນໃນເຄື່ອງ.");
+            if (force) alert(`⚠️ ບໍ່ສາມາດໂຫຼດຈາກ Google Sheet ໄດ້ (${msg}) — ສະແດງຂໍ້ມູນໃນເຄື່ອງ.`);
         } finally {
             if (reloadBtn) reloadBtn.disabled = false;
         }
@@ -1160,8 +1202,9 @@
             setNetNotice(false);
             alert("🗑️ ລົບຂໍ້ມູນສຳເລັດ!");
         } catch (err) {
-            setNetNotice(true);
-            alert("🗑️ ລົບໃນເຄື່ອງແລ້ວ (ການສົ່ງໄປ Google Sheet ມີບັນຫາ).");
+            const msg = formatErrMsg(err);
+            setNetNotice(true, msg);
+            alert(`🗑️ ລົບໃນເຄື່ອງແລ້ວ (ການສົ່ງໄປ Google Sheet ມີບັນຫາ: ${msg}).`);
         }
     };
 
@@ -1253,8 +1296,9 @@
                     setNetNotice(false);
                     alert("✅ ບັນທຶກຄະແນນນັກຮຽນສຳເລັດແລ້ວ!");
                 } catch (err) {
-                    setNetNotice(true);
-                    alert("✅ ບັນທຶກໃນເຄື່ອງແລ້ວ (ການສົ່ງໄປ Google Sheet ມີບັນຫາ).");
+                    const msg = formatErrMsg(err);
+                    setNetNotice(true, msg);
+                    alert(`✅ ບັນທຶກໃນເຄື່ອງແລ້ວ (ການສົ່ງໄປ Google Sheet ມີບັນຫາ: ${msg}).`);
                 }
             } else {
                 const payload = { ...formValues };
@@ -1267,14 +1311,17 @@
                     payload.teacherName = payload.name;
                     payload.grade = payload.room;
                 } else if (currentTab === "students") {
-                    payload.studentId = payload.studentCode;
+                    payload.studentCode = payload.code;
+                    payload.studentId = payload.code;
                     payload.room = payload.grade;
                 } else if (currentTab === "schedules") {
+                    payload.category = "schedule";
                     payload.grade = payload.room;
                 } else if (currentTab === "tuition") {
                     payload.name = payload.studentName;
                     payload.grade = payload.room;
                 } else if (currentTab === "subjects") {
+                    payload.category = "subject";
                     payload.subjectName = payload.name;
                     payload.subject = payload.name;
                     payload.subjectCode = payload.code;
@@ -1306,8 +1353,9 @@
                     setNetNotice(false);
                     alert("✅ ບັນທຶກ ແລະ ຊິ້ງຂໍ້ມູນໄປທຸກໜ້າສຳເລັດແລ້ວ!");
                 } catch (err) {
-                    setNetNotice(true);
-                    alert("✅ ບັນທຶກໃນເຄື່ອງແລ້ວ (ການສົ່ງໄປ Google Sheet ມີບັນຫາ).");
+                    const msg = formatErrMsg(err);
+                    setNetNotice(true, msg);
+                    alert(`✅ ບັນທຶກໃນເຄື່ອງແລ້ວ (ການສົ່ງໄປ Google Sheet ມີບັນຫາ: ${msg}).`);
                 }
             }
         } finally {
@@ -1374,8 +1422,9 @@
                 alert(`✅ ໂຫຼດລາຍຊື່ນັກຮຽນ ${studentsDirectory.length} ຄົນສຳເລັດ!`);
             }
         } catch (err) {
-            setNetNotice(true);
-            if (showToast) alert(`⚠️ ໃຊ້ລາຍຊື່ໃນເຄື່ອງ ${studentsDirectory.length} ຄົນ.`);
+            const msg = formatErrMsg(err);
+            setNetNotice(true, msg);
+            if (showToast) alert(`⚠️ ໃຊ້ລາຍຊື່ໃນເຄື່ອງ ${studentsDirectory.length} ຄົນ (${msg}).`);
         } finally {
             if (btn) btn.disabled = false;
         }
