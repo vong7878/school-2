@@ -402,6 +402,7 @@
         <button type="button" class="submenu-btn" data-tab="scores" onclick="switchUpdateTab('scores')">📊 5. ຄະແນນນັກຮຽນ</button>
         <button type="button" class="submenu-btn" data-tab="tuition" onclick="switchUpdateTab('tuition')">💰 6. ລາຍການຄ່າຮຽນ</button>
         <button type="button" class="submenu-btn" data-tab="subjects" onclick="switchUpdateTab('subjects')">📚 7. ວິຊາຮຽນ</button>
+        <button type="button" class="submenu-btn" data-tab="terms" onclick="switchUpdateTab('terms')">🗓️ 8. ເທີມຮຽນ</button>
     </div>
 
     <section class="panel">
@@ -669,7 +670,6 @@
         { name: "earnedCredits", label: "ໜ່ວຍກິດສະສົມ (ຜ່ານ)", type: "number", required: true, placeholder: "24", min: 0, max: 200, step: "1" }
     ];
 
-    /* ກົງກັບແທັບໃນ Google Sheet `school`: classes, teachers, students, scores, finance, other */
     const TAB_CONFIGS = {
         rooms: {
             title: "🏫 ເພີ່ມ / ແກ້ໄຂ / ລົບ ລາຍຊື່ຫ້ອງ (classes)",
@@ -874,6 +874,33 @@
                 grade: cleanGrade(d.grade || d.room || ""),
                 credits: cleanVal(d.credits ?? d.credit ?? ""),
                 teacher: cleanVal(d.teacher || d.teacherName || "")
+            })
+        },
+        terms: {
+            title: "🗓️ 8. ເພີ່ມ / ແກ້ໄຂ / ລົບ ເທີມຮຽນ (other)",
+            collections: ["other", "terms", "semesters"],
+            primaryCol: "other",
+            fields: [
+                { name: "termName", label: "ຊື່ເທີມຮຽນ (ເຊັ່ນ: ເທີມ 1)", type: "text", required: true, placeholder: "ເທີມ 1" },
+                { name: "academicYear", label: "ສົກຮຽນ (ເຊັ່ນ: 2026-2027)", type: "text", required: true, placeholder: "2026-2027" },
+                { name: "startMonth", label: "ເປີດເທີມເດືອນໃດ", type: "select", required: true, options: ["ມັງກອນ", "ກຸມພາ", "ມີນາ", "ເມສາ", "ພຶດສະພາ", "ມິຖຸນາ", "ກໍລະກົດ", "ສິງຫາ", "ກັນຍາ", "ຕຸລາ", "ພະຈິກ", "ທັນວາ"] },
+                { name: "endMonth", label: "ປິດເທີມເດືອນໃດ", type: "select", required: true, options: ["ມັງກອນ", "ກຸມພາ", "ມີນາ", "ເມສາ", "ພຶດສະພາ", "ມິຖຸນາ", "ກໍລະກົດ", "ສິງຫາ", "ກັນຍາ", "ຕຸລາ", "ພະຈິກ", "ທັນວາ"] },
+                { name: "status", label: "ສະຖານະ", type: "select", required: false, options: ["ເປີດໃຊ້ງານ", "ສິ້ນສຸດແລ້ວ", "ລໍຖ້າເປີດ"] }
+            ],
+            columns: [
+                { key: "termName", label: "ເທີມຮຽນ" },
+                { key: "academicYear", label: "ສົກຮຽນ" },
+                { key: "startMonth", label: "ເປີດເທີມເດືອນ" },
+                { key: "endMonth", label: "ປິດເທີມເດືອນ" },
+                { key: "status", label: "ສະຖານະ" }
+            ],
+            mapDoc: (d, id) => ({
+                id,
+                termName: cleanVal(d.termName || d.name || d.term || ""),
+                academicYear: cleanVal(d.academicYear || d.year || ""),
+                startMonth: cleanVal(d.startMonth || d.openMonth || ""),
+                endMonth: cleanVal(d.endMonth || d.closeMonth || ""),
+                status: cleanVal(d.status || "ເປີດໃຊ້ງານ")
             })
         }
     };
@@ -1324,6 +1351,19 @@
                     payload.subjectName = payload.name;
                     payload.subject = payload.name;
                     payload.subjectCode = payload.code;
+                } else if (currentTab === "terms") {
+                    payload.category = "term";
+                    payload.name = payload.termName;
+                    payload.term = payload.termName;
+                    payload.openMonth = payload.startMonth;
+                    payload.closeMonth = payload.endMonth;
+                    try {
+                        const prevTerms = JSON.parse(localStorage.getItem("school_terms_data") || "[]");
+                        const nextList = Array.isArray(prevTerms) ? prevTerms.filter((t) => String(t.id) !== String(rowId)) : [];
+                        nextList.unshift({ id: rowId, ...payload });
+                        localStorage.setItem("school_terms_data", JSON.stringify(nextList));
+                        localStorage.setItem("school_active_term", JSON.stringify({ id: rowId, ...payload }));
+                    } catch (_) {}
                 }
 
                 const targetCol = editingCollectionName || cfg.primaryCol;
