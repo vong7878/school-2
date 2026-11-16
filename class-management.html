@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>🏫 ຈັດການຫ້ອງຮຽນ, ລາຍຊື່ &amp; ຕາຕະລາງ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        html, body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Noto Sans Lao', sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+            width: 100%;
+            min-height: 100vh;
+            min-height: 100dvh;
+            max-width: 100%;
+            overflow-x: hidden;
+            -webkit-text-size-adjust: 100%;
+        }
+        body {
+            padding: 12px;
+        }
+        .container {
+            max-width: 1180px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+            min-width: 0;
+        }
+        .topbar {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 14px;
+            padding: 12px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            transition: background 0.2s;
+            min-width: 0;
+            width: 100%;
+        }
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            min-width: 0;
+            flex: 1 1 auto;
+        }
+        .back-btn, a.btn-link {
+            background: #334155;
+            color: #f8fafc;
+            text-decoration: none;
+            padding: 7px 11px;
+            border-radius: 8px;
+            font-size: 12.5px;
+            font-weight: 600;
+            transition: background 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+            max-width: 100%;
+        }
+        .back-btn:hover, a.btn-link:hover { background: #475569; }
+        .btn-upd { background: #2563eb; color: #fff; padding: 7px 11px; font-size: 12.5px; }
+        .btn-upd:hover { background: #1d4ed8; }
+        .btn-sync {
+            background: #0284c7;
+            color: #fff;
+            font-family: inherit;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 12.5px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            max-width: 100%;
+        }
+        .btn-sync:hover { opacity: 0.92; }
+        .btn-sync:disabled { opacity: 0.6; cursor: not-allowed; }
+        .page-title {
+            margin: 0;
+            font-size: clamp(14.5px, 4.2vw, 18px);
+            font-weight: 700;
+            color: #f8fafc;
+            line-height: 1.3;
+            min-width: 0;
+            overflow-wrap: anywhere;
+        }
+        .user-meta {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            flex-wrap: wrap;
+            min-width: 0;
+            max-width: 100%;
+        }
+        #currentUserName {
+            max-width: 180px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .badge {
+            padding: 4px 9px;
+            border-radius: 999px;
+            font-weight: 600;
+            font-size: 11.5px;
+            white-space: nowrap;
+        }
+        .badge-role { background: #2563eb; color: #fff; }
+        .badge-grade { background: #0f766e; color: #ccfbf1; }
+        .badge-sheet { background: #1e3a8a; color: #93c5fd; border: 1px solid #3b82f6; }
+
+        .quota-banner {
+            background: rgba(245, 158, 11, 0.14);
+            border: 1px solid rgba(245, 158, 11, 0.45);
+            color: #fde68a;
+            border-radius: 10px;
+            padding: 9px 12px;
+            font-size: 12px;
+            line-height: 1.4;
+            display: none;
+            overflow-wrap: anywhere;
+        }
+        .quota-banner.show {
+            display: block;
+        }
+
+        .card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 14px;
+            padding: 14px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+            min-width: 0;
+            width: 100%;
+        }
+        .card-header {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            gap: 10px;
+            padding-bottom: 10px;
+            margin-bottom: 12px;
+            border-bottom: 1px solid #334155;
+            min-width: 0;
+        }
+        .card-header h2 {
+            margin: 0;
+            font-size: clamp(14px, 3.9vw, 16px);
+            font-weight: 700;
+            color: #f8fafc;
+            line-height: 1.35;
+            overflow-wrap: anywhere;
+        }
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+            gap: 8px;
+            align-items: center;
+            width: 100%;
+            min-width: 0;
+        }
+        select, input {
+            background: #0f172a;
+            color: #f8fafc;
+            border: 1px solid #475569;
+            border-radius: 8px;
+            padding: 8px 10px;
+            font-family: inherit;
+            font-size: 13px;
+            width: 100%;
+            min-width: 0;
+            max-width: 100%;
+        }
+        select:focus, input:focus {
+            outline: none;
+            border-color: #38bdf8;
+        }
+        .table-wrap {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 680px;
+        }
+        th, td {
+            border: 1px solid #334155;
+            padding: 9px 11px;
+            text-align: left;
+            font-size: 13px;
+            line-height: 1.35;
+        }
+        th {
+            background: #0f172a;
+            color: #93c5fd;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+        td {
+            background: #162032;
+            color: #e2e8f0;
+            overflow-wrap: anywhere;
+        }
+        tr:hover td { background: #24334d; }
+        .center { text-align: center; }
+        .hidden-section { display: none !important; }
+        .note-text {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-top: 8px;
+            line-height: 1.4;
+            overflow-wrap: anywhere;
+        }
+
+        /* Mobile Card List */
+        .mobile-cards {
+            display: none;
+            flex-direction: column;
+            gap: 9px;
+            width: 100%;
+            min-width: 0;
+        }
+        .cm-card {
+            background: #162032;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 10px 11px;
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            width: 100%;
+            min-width: 0;
+        }
+        .cm-card-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 8px;
+            padding-bottom: 7px;
+            border-bottom: 1px solid #26354d;
+            min-width: 0;
+        }
+        .cm-card-head > div:first-child {
+            min-width: 0;
+            flex: 1 1 auto;
+        }
+        .cm-card-name {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #f8fafc;
+            overflow-wrap: anywhere;
+            line-height: 1.35;
+        }
+        .cm-card-sub {
+            font-size: 11.5px;
+            color: #94a3b8;
+            margin-top: 2px;
+            overflow-wrap: anywhere;
+        }
+        .cm-card-rows {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            font-size: 12px;
+            min-width: 0;
+        }
+        .cm-card-row {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 8px;
+            min-width: 0;
+        }
+        .cm-card-label {
+            color: #94a3b8;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        .cm-card-val {
+            text-align: right;
+            color: #e2e8f0;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+            min-width: 0;
+            flex: 1 1 auto;
+        }
+        .period-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 6px;
+        }
+        .period-box {
+            background: #0f172a;
+            border: 1px solid #26354d;
+            border-radius: 8px;
+            padding: 7px 8px;
+            font-size: 11.5px;
+            line-height: 1.35;
+            min-width: 0;
+            overflow-wrap: anywhere;
+        }
+        .period-box-title {
+            color: #93c5fd;
+            font-weight: 700;
+            font-size: 11px;
+            margin-bottom: 2px;
+        }
+
+        .toast-msg {
+            position: fixed;
+            bottom: 14px;
+            left: 50%;
+            transform: translate(-50%, 12px);
+            background: #1e293b;
+            border: 1px solid #38bdf8;
+            color: #f8fafc;
+            padding: 9px 13px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.45);
+            z-index: 1200;
+            opacity: 0;
+            transition: 0.2s;
+            pointer-events: none;
+            max-width: calc(100% - 20px);
+            text-align: center;
+            overflow-wrap: anywhere;
+        }
+        .toast-msg.show {
+            opacity: 1;
+            transform: translate(-50%, 0);
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 8px; }
+            .topbar {
+                flex-direction: column;
+                align-items: stretch;
+                padding: 10px;
+                gap: 8px;
+            }
+            .topbar-left, .user-meta {
+                width: 100%;
+            }
+            .user-meta {
+                justify-content: space-between;
+            }
+            #currentUserName {
+                max-width: 150px;
+            }
+            .card {
+                padding: 10px;
+                border-radius: 12px;
+            }
+            .controls {
+                grid-template-columns: 1fr;
+            }
+            .btn-sync {
+                width: 100%;
+                text-align: center;
+            }
+            .table-wrap { display: none; }
+            .mobile-cards { display: flex; }
+        }
+
+        @media (max-width: 380px) {
+            body { padding: 6px; }
+            .back-btn, a.btn-link {
+                padding: 6px 8px;
+                font-size: 11px;
+            }
+            #currentUserName { max-width: 110px; }
+            .cm-card { padding: 9px; }
+            .cm-card-head { flex-direction: column; align-items: stretch; gap: 5px; }
+            .period-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="topbar">
+        <div class="topbar-left">
+            <a href="index.html" class="back-btn">⬅ ກັບໄປໜ້າຫຼັກ</a>
+            <a href="update.html?tab=students" class="btn-link btn-upd" id="btnUpdStudents" style="display: none;">🛠️ 12. ອັບເດດລະບົບ (ນັກຮຽນ)</a>
+            <a href="update.html?tab=schedules" class="btn-link btn-upd" id="btnUpdSchedule" style="display: none;">🛠️ 12. ອັບເດດລະບົບ (ຕາຕະລາງສອນ)</a>
+            <button type="button" class="btn-sync" id="syncBtn" onclick="loadFromSheetIfAvailable(true)">🔄 ໂຫຼດຂໍ້ມູນ</button>
+            <h1 class="page-title">🏫 ຈັດການຫ້ອງຮຽນ, ລາຍຊື່ &amp; ຕາຕະລາງ</h1>
+        </div>
+        <div class="user-meta">
+            <span id="sheetSyncBadge" class="badge badge-sheet">📊 Google Sheet</span>
+            <span id="currentUserName">ຜູ້ໃຊ້ງານ</span>
+            <span id="currentUserRole" class="badge badge-role">ROLE</span>
+            <span id="currentUserGrade" class="badge badge-grade">ມ.5</span>
+        </div>
+    </div>
+
+    <div class="quota-banner" id="quotaBanner">
+        ⚠️ ການເຊື່ອມຕໍ່ Google Sheet ຊົ່ວຄາວມີບັນຫາ — ລະບົບກຳລັງໃຊ້ຂໍ້ມູນທີ່ເກັບໃນເຄື່ອງ (`localStorage`) ແລະ ຫຼຸດການເອີ້ນຖານຂໍ້ມູນອັດຕະໂນມັດ.
+    </div>
+
+    <section class="card" id="sec-students">
+        <div class="card-header">
+            <h2>👨‍🎓 1. ລາຍຊື່ນັກຮຽນ</h2>
+            <div class="controls">
+                <select id="studentGradeFilter" onchange="renderStudents()">
+                    <option value="ALL">ທຸກຫ້ອງ</option>
+                    <option value="ມ.1">ມ.1</option>
+                    <option value="ມ.2">ມ.2</option>
+                    <option value="ມ.3">ມ.3</option>
+                    <option value="ມ.4">ມ.4</option>
+                    <option value="ມ.5">ມ.5</option>
+                    <option value="ມ.6">ມ.6</option>
+                    <option value="ມ.7">ມ.7</option>
+                </select>
+                <input type="text" id="studentSearch" placeholder="🔍 ຄົ້ນຫາຊື່ນັກຮຽນ..." oninput="renderStudents()" />
+            </div>
+        </div>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 60px;">ລ/ດ</th>
+                        <th>ລະຫັດນັກຮຽນ</th>
+                        <th>ຊື່ ແລະ ນາມສະກຸນ</th>
+                        <th>ຫ້ອງ</th>
+                        <th>ສະຖານະ</th>
+                    </tr>
+                </thead>
+                <tbody id="studentsTableBody"></tbody>
+            </table>
+        </div>
+        <div class="mobile-cards" id="studentsCards"></div>
+    </section>
+
+    <section class="card" id="sec-class-timetable">
+        <div class="card-header">
+            <h2 id="classTimetableTitle">📅 2. ຕາຕະລາງຮຽນປະຈຳພາກ</h2>
+            <div class="controls">
+                <select id="academicYearSelect" onchange="onTermPeriodChange()">
+                    <option value="2026-2027">ສົກຮຽນ 2026-2027</option>
+                    <option value="2027-2028">ສົກຮຽນ 2027-2028</option>
+                    <option value="2025-2026">ສົກຮຽນ 2025-2026</option>
+                </select>
+                <select id="semesterSelect" onchange="onTermPeriodChange()">
+                    <option value="ພາກຮຽນທີ 1">ພາກຮຽນທີ 1</option>
+                    <option value="ພາກຮຽນທີ 2">ພາກຮຽນທີ 2</option>
+                </select>
+                <select id="classTimetableGrade" onchange="renderClassTimetable()">
+                    <option value="ມ.1">ຫ້ອງ ມ.1</option>
+                    <option value="ມ.2">ຫ້ອງ ມ.2</option>
+                    <option value="ມ.3">ຫ້ອງ ມ.3</option>
+                    <option value="ມ.4">ຫ້ອງ ມ.4</option>
+                    <option value="ມ.5">ຫ້ອງ ມ.5</option>
+                    <option value="ມ.6">ຫ້ອງ ມ.6</option>
+                    <option value="ມ.7">ຫ້ອງ ມ.7</option>
+                </select>
+            </div>
+        </div>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ມື້</th>
+                        <th>ຊົ່ວໂມງ 1<br><small>08:00 - 08:45</small></th>
+                        <th>ຊົ່ວໂມງ 2<br><small>08:50 - 09:35</small></th>
+                        <th>ຊົ່ວໂມງ 3<br><small>09:50 - 10:35</small></th>
+                        <th>ຊົ່ວໂມງ 4<br><small>10:40 - 11:25</small></th>
+                    </tr>
+                </thead>
+                <tbody id="classTimetableBody"></tbody>
+            </table>
+        </div>
+        <div class="mobile-cards" id="classTimetableCards"></div>
+    </section>
+
+    <section class="card" id="sec-teaching-timetable">
+        <div class="card-header">
+            <h2 id="teachingTimetableTitle">👩‍🏫 3. ຕາຕະລາງສອນປະຈຳພາກ</h2>
+            <div class="controls">
+                <input type="text" id="teachingSearch" placeholder="🔍 ຄົ້ນຫາຄູ / ວິຊາ / ຫ້ອງ..." oninput="renderTeachingTimetable()" />
+            </div>
+        </div>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 60px;">ລ/ດ</th>
+                        <th>ຊື່ຄູຜູ້ສອນ</th>
+                        <th>ວິຊາສອນ</th>
+                        <th>ຫ້ອງ</th>
+                        <th>ພາກ / ສົກຮຽນ</th>
+                        <th>ມື້ / ເວລາສອນ</th>
+                    </tr>
+                </thead>
+                <tbody id="teachingTimetableBody"></tbody>
+            </table>
+        </div>
+        <div class="mobile-cards" id="teachingTimetableCards"></div>
+        <div class="note-text">
+            * ສ່ວນທີ 3 (ຕາຕະລາງສອນປະຈຳພາກ) ຖືກຊ່ອນຈາກນັກຮຽນ; ເມື່ອອັບເດດໃນ ໜ້າ 12 (ເມນູ 4) ທັງຕາຕະລາງຮຽນ (ສ່ວນທີ 2) ແລະ ຕາຕະລາງສອນ (ສ່ວນທີ 3) ຈະອັບເດດຕາມອັດຕາສ່ວນ.
+        </div>
+    </section>
+</div>
+
+<div class="toast-msg" id="toastMsg"></div>
+
+<script>
+    const APPS_SCRIPT_URL = window.APPS_SCRIPT_URL || "https://script.google.com/macros/s/AKfycbwp7pM_Lx8qdeuGC_nA_zvxTCltlOvJKNN-tjkRX_wi8JMt6EVyheyRNFambP69dOc9Yg/exec";
+
+    const SHEET_STUDENTS = "students";
+    const SHEET_CLASS_TIMETABLES = "class_timetables";
+    const SHEET_TERM_PERIODS = "term_periods";
+    const TEACHING_SHEETS = ["weekly_schedules", "timetables", "teaching_schedules", "schedules"];
+
+    const SYNC_STORAGE_KEY = "schoolSystemDataUpdated";
+    const SYNC_EVENT_NAME = "school-data-updated";
+    const DAYS_ORDER = ["ຈັນ", "ອັງຄານ", "ພຸດ", "ພະຫັດ", "ສຸກ", "ເສົາ", "ອາທິດ"];
+    const DEFAULT_GRADES = ["ມ.1", "ມ.2", "ມ.3", "ມ.4", "ມ.5", "ມ.6", "ມ.7"];
+    const DEFAULT_ACADEMIC_YEAR = "2026-2027";
+    const DEFAULT_YEARS = ["2026-2027", "2027-2028", "2025-2026"];
+    const DEFAULT_SEMESTER = "ພາກຮຽນທີ 1";
+
+    const LAST_FETCH_TS_KEY = "school_classmgmt_last_fetch_ts";
+    const QUOTA_BLOCK_UNTIL_KEY = "school_sheet_quota_blocked_until";
+    const FETCH_COOLDOWN_MS = 60000;
+    const QUOTA_COOLDOWN_MS = 1800000;
+
+    function showToast(message) {
+        const el = document.getElementById("toastMsg");
+        if (!el) return;
+        el.textContent = message;
+        el.classList.add("show");
+        clearTimeout(showToast._timer);
+        showToast._timer = setTimeout(() => {
+            el.classList.remove("show");
+        }, 3200);
+    }
+
+    function isQuotaError(err) {
+        const msg = String(err?.message || err || "").toLowerCase();
+        return (
+            msg.includes("quota") ||
+            msg.includes("resource exhausted") ||
+            msg.includes("daily usage") ||
+            msg.includes("service invoked too many times") ||
+            msg.includes("rate limit")
+        );
+    }
+
+    function setQuotaNotice(active, customMsg = "") {
+        const banner = document.getElementById("quotaBanner");
+        if (!banner) return;
+        if (customMsg) {
+            banner.textContent = customMsg;
+        }
+        if (active) {
+            banner.classList.add("show");
+        } else {
+            banner.classList.remove("show");
+        }
+    }
+
+    function withTimeout(promise, ms = 12000) {
+        return Promise.race([
+            promise,
+            new Promise((_, reject) =>
+                setTimeout(() => reject(new Error("ໝົດເວລາການເຊື່ອມຕໍ່ Google Sheet")), ms)
+            )
+        ]);
+    }
+
+    async function fetchSheetRows(sheetName) {
+        if (!APPS_SCRIPT_URL) {
+            throw new Error("ຍັງບໍ່ໄດ້ຕັ້ງຄ່າ APPS_SCRIPT_URL");
+        }
+        const url = new URL(APPS_SCRIPT_URL);
+        url.searchParams.set("sheet", sheetName);
+        url.searchParams.set("_t", String(Date.now()));
+
+        const res = await withTimeout(fetch(url.toString(), { method: "GET", cache: "no-store" }), 12000);
+        if (!res.ok) {
+            throw new Error(`HTTP ${res.status}`);
+        }
+        const data = await res.json();
+        if (!data || data.ok === false) {
+            throw new Error(data?.error || `ບໍ່ສາມາດອ່ານແທັບ ${sheetName} ໄດ້`);
+        }
+        return Array.isArray(data.rows) ? data.rows : [];
+    }
+
+    function parseJsonSafe(val, fallback) {
+        if (!val) return fallback;
+        if (typeof val === "object") return val;
+        try {
+            return JSON.parse(String(val));
+        } catch (_) {
+            return fallback;
+        }
+    }
+
+    function cleanVal(v) {
+        if (Array.isArray(v)) return v.map(cleanVal).filter(Boolean).join(", ");
+        return String(v ?? "").trim().replace(/^["']+|["']+$/g, "");
+    }
+
+    function cleanGrade(v) {
+        return cleanVal(v)
+            .replace(/^ຫ້ອງ\s*/i, "")
+            .replace(/\s+/g, "");
+    }
+
+    function cleanDay(v) {
+        const base = cleanVal(v)
+            .replace(/^ວັນ/i, "")
+            .replace(/^ມື້/i, "")
+            .trim();
+        const lower = base.toLowerCase();
+
+        if (["ຈັນ", "mon", "monday"].includes(lower)) return "ຈັນ";
+        if (["ອັງຄານ", "ຄານ", "ຄາມ", "tue", "tuesday"].includes(lower)) return "ອັງຄານ";
+        if (["ພຸດ", "wed", "wednesday"].includes(lower)) return "ພຸດ";
+        if (["ພະຫັດ", "ພຶຫັດ", "thu", "thursday"].includes(lower)) return "ພະຫັດ";
+        if (["ສຸກ", "fri", "friday"].includes(lower)) return "ສຸກ";
+        if (["ເສົາ", "sat", "saturday"].includes(lower)) return "ເສົາ";
+        if (["ອາທິດ", "sun", "sunday"].includes(lower)) return "ອາທິດ";
+        return base;
+    }
+
+    function normalizeSemester(v) {
+        const s = cleanVal(v);
+        if (!s) return DEFAULT_SEMESTER;
+        if (s === "1" || s.includes("1")) return "ພາກຮຽນທີ 1";
+        if (s === "2" || s.includes("2")) return "ພາກຮຽນທີ 2";
+        return s;
+    }
+
+    function normalizeAcademicYear(v) {
+        const y = cleanVal(v).replace(/^ສົກຮຽນ\s*/i, "").trim();
+        return y || DEFAULT_ACADEMIC_YEAR;
+    }
+
+    function parsePeriodNum(v) {
+        const m = String(v ?? "").match(/[1-4]/);
+        return m ? Number(m[0]) : null;
+    }
+
+    function resolveRole() {
+        const raw = cleanVal(
+            localStorage.getItem("userRole") || localStorage.getItem("role") || "student"
+        ).toLowerCase();
+        if (["admin", "administrator", "ແອັດມິນ", "แอดมิน"].includes(raw)) return "admin";
+        if (["teacher", "ຄູ", "ຄູອາຈານ", "ครู"].includes(raw)) return "teacher";
+        return "student";
+    }
+
+    const role = resolveRole();
+    const userGrade = cleanGrade(localStorage.getItem("userGrade") || "ມ.5") || "ມ.5";
+    const userName = cleanVal(localStorage.getItem("userName")) || "ຜູ້ໃຊ້ງານ";
+    const isAdmin = role === "admin";
+    const isStudent = role === "student";
+
+    document.getElementById("currentUserName").textContent = userName;
+    document.getElementById("currentUserRole").textContent = role.toUpperCase();
+    document.getElementById("currentUserGrade").textContent = userGrade;
+    document.getElementById("sheetSyncBadge").textContent = "📊 Google Sheet";
+
+    if (isAdmin) {
+        document.getElementById("btnUpdStudents").style.display = "inline-flex";
+        document.getElementById("btnUpdSchedule").style.display = "inline-flex";
+    }
+
+    if (isStudent) {
+        document.getElementById("sec-teaching-timetable").classList.add("hidden-section");
+    }
+
+    function esc(str) {
+        return String(str ?? "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;");
+    }
+
+    function formatClassCell(subject, teacher) {
+        const subjText = esc(subject || "-");
+        const tchText = teacher ? `<br><small style="color:#93c5fd;">👩‍🏫 ${esc(teacher)}</small>` : "";
+        return `<div><strong>${subjText}</strong>${tchText}</div>`;
+    }
+
+    let termPeriodsList = [];
+    let latestSubmittedYearFromMenu8 = "";
+    let studentsData = JSON.parse(localStorage.getItem("school_students_list") || "null") || [];
+    let rawScheduleEntries = [];
+    let classTimetables = JSON.parse(localStorage.getItem("school_class_timetables") || "null") || {};
+    let teachingSchedules = JSON.parse(localStorage.getItem("school_teaching_schedules") || "null") || [];
+
+    function saveStudents() {
+        localStorage.setItem("school_students_list", JSON.stringify(studentsData));
+    }
+
+    function saveTeachingSchedules() {
+        localStorage.setItem("school_teaching_schedules", JSON.stringify(teachingSchedules));
+    }
+
+    function readLocalTermPeriods() {
+        try {
+            const cached = JSON.parse(localStorage.getItem("school_term_periods") || "null");
+            if (Array.isArray(cached) && cached.length) {
+                termPeriodsList = cached;
+            }
+        } catch (e) {}
+    }
+
+    function syncSemesterSelectFromMenu8() {
+        const semSelect = document.getElementById("semesterSelect");
+        if (!semSelect) return;
+
+        const prevSem = normalizeSemester(semSelect.value);
+        const semSet = new Set(["ພາກຮຽນທີ 1", "ພາກຮຽນທີ 2"]);
+
+        termPeriodsList.forEach((tp) => {
+            const t = cleanVal(tp?.term || tp?.semester || "");
+            if (t) semSet.add(t);
+        });
+
+        const semList = Array.from(semSet);
+        semSelect.innerHTML = semList
+            .map((s) => `<option value="${esc(s)}">${esc(s)}</option>`)
+            .join("");
+
+        if (prevSem && semList.includes(prevSem)) {
+            semSelect.value = prevSem;
+        } else if (semList.length) {
+            semSelect.value = semList[0];
+        }
+    }
+
+    function syncAcademicYearSelectOptions() {
+        readLocalTermPeriods();
+        const yearSelect = document.getElementById("academicYearSelect");
+        if (!yearSelect) return;
+
+        const prevSelected = cleanVal(yearSelect.value)
+            ? normalizeAcademicYear(yearSelect.value)
+            : "";
+        const yearSet = new Set(DEFAULT_YEARS);
+
+        const menu8Years = [];
+        termPeriodsList.forEach((tp) => {
+            const yr = cleanVal(tp?.academicYear || tp?.year || tp?.schoolYear || "");
+            if (yr) {
+                const normYr = normalizeAcademicYear(yr);
+                yearSet.add(normYr);
+                menu8Years.push(normYr);
+            }
+        });
+
+        [...rawScheduleEntries, ...teachingSchedules].forEach((entry) => {
+            const yr = cleanVal(entry?.academicYear || entry?.year || entry?.schoolYear || "");
+            if (yr) yearSet.add(normalizeAcademicYear(yr));
+        });
+
+        if (latestSubmittedYearFromMenu8) {
+            yearSet.add(latestSubmittedYearFromMenu8);
+        }
+        if (prevSelected) {
+            yearSet.add(prevSelected);
+        }
+
+        const sortedYears = Array.from(yearSet).sort((a, b) => b.localeCompare(a, undefined, { numeric: true }));
+
+        yearSelect.innerHTML = sortedYears
+            .map((yr) => `<option value="${esc(yr)}">ສົກຮຽນ ${esc(yr)}</option>`)
+            .join("");
+
+        if (latestSubmittedYearFromMenu8 && sortedYears.includes(latestSubmittedYearFromMenu8)) {
+            yearSelect.value = latestSubmittedYearFromMenu8;
+            latestSubmittedYearFromMenu8 = "";
+        } else if (prevSelected && sortedYears.includes(prevSelected)) {
+            yearSelect.value = prevSelected;
+        } else if (menu8Years.length && sortedYears.includes(menu8Years[0])) {
+            yearSelect.value = menu8Years[0];
+        } else if (sortedYears.includes(DEFAULT_ACADEMIC_YEAR)) {
+            yearSelect.value = DEFAULT_ACADEMIC_YEAR;
+        } else if (sortedYears.length) {
+            yearSelect.value = sortedYears[0];
+        }
+
+        syncSemesterSelectFromMenu8();
+    }
+
+    function getSelectedYear() {
+        syncAcademicYearSelectOptions();
+        return normalizeAcademicYear(document.getElementById("academicYearSelect")?.value);
+    }
+
+    function getSelectedSemester() {
+        return normalizeSemester(document.getElementById("semesterSelect")?.value);
+    }
+
+    function normalizeScheduleEntry(docId, raw = {}) {
+        const teacher = cleanVal(
+            raw.teacher || raw.teacherName || raw.instructor || raw.advisor || raw.name || ""
+        );
+        const subject = cleanVal(
+            raw.subject || raw.subjectName || raw.course || raw.lesson || ""
+        );
+        const grade = cleanGrade(
+            raw.room || raw.grade || raw.roomName || raw.className || ""
+        );
+        const academicYear = normalizeAcademicYear(
+            raw.academicYear || raw.schoolYear || raw.year || ""
+        );
+        const semester = normalizeSemester(
+            raw.semester || raw.term || ""
+        );
+        const week = cleanVal(raw.week || "");
+        const day = cleanDay(raw.day || raw.days || "");
+        const periodRaw = cleanVal(raw.period || raw.periods || "");
+        const periodNum = parsePeriodNum(periodRaw);
+        const periodLabel = periodRaw ? (periodRaw.includes("ຊົ່ວໂມງ") ? periodRaw : `ຊົ່ວໂມງທີ ${periodRaw}`) : "";
+        const timePart = cleanVal(raw.time || raw.timeRange || "");
+
+        const schedule = cleanVal(raw.schedule || raw.scheduleText) ||
+            [day, periodLabel, timePart, week ? `(${week})` : ""].filter(Boolean).join(" • ") || "-";
+
+        return {
+            id: cleanVal(raw.id) || docId,
+            teacher,
+            subject,
+            grade,
+            academicYear,
+            semester,
+            week,
+            day,
+            periodNum,
+            schedule
+        };
+    }
+
+    function syncRoomSelectOptions(extraRooms = []) {
+        const roomMap = new Map();
+        const addRoom = (rawName) => {
+            const cleaned = cleanVal(rawName).replace(/^ຫ້ອງ\s*/i, "");
+            if (!cleaned) return;
+            const key = cleaned.replace(/\s+/g, "").toLowerCase();
+            if (!roomMap.has(key)) {
+                roomMap.set(key, cleaned);
+            }
+        };
+
+        const studentRooms = studentsData.map((s) => s.grade || s.room);
+        const scheduleRooms = [
+            ...rawScheduleEntries.map((e) => e.grade),
+            ...teachingSchedules.map((e) => e.grade),
+            ...Object.keys(classTimetables || {})
+        ];
+
+        [...DEFAULT_GRADES, userGrade, ...studentRooms, ...scheduleRooms, ...extraRooms].forEach(addRoom);
+
+        const roomList = Array.from(roomMap.values());
+
+        const filterSelect = document.getElementById("studentGradeFilter");
+        if (filterSelect) {
+            const prevFilter = filterSelect.value;
+            filterSelect.innerHTML =
+                `<option value="ALL">ທຸກຫ້ອງ</option>` +
+                roomList.map((r) => `<option value="${esc(r)}">${esc(r)}</option>`).join("");
+            if (prevFilter === "ALL") {
+                filterSelect.value = "ALL";
+            } else {
+                const matchedFilter = roomList.find((r) => cleanGrade(r).toLowerCase() === cleanGrade(prevFilter).toLowerCase());
+                if (matchedFilter) filterSelect.value = matchedFilter;
+            }
+            if (isStudent) {
+                const matchedUser = roomList.find((r) => cleanGrade(r).toLowerCase() === cleanGrade(userGrade).toLowerCase());
+                filterSelect.value = matchedUser || userGrade;
+                filterSelect.disabled = true;
+            }
+        }
+
+        const ttSelect = document.getElementById("classTimetableGrade");
+        if (ttSelect) {
+            const prevTT = cleanGrade(ttSelect.value);
+            ttSelect.innerHTML = roomList
+                .map((r) => `<option value="${esc(r)}">ຫ້ອງ ${esc(r)}</option>`)
+                .join("");
+            const matchedTT = roomList.find((r) => cleanGrade(r).toLowerCase() === prevTT.toLowerCase());
+            if (matchedTT) {
+                ttSelect.value = matchedTT;
+            } else {
+                const fallbackUser = roomList.find((r) => cleanGrade(r).toLowerCase() === cleanGrade(userGrade).toLowerCase()) || roomList[0];
+                if (fallbackUser) ttSelect.value = fallbackUser;
+            }
+            if (isStudent) {
+                const matchedUser = roomList.find((r) => cleanGrade(r).toLowerCase() === cleanGrade(userGrade).toLowerCase());
+                ttSelect.value = matchedUser || userGrade;
+                ttSelect.disabled = true;
+            }
+        }
+    }
+
+    window.renderStudents = function () {
+        const gradeFilterEl = document.getElementById("studentGradeFilter");
+        const searchVal = (document.getElementById("studentSearch").value || "").trim().toLowerCase();
+        const tbody = document.getElementById("studentsTableBody");
+        const cards = document.getElementById("studentsCards");
+
+        let selectedGrade = cleanGrade(gradeFilterEl.value);
+        if (gradeFilterEl.value === "ALL") selectedGrade = "ALL";
+
+        if (isStudent) {
+            selectedGrade = userGrade;
+            gradeFilterEl.value = userGrade;
+            gradeFilterEl.disabled = true;
+        }
+
+        const filtered = studentsData.filter((s) => {
+            const matchGrade = selectedGrade === "ALL" || cleanGrade(s.grade || s.room).toLowerCase() === selectedGrade.toLowerCase();
+            const codeVal = cleanVal(s.code || s.studentCode || s.id || "");
+            const nameVal = cleanVal(s.name || s.studentName || "");
+            const matchName = !searchVal ||
+                nameVal.toLowerCase().includes(searchVal) ||
+                codeVal.toLowerCase().includes(searchVal);
+            return matchGrade && matchName;
+        });
+
+        if (!filtered.length) {
+            tbody.innerHTML = `<tr><td colspan="5" class="center">ບໍ່ພົບຂໍ້ມູນນັກຮຽນ</td></tr>`;
+            cards.innerHTML = `<div class="cm-card" style="text-align:center;color:#94a3b8;">ບໍ່ພົບຂໍ້ມູນນັກຮຽນ</div>`;
+            return;
+        }
+
+        tbody.innerHTML = filtered.map((s, idx) => {
+            const codeVal = cleanVal(s.code || s.studentCode || s.id || "-");
+            const nameVal = cleanVal(s.name || s.studentName || "-");
+            const gradeVal = cleanGrade(s.grade || s.room || "-");
+            return `
+                <tr>
+                    <td>${idx + 1}</td>
+                    <td>${esc(codeVal)}</td>
+                    <td>${esc(nameVal)}</td>
+                    <td>${esc(gradeVal)}</td>
+                    <td>${esc(cleanVal(s.status) || "ປົກກະຕິ")}</td>
+                </tr>
+            `;
+        }).join("");
+
+        cards.innerHTML = filtered.map((s, idx) => {
+            const codeVal = cleanVal(s.code || s.studentCode || s.id || "-");
+            const nameVal = cleanVal(s.name || s.studentName || "-");
+            const gradeVal = cleanGrade(s.grade || s.room || "-");
+            const statusVal = cleanVal(s.status) || "ປົກກະຕິ";
+            return `
+                <div class="cm-card">
+                    <div class="cm-card-head">
+                        <div>
+                            <div class="cm-card-name">#${idx + 1} • ${esc(nameVal)}</div>
+                            <div class="cm-card-sub">ລະຫັດ: ${esc(codeVal)}</div>
+                        </div>
+                        <span class="badge badge-grade">ຫ້ອງ ${esc(gradeVal)}</span>
+                    </div>
+                    <div class="cm-card-rows">
+                        <div class="cm-card-row">
+                            <span class="cm-card-label">ສະຖານະ:</span>
+                            <span class="cm-card-val">${esc(statusVal)}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join("");
+    };
+
+    function getBaseRowsForGradeAndTerm(gradeKey, yearVal, semVal) {
+        const g = cleanGrade(gradeKey).toLowerCase();
+        const scopedKey = `${yearVal}__${semVal}__${g}`;
+        if (Array.isArray(classTimetables[scopedKey])) {
+            return classTimetables[scopedKey];
+        }
+        const entry = Object.entries(classTimetables || {}).find(
+            ([k]) => k.toLowerCase() === scopedKey
+        );
+        if (entry && Array.isArray(entry[1])) {
+            return entry[1];
+        }
+        if (yearVal === DEFAULT_ACADEMIC_YEAR && semVal === DEFAULT_SEMESTER) {
+            return Array.isArray(classTimetables[gradeKey])
+                ? classTimetables[gradeKey]
+                : (Object.entries(classTimetables || {}).find(([k]) => cleanGrade(k).toLowerCase() === g)?.[1] || []);
+        }
+        return [];
+    }
+
+    function buildRowsForGrade(gradeKey, yearVal, semVal) {
+        const g = cleanGrade(gradeKey).toLowerCase();
+        const dayMap = new Map();
+
+        const baseRows = getBaseRowsForGradeAndTerm(gradeKey, yearVal, semVal);
+        baseRows.forEach((r) => {
+            const dName = cleanDay(r.day);
+            if (!dName) return;
+            dayMap.set(dName, {
+                day: dName,
+                p1: r.p1 || "-", t1: r.t1 || "",
+                p2: r.p2 || "-", t2: r.t2 || "",
+                p3: r.p3 || "-", t3: r.t3 || "",
+                p4: r.p4 || "-", t4: r.t4 || ""
+            });
+        });
+
+        rawScheduleEntries
+            .filter((entry) =>
+                cleanGrade(entry.grade).toLowerCase() === g &&
+                normalizeAcademicYear(entry.academicYear) === yearVal &&
+                normalizeSemester(entry.semester) === semVal &&
+                entry.day &&
+                entry.periodNum
+            )
+            .forEach((entry) => {
+                if (!dayMap.has(entry.day)) {
+                    dayMap.set(entry.day, {
+                        day: entry.day,
+                        p1: "-", t1: "",
+                        p2: "-", t2: "",
+                        p3: "-", t3: "",
+                        p4: "-", t4: ""
+                    });
+                }
+                const row = dayMap.get(entry.day);
+                row[`p${entry.periodNum}`] = entry.subject || "-";
+                row[`t${entry.periodNum}`] = entry.teacher || "";
+            });
+
+        return Array.from(dayMap.values()).sort((a, b) => {
+            const ia = DAYS_ORDER.indexOf(a.day);
+            const ib = DAYS_ORDER.indexOf(b.day);
+            if (ia === -1 && ib === -1) return a.day.localeCompare(b.day);
+            if (ia === -1) return 1;
+            if (ib === -1) return -1;
+            return ia - ib;
+        });
+    }
+
+    window.renderClassTimetable = function () {
+        const selectEl = document.getElementById("classTimetableGrade");
+        const titleEl = document.getElementById("classTimetableTitle");
+        const tbody = document.getElementById("classTimetableBody");
+        const cards = document.getElementById("classTimetableCards");
+
+        if (!selectEl || !tbody) return;
+
+        let g = cleanGrade(selectEl.value) || "ມ.5";
+        if (isStudent) {
+            g = userGrade;
+            selectEl.value = userGrade;
+            selectEl.disabled = true;
+        }
+
+        const yearVal = getSelectedYear();
+        const semVal = getSelectedSemester();
+
+        if (titleEl) {
+            titleEl.textContent = `📅 2. ຕາຕະລາງຮຽນ (${g} • ${semVal} • ສົກຮຽນ ${yearVal})`;
+        }
+
+        const rows = buildRowsForGrade(g, yearVal, semVal);
+        if (!rows.length) {
+            tbody.innerHTML = `<tr><td colspan="5" class="center">ຍັງບໍ່ມີຂໍ້ມູນຕາຕະລາງຮຽນ ສຳລັບຫ້ອງ ${esc(g)} (${esc(semVal)} • ${esc(yearVal)})</td></tr>`;
+            cards.innerHTML = `<div class="cm-card" style="text-align:center;color:#94a3b8;">ຍັງບໍ່ມີຂໍ້ມູນຕາຕະລາງຮຽນ ສຳລັບຫ້ອງ ${esc(g)}</div>`;
+            return;
+        }
+
+        tbody.innerHTML = rows.map((r) => `
+            <tr>
+                <td><strong>${esc(r.day)}</strong></td>
+                <td>${formatClassCell(r.p1, r.t1)}</td>
+                <td>${formatClassCell(r.p2, r.t2)}</td>
+                <td>${formatClassCell(r.p3, r.t3)}</td>
+                <td>${formatClassCell(r.p4, r.t4)}</td>
+            </tr>
+        `).join("");
+
+        cards.innerHTML = rows.map((r) => `
+            <div class="cm-card">
+                <div class="cm-card-head">
+                    <div class="cm-card-name">ມື້${esc(r.day)}</div>
+                    <span class="badge badge-grade">ຫ້ອງ ${esc(g)}</span>
+                </div>
+                <div class="period-grid">
+                    <div class="period-box">
+                        <div class="period-box-title">ຊ.ມ. 1 (08:00-08:45)</div>
+                        ${formatClassCell(r.p1, r.t1)}
+                    </div>
+                    <div class="period-box">
+                        <div class="period-box-title">ຊ.ມ. 2 (08:50-09:35)</div>
+                        ${formatClassCell(r.p2, r.t2)}
+                    </div>
+                    <div class="period-box">
+                        <div class="period-box-title">ຊ.ມ. 3 (09:50-10:35)</div>
+                        ${formatClassCell(r.p3, r.t3)}
+                    </div>
+                    <div class="period-box">
+                        <div class="period-box-title">ຊ.ມ. 4 (10:40-11:25)</div>
+                        ${formatClassCell(r.p4, r.t4)}
+                    </div>
+                </div>
+            </div>
+        `).join("");
+    };
+
+    window.renderTeachingTimetable = function () {
+        if (isStudent) return;
+        const tbody = document.getElementById("teachingTimetableBody");
+        const cards = document.getElementById("teachingTimetableCards");
+        const titleEl = document.getElementById("teachingTimetableTitle");
+        const q = cleanVal(document.getElementById("teachingSearch")?.value || "").toLowerCase();
+        const yearVal = getSelectedYear();
+        const semVal = getSelectedSemester();
+
+        if (titleEl) {
+            titleEl.textContent = `👩‍🏫 3. ຕາຕະລາງສອນ (${semVal} • ສົກຮຽນ ${yearVal})`;
+        }
+
+        const scopedList = teachingSchedules.filter(
+            (x) =>
+                normalizeAcademicYear(x.academicYear) === yearVal &&
+                normalizeSemester(x.semester) === semVal
+        );
+
+        const list = q
+            ? scopedList.filter((x) =>
+                [x.teacher, x.subject, x.grade, x.semester, x.academicYear, x.schedule]
+                    .some((v) => cleanVal(v).toLowerCase().includes(q))
+            )
+            : scopedList;
+
+        if (!list.length) {
+            tbody.innerHTML = `<tr><td colspan="6" class="center">ຍັງບໍ່ມີຂໍ້ມູນຕາຕະລາງສອນ ສຳລັບ ${esc(semVal)} • ສົກຮຽນ ${esc(yearVal)}</td></tr>`;
+            cards.innerHTML = `<div class="cm-card" style="text-align:center;color:#94a3b8;">ຍັງບໍ່ມີຂໍ້ມູນຕາຕະລາງສອນ ສຳລັບ ${esc(semVal)}</div>`;
+            return;
+        }
+
+        tbody.innerHTML = list.map((item, idx) => `
+            <tr>
+                <td>${idx + 1}</td>
+                <td>${esc(item.teacher || "-")}</td>
+                <td>${esc(item.subject || "-")}</td>
+                <td>${esc(item.grade || "-")}</td>
+                <td>${esc(normalizeSemester(item.semester))} • ${esc(normalizeAcademicYear(item.academicYear))}</td>
+                <td>${esc(item.schedule || "-")}</td>
+            </tr>
+        `).join("");
+
+        cards.innerHTML = list.map((item, idx) => `
+            <div class="cm-card">
+                <div class="cm-card-head">
+                    <div>
+                        <div class="cm-card-name">#${idx + 1} • ${esc(item.subject || "-")}</div>
+                        <div class="cm-card-sub">👩‍🏫 ${esc(item.teacher || "-")}</div>
+                    </div>
+                    <span class="badge badge-grade">ຫ້ອງ ${esc(item.grade || "-")}</span>
+                </div>
+                <div class="cm-card-rows">
+                    <div class="cm-card-row">
+                        <span class="cm-card-label">ພາກ / ສົກຮຽນ:</span>
+                        <span class="cm-card-val">${esc(normalizeSemester(item.semester))} • ${esc(normalizeAcademicYear(item.academicYear))}</span>
+                    </div>
+                    <div class="cm-card-row">
+                        <span class="cm-card-label">ມື້ / ເວລາ:</span>
+                        <span class="cm-card-val">${esc(item.schedule || "-")}</span>
+                    </div>
+                </div>
+            </div>
+        `).join("");
+    };
+
+    window.onTermPeriodChange = function () {
+        syncAcademicYearSelectOptions();
+        renderClassTimetable();
+        renderTeachingTimetable();
+    };
+
+    async function syncSchedulesFromAllSheets() {
+        const blockedUntil = Number(localStorage.getItem(QUOTA_BLOCK_UNTIL_KEY) || "0");
+        if (Date.now() < blockedUntil) {
+            setQuotaNotice(true);
+            return;
+        }
+
+        const collected = [];
+        const seenKeys = new Set();
+
+        for (const sheetName of TEACHING_SHEETS) {
+            try {
+                const rows = await fetchSheetRows(sheetName);
+                rows.forEach((d, idx) => {
+                    const docId = String(d.id || d.sheetId || `${sheetName}-${idx + 1}`).trim();
+                    const norm = normalizeScheduleEntry(docId, d || {});
+                    if (!norm.teacher && !norm.subject && norm.schedule === "-") return;
+                    const dedupKey = `${norm.academicYear}|${norm.semester}|${norm.week}|${norm.day}|${norm.periodNum}|${norm.grade}|${norm.subject}|${norm.teacher}`.toLowerCase();
+                    if (!seenKeys.has(dedupKey)) {
+                        seenKeys.add(dedupKey);
+                        collected.push(norm);
+                    }
+                });
+            } catch (e) {
+                if (isQuotaError(e)) {
+                    localStorage.setItem(QUOTA_BLOCK_UNTIL_KEY, String(Date.now() + QUOTA_COOLDOWN_MS));
+                    setQuotaNotice(true);
+                    break;
+                }
+            }
+        }
+
+        if (collected.length) {
+            rawScheduleEntries = collected;
+            teachingSchedules = collected;
+            saveTeachingSchedules();
+        }
+        syncAcademicYearSelectOptions();
+        syncRoomSelectOptions();
+        renderTeachingTimetable();
+        renderClassTimetable();
+    }
+
+    function storeClassTimetableRow(rowId, data = {}) {
+        const parsedRows = parseJsonSafe(data.rows, data.rows);
+        const gKey = cleanGrade(data.grade || data.room || rowId);
+        if (!gKey || !Array.isArray(parsedRows)) return;
+        const yr = normalizeAcademicYear(data.academicYear || data.schoolYear || data.year);
+        const sem = normalizeSemester(data.semester || data.term);
+        classTimetables[`${yr}__${sem}__${gKey.toLowerCase()}`] = parsedRows;
+        if (yr === DEFAULT_ACADEMIC_YEAR && sem === DEFAULT_SEMESTER) {
+            classTimetables[gKey] = parsedRows;
+        }
+    }
+
+    window.loadFromSheetIfAvailable = async function (showAlert = false) {
+        readLocalTermPeriods();
+        syncAcademicYearSelectOptions();
+
+        const now = Date.now();
+        const blockedUntil = Number(localStorage.getItem(QUOTA_BLOCK_UNTIL_KEY) || "0");
+        const lastFetchTs = Number(localStorage.getItem(LAST_FETCH_TS_KEY) || "0");
+
+        if (now < blockedUntil) {
+            setQuotaNotice(true);
+            syncRoomSelectOptions();
+            renderStudents();
+            renderClassTimetable();
+            renderTeachingTimetable();
+            if (showAlert) showToast("ການເຊື່ອມຕໍ່ Google Sheet ຖືກຈຳກັດຊົ່ວຄາວ ກຳລັງໃຊ້ຂໍ້ມູນໃນເຄື່ອງ");
+            return;
+        }
+
+        if (!showAlert && now - lastFetchTs < FETCH_COOLDOWN_MS) {
+            syncRoomSelectOptions();
+            renderStudents();
+            renderClassTimetable();
+            renderTeachingTimetable();
+            return;
+        }
+
+        const syncBtn = document.getElementById("syncBtn");
+        if (syncBtn) syncBtn.disabled = true;
+
+        try {
+            const tpRows = await fetchSheetRows(SHEET_TERM_PERIODS);
+            if (tpRows.length > 0) {
+                termPeriodsList = tpRows.map((d, idx) => ({
+                    id: String(d.id || d.sheetId || `TP-${idx + 1}`).trim(),
+                    sheetId: String(d.id || d.sheetId || `TP-${idx + 1}`).trim(),
+                    ...d
+                }));
+                localStorage.setItem("school_term_periods", JSON.stringify(termPeriodsList));
+            }
+
+            const stdRows = await fetchSheetRows(SHEET_STUDENTS);
+            if (stdRows.length > 0) {
+                studentsData = stdRows.map((d, idx) => ({
+                    id: String(d.id || d.sheetId || `STD-${idx + 1}`).trim(),
+                    sheetId: String(d.id || d.sheetId || `STD-${idx + 1}`).trim(),
+                    ...d
+                }));
+                saveStudents();
+            }
+
+            const clsRows = await fetchSheetRows(SHEET_CLASS_TIMETABLES);
+            if (clsRows.length > 0) {
+                clsRows.forEach((d, idx) => {
+                    const rowId = String(d.id || d.sheetId || `CLS-${idx + 1}`).trim();
+                    storeClassTimetableRow(rowId, d || {});
+                });
+                localStorage.setItem("school_class_timetables", JSON.stringify(classTimetables));
+            }
+
+            await syncSchedulesFromAllSheets();
+            localStorage.setItem(LAST_FETCH_TS_KEY, String(Date.now()));
+            localStorage.removeItem(QUOTA_BLOCK_UNTIL_KEY);
+            setQuotaNotice(false);
+            syncAcademicYearSelectOptions();
+            syncRoomSelectOptions();
+            renderStudents();
+            renderClassTimetable();
+            renderTeachingTimetable();
+            if (showAlert) showToast("✅ ໂຫຼດຂໍ້ມູນຈາກ Google Sheet ສຳເລັດແລ້ວ");
+        } catch (err) {
+            if (isQuotaError(err)) {
+                localStorage.setItem(QUOTA_BLOCK_UNTIL_KEY, String(Date.now() + QUOTA_COOLDOWN_MS));
+                setQuotaNotice(true);
+                if (showAlert) showToast("⚠️ ໂຄຕ້າ Google Sheet ຊົ່ວຄາວເຕັມ ໃຊ້ຂໍ້ມູນໃນເຄື່ອງ");
+            } else {
+                setQuotaNotice(true, `⚠️ ການເຊື່ອມຕໍ່ Google Sheet ຊົ່ວຄາວມີບັນຫາ (${err?.message || err}) — ລະບົບກຳລັງໃຊ້ຂໍ້ມູນທີ່ເກັບໃນເຄື່ອງ (localStorage) ແລະ ຫຼຸດການເອີ້ນຖານຂໍ້ມູນອັດຕະໂນມັດ.`);
+                if (showAlert) showToast("⚠️ ເຊື່ອມຕໍ່ຊ້າ ໃຊ້ຂໍ້ມູນທີ່ບັນທຶກໃນເຄື່ອງ");
+            }
+            syncRoomSelectOptions();
+            renderStudents();
+            renderClassTimetable();
+            renderTeachingTimetable();
+        } finally {
+            if (syncBtn) syncBtn.disabled = false;
+        }
+    };
+
+    function handleMenu8SubmitSync(detail) {
+        if (detail && detail.tab === "terms") {
+            readLocalTermPeriods();
+            if (termPeriodsList.length) {
+                const newest = termPeriodsList[termPeriodsList.length - 1];
+                if (newest?.academicYear) {
+                    latestSubmittedYearFromMenu8 = normalizeAcademicYear(newest.academicYear);
+                }
+            }
+        }
+        try {
+            studentsData = JSON.parse(localStorage.getItem("school_students_list") || "null") || studentsData;
+            classTimetables = JSON.parse(localStorage.getItem("school_class_timetables") || "null") || classTimetables;
+            teachingSchedules = JSON.parse(localStorage.getItem("school_teaching_schedules") || "null") || teachingSchedules;
+        } catch (e) {}
+        syncAcademicYearSelectOptions();
+        syncRoomSelectOptions();
+        renderStudents();
+        renderClassTimetable();
+        renderTeachingTimetable();
+    }
+
+    window.addEventListener("storage", (e) => {
+        if (e.key === SYNC_STORAGE_KEY || e.key === "school_term_periods" || e.key === "school_students_list") {
+            let parsed = null;
+            try {
+                if (e.key === SYNC_STORAGE_KEY && e.newValue) parsed = JSON.parse(e.newValue);
+            } catch (err) {}
+            handleMenu8SubmitSync(parsed);
+        }
+    });
+    window.addEventListener(SYNC_EVENT_NAME, (e) => handleMenu8SubmitSync(e.detail));
+
+    syncAcademicYearSelectOptions();
+    syncRoomSelectOptions();
+    renderStudents();
+    renderClassTimetable();
+    renderTeachingTimetable();
+    loadFromSheetIfAvailable(false);
+</script>
+</body>
+</html>
