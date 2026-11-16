@@ -1,7 +1,7 @@
 // ==========================================
 // 1. ຕັ້ງຄ່າ Google Apps Script Web App (ແທນ Firebase)
 // ==========================================
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz2GeJz9zdeNbJ__dOuVkW5oT1Gfzdz5OZekUhBiGU0AlBE46lBre1JH_GFr3agr5Gi/exec";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwp7pM_Lx8qdeuGC_nA_zvxTCltlOvJKNN-tjkRX_wi8JMt6EVyheyRNFambP69dOc9Yg/exec";
 const CACHE_PREFIX = "school_sheet_cache_";
 
 let allStudentsData = [];
